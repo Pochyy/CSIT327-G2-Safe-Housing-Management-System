@@ -16,8 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
+
+def redirect_to_login(request):
+    return redirect('login')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('LoginPage.urls')),
+    path('login/', include('LoginPage.urls')),
+    path('signup/', include('RegistrationPage.urls')),
+    path('', redirect_to_login),
 ]
