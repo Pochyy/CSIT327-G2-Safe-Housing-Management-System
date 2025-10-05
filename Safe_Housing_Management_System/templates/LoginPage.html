@@ -1,21 +1,57 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Safe Haven | Login</title>
     <link rel="stylesheet" href="{% static 'loginPage/login.css' %}">
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <form>
-            <input type="text" placeholder="Username" required>
-            <input type="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
+    <header class="top-bar">
+        <div class="logo-section">
+            <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+            <h2>Safe <span>Haven</span></h2>
+        </div>
+    </header>
+
+    <div class="left-section"></div>
+
+    <div class="right-section">
+        <div class="login-box">
+            <h1>Welcome!</h1>
+            <p>Enter your credentials to sign in to your account!</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'login' %}" id="loginForm">
+                {% csrf_token %}
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Username" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+
+                <button type="submit">Sign In</button>
+
+                <div class="options">
+                    <label><input type="checkbox" name="remember"> Remember Me</label>
+                    <a href="#">Forgot Password?</a>
+                </div>
+
+                <div class="signup">
+                    Don’t have an account? <a href="{% url 'signup' %}">Sign Up</a>
+                </div>
+            </form>
+        </div>
     </div>
+
+    <script src="{% static 'loginPage/login.js' %}"></script>
 </body>
 </html>

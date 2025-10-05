@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Haven | Sign Up</title>
+    <link rel="stylesheet" href="{% static 'registrationPage/RegistrationPage.css' %}">
+</head>
+<body>
+    <header class="top-bar">
+        <div class="logo-section">
+            <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+            <h2>Safe <span>Haven</span></h2>
+        </div>
+    </header>
+
+    <div class="left-section"></div>
+
+    <div class="right-section">
+        <div class="login-box">
+            <h1>Create an Account</h1>
+            <p>Join Safe Haven today to find or list trusted rental properties.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'signup' %}" id="registerForm">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>I want to:</label>
+                    <div class="user-type">
+                        <div class="user-option selected" onclick="selectUserType(this)">
+                            <input type="radio" name="user_type" value="renter" checked>
+                            <span>Rent Properties</span>
+                        </div>
+                        <div class="user-option" onclick="selectUserType(this)">
+                            <input type="radio" name="user_type" value="landlord">
+                            <span>List Properties</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" placeholder="First Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" placeholder="Last Name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Email Address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" name="phone" placeholder="Phone Number">
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Username" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                    </div>
+                </div>
+
+                <div class="terms">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                </div>
+
+                <button type="submit">Create Account</button>
+
+                <div class="signup">
+                    Already have an account? <a href="{% url 'login' %}">Sign In</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'registrationPage/Registration.js' %}"></script>
+</body>
+</html>
