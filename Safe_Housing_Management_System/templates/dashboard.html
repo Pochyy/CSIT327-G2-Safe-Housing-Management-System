@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Haven | Dashboard</title>
+    <link rel="stylesheet" href="{% static 'dashboardPage/dashboard.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="top-bar">
+        <div class="logo-section">
+            <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+            <h2>Safe <span>Haven</span></h2>
+        </div>
+        
+        <div class="search-section">
+            <button class="search-btn" onclick="browseProperties()">
+                <i class="fas fa-search"></i> Start a new search
+            </button>
+        </div>
+
+        <nav class="user-nav">
+    <a href="#" id="role-switcher">Switch to Landlord View</a>
+    <a href="#"><i class="fas fa-envelope"></i> Messages (<span id="messagesCount">0</span>)</a>
+    <a href="/login/" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</nav>
+
+    </header>
+
+    <main class="dashboard-container">
+        <section class="welcome-banner">
+            <h1>Welcome back, <span id="username">User</span>!</h1>
+            <p>You are logged in as a <span id="userRole">Renter</span>.</p>
+        </section>
+
+        <section id="role-specific-content">
+            <div class="content-section renter-content">
+                <h2>Your Rental Activity 📝</h2>
+                <div class="activity-grid">
+                    <div class="activity-card" onclick="viewApplications()">
+                        <div class="stat-number" id="applicationsCount">0</div>
+                        <div class="stat-label">Applications Sent</div>
+                    </div>
+                    <div class="activity-card" onclick="viewFavorites()">
+                        <div class="stat-number" id="favoritesCount">0</div>
+                        <div class="stat-label">Saved Homes</div>
+                    </div>
+                    <div class="activity-card">
+                        <div class="stat-number">4.8/5</div>
+                        <div class="stat-label">Your Renter Rating</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section renter-content">
+                <h2>Quick Links 🔗</h2>
+                <div class="quick-links-grid">
+                    <a href="#" class="quick-link-card" onclick="browseProperties()">
+                        <i class="fas fa-search"></i> <span>Find New Property</span>
+                    </a>
+                    <a href="#" class="quick-link-card" onclick="viewApplications()">
+                        <i class="fas fa-file-contract"></i> <span>Track Applications</span>
+                    </a>
+                    <a href="#" class="quick-link-card" onclick="openMessages()">
+                        <i class="fas fa-comments"></i> <span>Contact Landlords</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="content-section landlord-content hidden">
+                <h2>Landlord Portal Dashboard 🏘️</h2>
+                <div class="activity-grid">
+                    <div class="activity-card" onclick="reviewApplications()">
+                        <div class="stat-number" id="newApplications">0</div>
+                        <div class="stat-label">New Applications to Review</div>
+                    </div>
+                    <div class="activity-card" onclick="manageProperties()">
+                        <div class="stat-number" id="propertiesCount">0</div>
+                        <div class="stat-label">Active Listings</div>
+                    </div>
+                    <div class="activity-card" onclick="managePayments()">
+                        <div class="stat-number">₱ 0.00</div>
+                        <div class="stat-label">Upcoming Rent</div>
+                    </div>
+                </div>
+                <button class="main-cta-btn landlord-btn" onclick="manageProperties()">
+                    <i class="fas fa-plus"></i> Add New Listing
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script src="{% static 'dashboard/dashboard.js' %}"></script>
+</body>
+</html>
