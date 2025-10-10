@@ -1,336 +1,103 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Safe Haven</title>
-    <style>
-        /* Your existing CSS styles for registration page */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #87CEEB, #98FB98);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .register-container {
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 450px;
-            padding: 40px 30px;
-        }
-
-        .register-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .register-header h1 {
-            color: #2c3e50;
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .register-header p {
-            color: #7f8c8d;
-            font-size: 16px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #2c3e50;
-            font-weight: 500;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="password"]:focus,
-        select:focus {
-            border-color: #87CEEB;
-            box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.2);
-            outline: none;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 15px;
-        }
-
-        .form-row .form-group {
-            flex: 1;
-        }
-
-        .register-button {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(to right, #87CEEB, #98FB98);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
-        }
-
-        .register-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .terms {
-            display: flex;
-            align-items: flex-start;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #7f8c8d;
-        }
-
-        .terms input {
-            margin-right: 8px;
-            margin-top: 3px;
-        }
-
-        .terms a {
-            color: #3498db;
-            text-decoration: none;
-        }
-
-        .terms a:hover {
-            text-decoration: underline;
-        }
-
-        .login-link {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 14px;
-            color: #7f8c8d;
-        }
-
-        .login-link a {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-
-        .user-type {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .user-option {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .user-option.selected {
-            border-color: #87CEEB;
-            background-color: rgba(135, 206, 235, 0.1);
-        }
-
-        .user-option input {
-            display: none;
-        }
-
-        .message {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .message.info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
-        @media (max-width: 480px) {
-            .register-container {
-                padding: 30px 20px;
-            }
-            
-            .form-row {
-                flex-direction: column;
-                gap: 0;
-            }
-            
-            .user-type {
-                flex-direction: column;
-                gap: 10px;
-            }
-        }
-    </style>
+    <title>Safe Haven | Sign Up</title>
+    <link rel="stylesheet" href="{% static 'registrationPage/RegistrationPage.css' %}">
 </head>
 <body>
-    <div class="register-container">
-        <div class="register-header">
-            <h1>Create Account</h1>
-            <p>Join Safe Haven to find or list rental properties</p>
+    <header class="top-bar">
+        <div class="logo-section">
+            <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+            <h2>Safe <span>Haven</span></h2>
         </div>
-        
-        <!-- Django Messages Display -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-        
-        <form method="POST" action="{% url 'signup' %}">
-            {% csrf_token %}
-            
-            <!-- User Type Selection -->
-            <div class="form-group">
-                <label>I want to:</label>
-                <div class="user-type">
-                    <div class="user-option selected" onclick="selectUserType(this)">
-                        <input type="radio" name="user_type" value="renter" checked>
-                        <span>Rent Properties</span>
+    </header>
+
+    <div class="left-section"></div>
+
+    <div class="right-section">
+        <div class="login-box">
+            <h1>Create an Account</h1>
+            <p>Join Safe Haven today to find or list trusted rental properties.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
                     </div>
-                    <div class="user-option" onclick="selectUserType(this)">
-                        <input type="radio" name="user_type" value="landlord">
-                        <span>List Properties</span>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'signup' %}" id="registerForm">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>I want to:</label>
+                    <div class="user-type">
+                        <div class="user-option selected" onclick="selectUserType(this)">
+                            <input type="radio" name="user_type" value="renter" checked>
+                            <span>Rent Properties</span>
+                        </div>
+                        <div class="user-option" onclick="selectUserType(this)">
+                            <input type="radio" name="user_type" value="landlord">
+                            <span>List Properties</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Personal Information -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="first_name">FIRST NAME</label>
-                    <input type="text" id="first_name" name="first_name" placeholder="First Name" required>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" placeholder="First Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" placeholder="Last Name" required>
+                    </div>
                 </div>
-                
+
                 <div class="form-group">
-                    <label for="last_name">LAST NAME</label>
-                    <input type="text" id="last_name" name="last_name" placeholder="Last Name" required>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Email Address" required>
                 </div>
-            </div>
-            
-            <!-- Contact Information -->
-            <div class="form-group">
-                <label for="email">EMAIL</label>
-                <input type="email" id="email" name="email" placeholder="Email Address" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="phone">PHONE NUMBER</label>
-                <input type="text" id="phone" name="phone" placeholder="Phone Number">
-            </div>
-            
-            <!-- Account Information -->
-            <div class="form-group">
-                <label for="username">USERNAME</label>
-                <input type="text" id="username" name="username" placeholder="Username" required>
-            </div>
-            
-            <div class="form-row">
+
                 <div class="form-group">
-                    <label for="password">PASSWORD</label>
-                    <input type="password" id="password" name="password" placeholder="Password" required minlength="6">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" name="phone" placeholder="Phone Number">
                 </div>
-                
+
                 <div class="form-group">
-                    <label for="confirm_password">CONFIRM PASSWORD</label>
-                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Username" required>
                 </div>
-            </div>
-            
-            <!-- Terms and Conditions -->
-            <div class="terms">
-                <input type="checkbox" id="terms" name="terms" required>
-                <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
-            </div>
-            
-            <button type="submit" class="register-button">Create Account</button>
-        </form>
-        
-        <div class="login-link">
-            Already have an account? <a href="{% url 'login' %}">Sign In</a>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                    </div>
+                </div>
+
+                <div class="terms">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                </div>
+
+                <button type="submit">Create Account</button>
+
+                <div class="signup">
+                    Already have an account? <a href="{% url 'login' %}">Sign In</a>
+                </div>
+            </form>
         </div>
     </div>
 
-    <script>
-        function selectUserType(element) {
-            // Remove selected class from all options
-            document.querySelectorAll('.user-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            
-            // Add selected class to clicked option
-            element.classList.add('selected');
-            
-            // Check the radio input inside the clicked option
-            const radioInput = element.querySelector('input[type="radio"]');
-            radioInput.checked = true;
-        }
-
-        // Password confirmation validation
-        document.getElementById('confirm_password').addEventListener('input', function() {
-            const password = document.getElementById('password').value;
-            const confirmPassword = this.value;
-            
-            if (password !== confirmPassword) {
-                this.style.borderColor = '#e74c3c';
-            } else {
-                this.style.borderColor = '#27ae60';
-            }
-        });
-    </script>
+    <script src="{% static 'registrationPage/Registration.js' %}"></script>
 </body>
 </html>

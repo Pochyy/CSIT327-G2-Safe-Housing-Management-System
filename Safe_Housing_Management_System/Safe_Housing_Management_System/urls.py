@@ -25,5 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', include('LoginPage.urls')),
     path('signup/', include('RegistrationPage.urls')),
+    path('dashboard/', include('DashboardPage.urls')),
     path('', redirect_to_login),
 ]

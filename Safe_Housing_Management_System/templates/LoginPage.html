@@ -1,217 +1,57 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In - RentApp</title>
-    <style>
-        /* Your existing CSS styles here */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #87CEEB, #98FB98);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .login-container {
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            padding: 40px 30px;
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .login-header h1 {
-            color: #2c3e50;
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .login-header p {
-            color: #7f8c8d;
-            font-size: 16px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #2c3e50;
-            font-weight: 500;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            border-color: #87CEEB;
-            box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.2);
-            outline: none;
-        }
-
-        .login-button {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(to right, #87CEEB, #98FB98);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
-        }
-
-        .login-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .login-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            font-size: 14px;
-        }
-
-        .remember-me {
-            display: flex;
-            align-items: center;
-        }
-
-        .remember-me input {
-            margin-right: 5px;
-        }
-
-        .forgot-password {
-            color: #3498db;
-            text-decoration: none;
-        }
-
-        .forgot-password:hover {
-            text-decoration: underline;
-        }
-
-        .signup-link {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 14px;
-            color: #7f8c8d;
-        }
-
-        .signup-link a {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .signup-link a:hover {
-            text-decoration: underline;
-        }
-
-        .message {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        .message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        @media (max-width: 480px) {
-            .login-container {
-                padding: 30px 20px;
-            }
-            
-            .login-options {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .forgot-password {
-                margin-top: 10px;
-            }
-        }
-    </style>
+    <title>Safe Haven | Login</title>
+    <link rel="stylesheet" href="{% static 'loginPage/login.css' %}">
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <h1>Sign In</h1>
-            <p>Welcome to Safe Haven</p>
+    <header class="top-bar">
+        <div class="logo-section">
+            <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+            <h2>Safe <span>Haven</span></h2>
         </div>
-        
-        {% if message %}
-            <div class="message {% if success %}success{% else %}error{% endif %}">
-                {{ message }}
-            </div>
-        {% endif %}
-        
-        <form method="POST" action="{% url 'login' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="username">USERNAME</label>
+    </header>
+
+    <div class="left-section"></div>
+
+    <div class="right-section">
+        <div class="login-box">
+            <h1>Welcome!</h1>
+            <p>Enter your credentials to sign in to your account!</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'login' %}" id="loginForm">
+                {% csrf_token %}
+                <label for="username">Username</label>
                 <input type="text" id="username" name="username" placeholder="Username" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">PASSWORD</label>
+
+                <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Password" required>
-            </div>
-            
-            <button type="submit" class="login-button">Sign In</button>
-                                    
-            <div class="login-options">
-                <div class="remember-me">
-                    <input type="checkbox" id="remember" name="remember">
-                    <label for="remember">Remember Me</label>
+
+                <button type="submit">Sign In</button>
+
+                <div class="options">
+                    <label><input type="checkbox" name="remember"> Remember Me</label>
+                    <a href="#">Forgot Password?</a>
                 </div>
-                <a href="#" class="forgot-password">Forgot Password</a>
-            </div>
-        </form>
-        
-        <div class="signup-link">
-            Don't have an account? <a href="{% url 'signup' %}">Sign Up</a>
+
+                <div class="signup">
+                    Don’t have an account? <a href="{% url 'signup' %}">Sign Up</a>
+                </div>
+            </form>
         </div>
     </div>
+
+    <script src="{% static 'loginPage/login.js' %}"></script>
 </body>
 </html>
