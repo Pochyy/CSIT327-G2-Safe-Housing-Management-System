@@ -22,17 +22,27 @@
         </div>
 
         <nav class="user-nav">
-    <a href="#" id="role-switcher">Switch to Landlord View</a>
-    <a href="#"><i class="fas fa-envelope"></i> Messages (<span id="messagesCount">0</span>)</a>
-    <a href="/login/" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a>
-</nav>
-
+            <a href="#" id="role-switcher">Switch to Landlord View</a>
+            <a href="#"><i class="fas fa-envelope"></i> Messages (<span id="messagesCount">0</span>)</a>
+            <a href="/login/" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
     </header>
 
+    <!-- SUCCESS LOGIN POPUP -->
+    {% if messages %}
+    <div id="message-container">
+       <div id="login-popup" class="alert success">
+        Successfully logged in!
+    </div>
+    </div>
+    {% endif %}
+    
+
+    <!-- WELCOME BANNER (STAYS STATIC) -->
     <main class="dashboard-container">
         <section class="welcome-banner">
-            <h1>Welcome back, <span id="username">User</span>!</h1>
-            <p>You are logged in as a <span id="userRole">Renter</span>.</p>
+            <h1>Welcome back, <span id="username">{{ username }}</span>!</h1>
+            <p>You are logged in as a <span id="userRole">{{ user_role }}</span>.</p>
         </section>
 
         <section id="role-specific-content">
@@ -92,6 +102,6 @@
         </section>
     </main>
 
-    <script src="{% static 'dashboard/dashboard.js' %}"></script>
+    <script src="{% static 'dashboardPage/dashboard.js' %}"></script>
 </body>
 </html>
