@@ -60,7 +60,7 @@ body {
 }
 
 .left-section {
-    flex: 1;
+    flex: 1.5; 
     background: url("/static/images/house.jpg") no-repeat center center/cover;
 }
 
@@ -195,3 +195,12 @@ button:hover {
     }
 
 }
+
+.message.error {
+    color: red !important;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+

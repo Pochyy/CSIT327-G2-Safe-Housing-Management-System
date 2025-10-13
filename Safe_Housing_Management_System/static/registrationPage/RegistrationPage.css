@@ -47,7 +47,7 @@ body {
 }
 
 .left-section {
-    flex: 1;
+    flex: 1.5; 
     background: url("/static/images/house.jpg") no-repeat center center/cover;
 }
 
@@ -221,4 +221,174 @@ button:hover {
     .right-section {
         padding: 20px;
     }
+}
+
+/* NEW CUSTOM TOOLTIP STYLE for Django Errors */
+.message.error {
+    /* Tooltip Body Styles */
+    position: relative; 
+    text-align: left;
+    background-color: #FFFDE7; /* Light Yellow/Cream background */
+    color: #4B5563; /* Darker text color */
+    border: 1px solid #FFECB3; /* Light border */
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    
+    /* Position the error message right below the input field */
+    margin-top: -15px; /* Adjust as needed to pull it closer to the input */
+    margin-bottom: 25px; /* Adjust vertical spacing */
+    
+    /* Add padding and icon to mimic the native look */
+    padding-left: 35px;
+    /* Optional: Replace with a real image if desired, but this uses SVG data for the icon */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFC107" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>'); 
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    background-size: 18px;
+}
+
+/* Tooltip Arrow (The little triangle pointer) */
+.message.error::before {
+    content: "";
+    position: absolute;
+    top: -8px; /* Position above the box */
+    left: 15px; /* Offset from the left */
+    border-width: 0 8px 8px 8px; 
+    border-style: solid;
+    border-color: transparent transparent #FFECB3 transparent; /* Match the border color */
+}
+
+.message.error::after {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: 15px;
+    border-width: 0 8px 8px 8px;
+    border-style: solid;
+    border-color: transparent transparent #FFFDE7 transparent; /* Match the background color */
+}
+
+/* The success message can remain as-is if you like your green box: */
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+}
+ 
+.modal-content {
+    background-color: #F9FAFB;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+ 
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+ 
+.modal-header {
+    background-color: #2C6E6F;
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 15px 15px 0 0;
+}
+ 
+.modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+ 
+.close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    line-height: 1;
+}
+ 
+.close:hover {
+    color: #A7D7C5;
+}
+ 
+.modal-body {
+    padding: 30px;
+    max-height: calc(80vh - 80px);
+    overflow-y: auto;
+}
+ 
+.modal-body h3 {
+    color: #2C6E6F;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+ 
+.modal-body h4 {
+    color: #2C6E6F;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+ 
+.modal-body p {
+    color: #4B5563;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+ 
+.modal-body strong {
+    color: #2C6E6F;
+}
+ 
+/* Scrollbar styling for modal */
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+ 
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+ 
+.modal-body::-webkit-scrollbar-thumb {
+    background: #A7D7C5;
+    border-radius: 3px;
+}
+ 
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #2C6E6F;
 }
