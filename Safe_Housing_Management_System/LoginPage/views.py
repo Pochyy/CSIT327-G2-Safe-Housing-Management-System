@@ -8,6 +8,7 @@ def login_page(request):
         try:
             username = request.POST.get('username')
             password = request.POST.get('password')
+            remember = request.POST.get('remember')
             
             password_hash = hashlib.sha256(password.encode()).hexdigest()
             
@@ -28,6 +29,11 @@ def login_page(request):
                 request.session['user_id'] = user['user_id']
                 request.session['username'] = user['username']
                 request.session['user_role'] = user['user_role']
+
+                if remember:
+                    request.session.set_expiry(1209600)
+                else:
+                    request.session.set_expiry(0)  
                 return redirect('dashboard')
             else:
                 messages.error(request, "Invalid username or password.")
