@@ -4,6 +4,13 @@ import hashlib
 from supabase import create_client
 
 def login_page(request):
+    # Check if user is already logged in
+    if 'user_id' in request.session:
+        return redirect('dashboard')
+    
+    # CLEAR MESSAGES MORE EFFECTIVELY
+    list(messages.get_messages(request))  # This forces consumption of all messages
+    
     if request.method == 'POST':
         try:
             username = request.POST.get('username')
@@ -25,15 +32,16 @@ def login_page(request):
             
             if response.data and len(response.data) > 0:
                 user = response.data[0]
-                messages.success(request, f"Welcome back, {user['username']}!")
                 request.session['user_id'] = user['user_id']
                 request.session['username'] = user['username']
                 request.session['user_role'] = user['user_role']
                 
                 if remember:
-                    request.session.set_expiry(1209600)
+                    request.session.set_expiry(1209600)  # 2 weeks
                 else:
-                    request.session.set_expiry(0) 
+                    request.session.set_expiry(0)  # Browser session
+                
+                messages.success(request, f"Welcome back, {user['username']}!")
                 return redirect('dashboard')
             else:
                 messages.error(request, "Invalid username or password.")
@@ -42,3 +50,9 @@ def login_page(request):
             messages.error(request, f"An error occurred: {str(e)}")
     
     return render(request, 'LoginPage.html')
+
+def logout_view(request):
+    # Clear all session data
+    request.session.flush()
+    messages.info(request, "You have been logged out successfully.")
+    return redirect('login')

@@ -4,13 +4,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordInput = document.getElementById('password');
     const rememberCheckbox = document.querySelector('input[name="remember"]');
 
-    // Autofill username and set "Remember Me" if stored
+    // Only autofill username if "Remember Me" was checked
     const savedUsername = localStorage.getItem('rememberedUsername');
-    const savedPasswordHash = localStorage.getItem('rememberedPasswordHash');
-    if (savedUsername && savedPasswordHash) {
+    if (savedUsername) {
         usernameInput.value = savedUsername;
-        passwordInput.value = ""; // Do not autofill hash, let user enter password
         rememberCheckbox.checked = true;
+        passwordInput.focus(); // Move cursor to password field
     }
 
     loginForm.addEventListener('submit', function(e) {
@@ -23,16 +22,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Save username and hashed password if "Remember Me" is checked
+        // Only store username (never store passwords or hashes in localStorage)
         if (rememberCheckbox.checked) {
             localStorage.setItem('rememberedUsername', username);
-            if (window.CryptoJS) {
-                const passwordHash = CryptoJS.SHA256(password).toString();
-                localStorage.setItem('rememberedPasswordHash', passwordHash);
-            }
         } else {
             localStorage.removeItem('rememberedUsername');
-            localStorage.removeItem('rememberedPasswordHash');
         }
     });
 });
