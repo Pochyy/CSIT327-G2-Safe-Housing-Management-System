@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'LoginPage',
     'RegistrationPage',
     'landLordPage',
+    'renterPage'
 ]
 
 MIDDLEWARE = [
