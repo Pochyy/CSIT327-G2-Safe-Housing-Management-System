@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renter Dashboard - Safe Haven</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'renterPage/renter.css' %}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-brand">🏡 Safe Haven</div>
+        <div class="navbar-menu">
+            <a href="#" class="navbar-link">Dashboard</a>
+            <a href="#" class="navbar-link">Profile</a>
+            <a href="#" class="navbar-link">Notifications (3)</a>
+            <a href="{% url 'logout' %}" class="btn-primary">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-container">
+            <div class="input-group">
+                <label for="search">Search</label>
+                <input type="text" id="search" placeholder="Search properties...">
+            </div>
+            <div class="input-group">
+                <label for="location">Location</label>
+                <select id="location">
+                    <option value="all">All Locations</option>
+                    <option value="manila">Manila, Metro Manila</option>
+                    <option value="cebu">Cebu City, Cebu</option>
+                    <option value="davao">Davao City, Davao</option>
+                    <option value="quezon">Quezon City, Metro Manila</option>
+                    <option value="makati">Makati, Metro Manila</option>
+                    <option value="baguio">Baguio, Benguet</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="price-min">Min Price</label>
+                <input type="number" id="price-min" placeholder="₱0" value="0">
+            </div>
+            <div class="input-group">
+                <label for="price-max">Max Price</label>
+                <input type="number" id="price-max" placeholder="₱50,000" value="50000">
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="dashboard-header">
+            <div>
+                <h1>Available Properties</h1>
+                <p class="text-muted"><span id="property-count">5</span> properties found</p>
+            </div>
+            <div class="view-toggle">
+                <button class="btn-icon active" id="grid-view">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                </button>
+                <button class="btn-icon" id="list-view">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Property Grid -->
+        <div class="property-grid" id="property-container">
+            <!-- Properties will be loaded here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Safe Haven. All rights reserved.</p>
+    </footer>
+
+    <script src="{% static 'renterPage/renter.js' %}"></script>
+</body>
+</html>
