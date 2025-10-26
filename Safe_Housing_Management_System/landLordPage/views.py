@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def landLordPage(request):
+    return render(request, 'landLordPage.html')
