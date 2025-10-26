@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Haven - Property Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'landLordPage/landLord.css' %}">
+</head>
+<body>
+    <!-- Header Container -->
+    <div class="header-container">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-home"></i>
+                Safe<span>Haven</span>
+            </div>
+            <div class="user-info">
+                <div>Welcome, Landlord</div>
+                <div class="user-avatar">L</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <main>
+            <div class="dashboard-header">
+                <div class="dashboard-title-section">
+                    <h1 class="dashboard-title">My Properties</h1>
+                    <p class="dashboard-subtitle">Manage your property listings</p>
+                </div>
+                <div class="add-property-container">
+                    <span class="add-property-text">Add New Property</span>
+                    <div class="add-property-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Total Listings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Approved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Rejected</div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-item active">All (2)</div>
+                <div class="filter-item">Approved (2)</div>
+                <div class="filter-item">Pending (0)</div>
+                <div class="filter-item">Rejected (0)</div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="properties-container">
+                <div class="property-card">
+                    <div class="property-image">
+                        <div class="image-placeholder">
+                            <i class="fas fa-image"></i> Modern Apartment
+                        </div>
+                    </div>
+                    <h3 class="property-title">Modern Downtown Apartment</h3>
+                    <div class="property-location">New York, NY</div>
+                    <div class="property-reviews">4.8 (24 reviews)</div>
+                    <div class="property-more">+1 more</div>
+                    <div class="property-price">$2,500<span class="price-period">/month</span></div>
+                </div>
+                
+                <div class="property-card">
+                    <div class="property-image">
+                        <div class="image-placeholder">
+                            <i class="fas fa-image"></i> Luxury Condo
+                        </div>
+                    </div>
+                    <h3 class="property-title">Luxury Condo with Views</h3>
+                    <div class="property-location">Miami, FL</div>
+                    <div class="property-reviews">5.0 (18 reviews)</div>
+                    <div class="property-more">+2 more</div>
+                    <div class="property-price">$4,500<span class="price-period">/month</span></div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Safe Haven</h3>
+                    <p>Your trusted platform for safe, verified housing. Connecting renters and landlords in a secure environment.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">How It Works</a></li>
+                        <li><a href="#">Safety Guidelines</a></li>
+                        <li><a href="#">FAQs</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">Community Guidelines</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <div class="contact-info">
+                        <a href="mailto:support@safehaven.com">support@safehaven.com</a>
+                        <a href="tel:1-800-SAFE-HOME">1-800-SAFE-HOME</a>
+                        <div class="location">📍 New York, NY</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                © 2025 Safe Haven. All rights reserved.
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
