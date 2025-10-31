@@ -16,6 +16,10 @@ def login_page(request):
             else:
                 request.session.set_expiry(0)
             messages.success(request, f"Welcome back, {user.username}!")
+            if getattr(user, "user_role", None) == "landlord":
+                return redirect('landlord:home')
+            elif getattr(user, "user_role", None) == "renter":
+                return redirect('renter:home')
             return redirect('dashboard')
         else:
             messages.error(request, "Invalid username or password.")
