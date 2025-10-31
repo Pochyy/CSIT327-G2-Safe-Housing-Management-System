@@ -9,7 +9,7 @@ def registration_page(request):
             user = form.save(commit=False)
             user.user_role = form.cleaned_data['user_type']
             user.user_phone = form.cleaned_data['phone']
-            user.set_password(form.cleaned_data['password'])  # <-- This hashes the password!
+            user.set_password(form.cleaned_data['password']) 
             user.save()
             messages.success(request, "Registration successful! Please login.")
             return redirect('login')
