@@ -1,9 +1,10 @@
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 
-# @login_required  # Temporarily comment this out for testing
-def renter_dashboard(request):
-    # Sample data - your template needs 'username' and 'properties'
+@login_required
+def renterPage(request):
+    user = request.user
+    # Example: placeholder property data, or you might query the DB later
     sample_properties = [
         {
             'title': 'Modern Apartment in Downtown',
@@ -17,23 +18,10 @@ def renter_dashboard(request):
             'amenities': ['parking', 'laundry', 'gym', 'pool'],
             'image_url': 'https://via.placeholder.com/400x200?text=Apartment+1'
         },
-        {
-            'title': 'Cozy Studio Near Campus', 
-            'location': 'Los Angeles, CA',
-            'bedrooms': 1,
-            'bathrooms': 1, 
-            'sqft': 500,
-            'price': 1800,
-            'rating': 4.2,
-            'reviews': 15,
-            'amenities': ['wifi', 'furnished', 'utilities'],
-            'image_url': 'https://via.placeholder.com/400x200?text=Apartment+2'
-        }
+        # ... more property dictionaries ...
     ]
-    
     context = {
-        'username': 'Haven',  # Your template needs this
-        'properties': sample_properties  # Your template needs this
+        'username': user.username,
+        'properties': sample_properties
     }
-    
     return render(request, 'renterPage.html', context)
