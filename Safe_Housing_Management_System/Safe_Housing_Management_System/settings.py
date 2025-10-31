@@ -77,23 +77,22 @@ WSGI_APPLICATION = 'Safe_Housing_Management_System.wsgi.application'
 # Database - Supabase PostgreSQL with direct connection
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres.wykaogdopjnilzwywozt',  # Use the full username with project reference
-        'PASSWORD': 'SafeHousingManagementSystem.',  # Your actual password
-        'HOST': 'aws-1-ap-southeast-2.pooler.supabase.com',  # Note: .com not .co
-        'PORT': '5432',
+        'ENGINE': os.getenv('DB_ENGINE'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
         'OPTIONS': {
             'sslmode': 'require',
         },
     }
 }
 
-
-# Supabase configuration for your API calls
-SUPABASE_URL = "https://wykaogdopjnilzwywozt.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5a2FvZ2RvcGpuaWx6d3l3b3p0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MDIzOTAsImV4cCI6MjA3NzQ3ODM5MH0.X5kkPxBu9kImBeOisCE15gx0N-zTDY9elWXiSTSu69I"
-SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5a2FvZ2RvcGpuaWx6d3l3b3p0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTkwMjM5MCwiZXhwIjoyMDc3NDc4MzkwfQ.W8UP20URaR7Ejuw-sa5qs5gvRbWj8pJR7uNS3v_JecQ"
+SUPABASE_URL = os.getenv('SUPABASE_URL')
+SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+SUPABASE_SERVICE_KEY = os.getenv('SUPABASE_SERVICE_KEY')
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 
 # Password validation
