@@ -6,16 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Safe Haven - Property Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'landLordPage/landLord.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'LandLordPage/landLord.css' %}">
 </head>
 <body>
     <!-- Header Container -->
     <div class="header-container">
         <div class="header-content">
-<div class="logo">
-    <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
-    <h2>Safe <span>Haven</span></h2>
-</div>
+            <div class="logo">
+                <img src="images/SH.png" alt="Safe Haven Logo">
+                <h2>Safe <span>Haven</span></h2>
+            </div>
 
             <div class="user-info">
                 <div>Welcome, Landlord</div>
@@ -31,7 +32,7 @@
                     <h1 class="dashboard-title">My Properties</h1>
                     <p class="dashboard-subtitle">Manage your property listings</p>
                 </div>
-                <div class="add-property-container">
+                <div class="add-property-container" id="openModalBtn">
                     <span class="add-property-text">Add New Property</span>
                     <div class="add-property-icon">
                         <i class="fas fa-plus"></i>
@@ -75,10 +76,10 @@
                         </div>
                     </div>
                     <h3 class="property-title">Modern Downtown Apartment</h3>
-                    <div class="property-location">New York, NY</div>
+                    <div class="property-location">Manila, Philippines</div>
                     <div class="property-reviews">4.8 (24 reviews)</div>
                     <div class="property-more">+1 more</div>
-                    <div class="property-price">$2,500<span class="price-period">/month</span></div>
+                    <div class="property-price">₱25,000<span class="price-period">/month</span></div>
                 </div>
                 
                 <div class="property-card">
@@ -88,10 +89,10 @@
                         </div>
                     </div>
                     <h3 class="property-title">Luxury Condo with Views</h3>
-                    <div class="property-location">Miami, FL</div>
+                    <div class="property-location">Makati, Philippines</div>
                     <div class="property-reviews">5.0 (18 reviews)</div>
                     <div class="property-more">+2 more</div>
-                    <div class="property-price">$4,500<span class="price-period">/month</span></div>
+                    <div class="property-price">₱45,000<span class="price-period">/month</span></div>
                 </div>
             </div>
         </main>
@@ -128,7 +129,7 @@
                     <div class="contact-info">
                         <a href="mailto:support@safehaven.com">support@safehaven.com</a>
                         <a href="tel:1-800-SAFE-HOME">1-800-SAFE-HOME</a>
-                        <div class="location">📍 New York, NY</div>
+                        <div class="location">📍 Manila, Philippines</div>
                     </div>
                 </div>
             </div>
@@ -138,5 +139,267 @@
             </div>
         </footer>
     </div>
+
+    <!-- Modal for Add New Property -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Property</h2>
+                <button class="close-modal" id="closeModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Image Upload Section -->
+                <div class="image-upload" id="imageUpload">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">Click to upload property photo</div>
+                    <div class="upload-hint">PNG, JPG up to 5MB</div>
+                </div>
+                
+                <!-- Property Details Section -->
+                <div class="form-section">
+                    <h3 class="section-title">🏡 Property Details</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="propertyName">Property Name</label>
+                        <input type="text" id="propertyName" class="form-input" placeholder="e.g., Modern Downtown Apartment">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="propertyLocation">Location</label>
+                        <input type="text" id="propertyLocation" class="form-input" placeholder="e.g., Manila, Philippines">
+                    </div>
+                </div>
+                
+                <!-- Basic Info Section -->
+                <div class="form-section">
+                    <h3 class="section-title">🛏 Basic Info</h3>
+                    
+                    <div class="basic-info-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="beds">Beds</label>
+                            <select id="beds" class="form-input">
+                                <option value="">Select</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="baths">Baths</label>
+                            <select id="baths" class="form-input">
+                                <option value="">Select</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="area">Area (sqm)</label>
+                            <input type="number" id="area" class="form-input" placeholder="e.g., 60">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Price Section -->
+                <div class="form-section">
+                    <h3 class="section-title">💰 Price</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="propertyPrice">Monthly Rent (₱)</label>
+                        <input type="number" id="propertyPrice" class="form-input" placeholder="e.g., 25000">
+                    </div>
+                </div>
+                
+                <!-- Amenities Section -->
+                <div class="amenities-section">
+                    <h3 class="section-title">🧩 Amenities / Features</h3>
+                    
+                    <!-- Basic Amenities -->
+                    <div class="amenity-group" id="basicAmenities">
+                        <div class="amenity-header">
+                            <div class="amenity-title">
+                                <span class="amenity-icon">🏠</span>
+                                <span>Basic Amenities</span>
+                            </div>
+                            <i class="fas fa-chevron-down amenity-chevron"></i>
+                        </div>
+                        <div class="amenity-content">
+                            <div class="amenity-grid">
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="electricity" class="amenity-checkbox">
+                                    <label for="electricity" class="amenity-label">Electricity</label>
+                                </div>
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="water" class="amenity-checkbox">
+                                    <label for="water" class="amenity-label">Water supply</label>
+                                </div>
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="internet" class="amenity-checkbox">
+                                    <label for="internet" class="amenity-label">Internet / Wi-Fi</label>
+                                </div>
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="airconditioning" class="amenity-checkbox">
+                                    <label for="airconditioning" class="amenity-label">Airconditioning</label>
+                                </div>
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="kitchen" class="amenity-checkbox">
+                                    <label for="kitchen" class="amenity-label">Kitchen</label>
+                                </div>
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="sharedKitchen" class="amenity-checkbox">
+                                    <label for="sharedKitchen" class="amenity-label">Shared Kitchen</label>
+                                </div>
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="privateBathroom" class="amenity-checkbox">
+                                    <label for="privateBathroom" class="amenity-label">Private bathroom</label>
+                                </div>
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="sharedBathroom" class="amenity-checkbox">
+                                    <label for="sharedBathroom" class="amenity-label">Shared bathroom</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Safety & Security -->
+                    <div class="amenity-group" id="safetyAmenities">
+                        <div class="amenity-header">
+                            <div class="amenity-title">
+                                <span class="amenity-icon">🔒</span>
+                                <span>Safety & Security</span>
+                            </div>
+                            <i class="fas fa-chevron-down amenity-chevron"></i>
+                        </div>
+                        <div class="amenity-content">
+                            <div class="amenity-grid">
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="secureLocks" class="amenity-checkbox">
+                                    <label for="secureLocks" class="amenity-label">Secure door locks</label>
+                                </div>
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="cctv" class="amenity-checkbox">
+                                    <label for="cctv" class="amenity-label">CCTV / Security cameras</label>
+                                </div>
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="gatedCompound" class="amenity-checkbox">
+                                    <label for="gatedCompound" class="amenity-label">Gated compound / Community gate</label>
+                                </div>
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="securityGuard" class="amenity-checkbox">
+                                    <label for="securityGuard" class="amenity-label">24/7 Security guard</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Property Features -->
+                    <div class="amenity-group" id="propertyFeatures">
+                        <div class="amenity-header">
+                            <div class="amenity-title">
+                                <span class="amenity-icon">🧰</span>
+                                <span>Property Features</span>
+                            </div>
+                            <i class="fas fa-chevron-down amenity-chevron"></i>
+                        </div>
+                        <div class="amenity-content">
+                            <div class="amenity-grid">
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="parking" class="amenity-checkbox">
+                                    <label for="parking" class="amenity-label">Parking space</label>
+                                </div>
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="furnished" class="amenity-checkbox">
+                                    <label for="furnished" class="amenity-label">Furnished</label>
+                                </div>
+                                <div class="amenity-item">
+                                    <input type="checkbox" id="petFriendly" class="amenity-checkbox">
+                                    <label for="petFriendly" class="amenity-label">Pet-friendly</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="savePropertyBtn">Save Property</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal functionality
+        const modalOverlay = document.getElementById('modalOverlay');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const savePropertyBtn = document.getElementById('savePropertyBtn');
+        
+        // Open modal
+        openModalBtn.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+        });
+        
+        // Close modal
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+        }
+        
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+        
+        // Close modal when clicking outside
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+        
+        // Collapsible amenity sections
+        const amenityGroups = document.querySelectorAll('.amenity-group');
+        
+        amenityGroups.forEach(group => {
+            const header = group.querySelector('.amenity-header');
+            
+            header.addEventListener('click', () => {
+                group.classList.toggle('active');
+            });
+        });
+        
+        // Image upload placeholder (in a real app, this would handle file uploads)
+        const imageUpload = document.getElementById('imageUpload');
+        
+        imageUpload.addEventListener('click', () => {
+            alert('In a real application, this would open a file picker to upload property images.');
+        });
+        
+        // Save property (placeholder functionality)
+        savePropertyBtn.addEventListener('click', () => {
+            alert('Property saved successfully!');
+            closeModal();
+        });
+    </script>
 </body>
 </html>
