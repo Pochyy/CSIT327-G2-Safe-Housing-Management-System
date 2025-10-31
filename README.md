@@ -35,7 +35,7 @@ To design, develop, and launch a platform that provides users with a secure and 
 1. **Clone the repository**  
    ```bash
    git clone https://github.com/Pochyy/Safe_Housing_Management_System.git
-   cd Safe_Housing_Management_System
+   cd CSIT327-G2-Safe-Housing-Management-System
 2. **Set up virtual environment**
    ```bash
    python -m venv .env
@@ -113,3 +113,4 @@ Special thanks to our mentors, Mr. Frederick L Revilleza Jr. and Mr. Joemarie C.
 For questions, suggestions, or issues:
 
 Send a message to leonardonatashakate@gmail.com
+
