@@ -18,7 +18,7 @@
 }
 
 body {
-    background-color: #f3f4f6;
+    background-color: #f2e9e4;
     color: var(--dark);
     line-height: 1.5;
 }
@@ -48,17 +48,34 @@ body {
 }
 
 .logo {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--primary);
     display: flex;
     align-items: center;
     gap: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--primary-color);
 }
 
-.logo span {
-    color: var(--primary-dark);
+.logo img {
+    width: 40px;
+    height: 40px;
 }
+
+.logo h2 {
+    font-size: 22px;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.logo h2 span {
+    color: var(--primary-dark);
+    text-shadow: 1px 1px 2px rgba(44, 110, 111, 0.3);
+}
+
+
+
+
+
 
 .user-info {
     display: flex;
@@ -371,4 +388,21 @@ footer {
         flex-direction: column;
         gap: 10px;
     }
+
+    body {
+    background-color: #f2e9e4 !important;
+}
+
+.header-container,
+.container,
+footer {
+    background-color: transparent !important;
+}
+
+.stat-card,
+.property-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+}
+
 }
