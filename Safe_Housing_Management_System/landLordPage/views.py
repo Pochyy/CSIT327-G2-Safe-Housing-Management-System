@@ -10,4 +10,4 @@ def landLordPage(request):
         # add other user fields you want to show, e.g. 'phone': user.user_phone
         # plus any landlord-specific objects you query from the DB
     }
-    return render(request, 'landlordPage.html', context)
+    return render(request, 'landLordPage.html', context)

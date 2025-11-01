@@ -30,7 +30,7 @@
                 {% endfor %}
             {% endif %}
 
-            <form method="POST" action="{% url 'signup' %}" id="registerForm">
+            <form method="POST" action="{% url 'users:register' %}" id="registerForm">
                 {% csrf_token %}
 
                 <div class="form-group">
