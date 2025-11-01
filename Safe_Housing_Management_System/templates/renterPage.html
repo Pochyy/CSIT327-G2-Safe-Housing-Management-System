@@ -117,24 +117,28 @@
 </body>
 </html>
 
-// User dropdown functionality
-const userDropdownBtn = document.getElementById('userDropdownBtn');
-const userDropdown = document.getElementById('userDropdown');
-const logoutBtn = document.getElementById('logoutBtn');
 
-userDropdownBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    userDropdown.classList.toggle('active');
-});
+    <script>
+        // Modal functionality
+        const modalOverlay = document.getElementById('modalOverlay');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const savePropertyBtn = document.getElementById('savePropertyBtn');
+        
+        // Open modal
+        openModalBtn.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+        });
+        
+        // Close modal
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+        }
+        
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+        
+        // Close modal
 
-// Close dropdown when clicking outside
-document.addEventListener('click', () => {
-    userDropdown.classList.remove('active');
-});
-
-// Logout functionality
-logoutBtn.addEventListener('click', () => {
-    if (confirm('Are you sure you want to logout?')) {
-        window.location.href = "{% url 'logout' %}";
-    }
-});
+        
