@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (savedUsername) {
         usernameInput.value = savedUsername;
         rememberCheckbox.checked = true;
-        passwordInput.focus(); // Move cursor to password field
+        passwordInput.focus(); 
     }
 
     loginForm.addEventListener('submit', function(e) {
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Only store username (never store passwords or hashes in localStorage)
+        // Only store username 
         if (rememberCheckbox.checked) {
             localStorage.setItem('rememberedUsername', username);
         } else {
