@@ -1,0 +1,478 @@
+/* Combined CSS for both login and registration - FINAL FIXED VERSION */
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    z-index: 10;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-section img {
+    width: 40px;
+    height: 40px;
+}
+
+.logo-section h2 {
+    font-size: 22px;
+    color: #2C6E6F;
+    font-weight: bold;
+}
+
+.logo-section h2 span {
+    color: #A7D7C5;
+    text-shadow: 
+        -2px -2px 0  #2C6E6F, 
+        2px -2px 0  #2C6E6F, 
+        -2px 2px 0  #2C6E6F, 
+        2px 2px 0  #2C6E6F;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #F2E9E4;
+    margin-top: 70px;
+}
+
+.left-section {
+    flex: 1.5; 
+    background: url("/static/images/house.jpg") no-repeat center center/cover;
+}
+
+.right-section {
+    flex: 1;
+    background-color: #F2E9E4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* LOGIN BOX - Smaller width */
+.login-form-box {
+    background-color: #F9FAFB;
+    border-radius: 20px;
+    padding: 50px 45px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+/* REGISTER BOX - Wider */
+.register-form-box {
+    background-color: #F9FAFB;
+    border-radius: 20px;
+    padding: 50px 45px;
+    width: 100%;
+    max-width: 550px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.login-form-box h1,
+.register-form-box h1 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #2C6E6F;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.login-form-box p,
+.register-form-box p {
+    text-align: center;
+    color: #4B5563;
+    margin-bottom: 35px;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+label {
+    display: block;
+    color: #4B5563;
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 22px;
+    font-size: 17px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #2C6E6F;
+    box-shadow: 0 0 4px rgba(44, 110, 111, 0.3);
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: #2C6E6F;
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 8px;
+}
+
+button:hover {
+    background-color: #24585A;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+.options label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    font-size: 15px;
+}
+
+.options input[type="checkbox"] {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    filter: grayscale(1);
+}
+
+.options a {
+    color: #2C6E6F;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.options a:hover {
+    text-decoration: underline;
+}
+
+.signup {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 16px;
+    color: #4B5563;
+}
+
+.signup a {
+    color: #2C6E6F;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.signup a:hover {
+    text-decoration: underline;
+}
+
+/* Registration specific styles */
+.form-row {
+    display: flex;
+    gap: 18px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.user-type {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.user-option {
+    flex: 1;
+    text-align: center;
+    padding: 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 15px;
+}
+
+.user-option.selected {
+    border-color: #2C6E6F;
+    background-color: rgba(44, 110, 111, 0.1);
+}
+
+.user-option input {
+    display: none;
+}
+
+.terms {
+    display: flex;
+    align-items: flex-start; 
+    margin-top: 12px;
+    font-size: 15px;
+    color: #4B5563;
+    line-height: 1.3; 
+}
+
+.terms input[type="checkbox"] {
+    margin-right: 10px;
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+    filter: grayscale(1);
+    flex-shrink: 0; 
+}
+
+.terms a {
+    color: #2C6E6F;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.terms a:hover {
+    text-decoration: underline;
+}
+
+/* Message styles */
+.message {
+    padding: 12px 16px;
+    margin-bottom: 22px;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* For registration page - stack password fields vertically */
+#registerForm .form-row {
+    flex-direction: column;
+    gap: 0;
+}
+
+#registerForm .form-row .form-group {
+    flex: none;
+}
+
+/* NEW CUSTOM TOOLTIP STYLE for Django Errors */
+.message.error {
+    position: relative; 
+    text-align: left;
+    background-color: #FFFDE7;
+    color: #4B5563;
+    border: 1px solid #FFECB3;
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: -15px;
+    margin-bottom: 25px;
+    padding-left: 35px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFC107" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>'); 
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    background-size: 18px;
+}
+
+/* Tooltip Arrow */
+.message.error::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 15px;
+    border-width: 0 8px 8px 8px; 
+    border-style: solid;
+    border-color: transparent transparent #FFECB3 transparent;
+}
+
+.message.error::after {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: 15px;
+    border-width: 0 8px 8px 8px;
+    border-style: solid;
+    border-color: transparent transparent #FFFDE7 transparent;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #F9FAFB;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    background-color: #2C6E6F;
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 15px 15px 0 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    line-height: 1;
+}
+
+.close:hover {
+    color: #A7D7C5;
+}
+
+.modal-body {
+    padding: 30px;
+    max-height: calc(80vh - 80px);
+    overflow-y: auto;
+}
+
+.modal-body h3 {
+    color: #2C6E6F;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.modal-body h4 {
+    color: #2C6E6F;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.modal-body p {
+    color: #4B5563;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.modal-body strong {
+    color: #2C6E6F;
+}
+
+/* Scrollbar styling for modal */
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #A7D7C5;
+    border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #2C6E6F;
+}
+
+@media (max-width: 900px) {
+    body {
+        flex-direction: column;
+    }
+
+    .left-section {
+        height: 250px;
+        background-position: top;
+    }
+
+    .right-section {
+        padding: 20px;
+    }
+
+    .login-form-box,
+    .register-form-box {
+        padding: 35px 30px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}

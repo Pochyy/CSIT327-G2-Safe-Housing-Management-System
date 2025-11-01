@@ -23,7 +23,10 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'LoginPage.CustomUser'
+AUTH_USER_MODEL = 'users.CustomUser'
+LOGIN_REDIRECT_URL = 'dashboard'  # You'll need to create this
+LOGOUT_REDIRECT_URL = 'users:login'
+
 
 # Application definition
 
@@ -34,8 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'LoginPage',
-    'RegistrationPage',
+    'users',
     'landLordPage',
     'renterPage'
 ]
