@@ -9,6 +9,14 @@
     <link rel="stylesheet" href="{% static 'renterPage/renter.css' %}">
 </head>
 <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-brand">🏡 Safe Haven</div>
+        <div class="navbar-menu">
+            <a href="#" class="navbar-link">Dashboard</a>
+            <a href="#" class="navbar-link">Profile</a>
+            <a href="#" class="navbar-link">Notifications (3)</a>
+            <a href="{% url 'users:logout' %}" class="btn-primary">Logout</a>
     <!-- Header Container -->
     <div class="header-container">
         <div class="header-content">

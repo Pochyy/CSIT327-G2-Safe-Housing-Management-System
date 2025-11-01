@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Safe Haven | Login</title>
-    <link rel="stylesheet" href="{% static 'loginPage/login.css' %}">
+    <link rel="stylesheet" href="{% static 'users/css/style.css' %}">
 </head>
 <body>
     <header class="top-bar">
@@ -18,46 +18,55 @@
     <div class="left-section"></div>
 
     <div class="right-section">
-        <div class="login-box">
+        <div class="login-form-box">
             <h1>Welcome!</h1>
             <p>Enter your credentials to sign in to your account!</p>
 
             <form method="POST" action="{% url 'users:login' %}" id="loginForm">
                 {% csrf_token %}
+                
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" placeholder="Username" required>
-
+            
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Password" required>
-                
+
+                <!-- ONLY ONE error section -->
                 {% for message in messages %}
-                    {# This loop consumes and clears all messages #}
-                {% endfor %}
-
-                <!-- Then only show messages for POST requests -->
-                {% if request.method == 'POST' %}
-                    {% for message in messages %}
-
-                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                    {% if message.tags == 'error' %}
+                    <div class="error-message" style="color: red; margin: 5px 0;">
                         {{ message }}
                     </div>
+                    {% endif %}
                 {% endfor %}
-            {% endif %}
+            
                 <button type="submit">Sign In</button>
-
+            
                 <div class="options">
                     <label><input type="checkbox" name="remember"> Remember Me</label>
-                    <a href="#">Forgot Password?</a>
+                    <a href="#">Forgot Password?</a>  <!-- FORGOT PASSWORD STAYS HERE -->
                 </div>
-
+            
                 <div class="signup">
-                    Don’t have an account? <a href="{% url 'signup' %}">Sign Up</a>
+                    Don't have an account? <a href="{% url 'users:register' %}">Sign Up</a>
                 </div>
             </form>
         </div>
     </div>
 
-    <script src="{% static 'loginPage/login.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="{% static 'users/js/login.js' %}"></script>
+    
+    <!-- Auto-remove messages after 5 seconds -->
+    <script>
+    setTimeout(function() {
+        const messages = document.querySelectorAll('.message');
+        messages.forEach(function(message) {
+            message.style.opacity = '0';
+            setTimeout(function() {
+                message.remove();
+            }, 500);
+        });
+    }, 5000);
+    </script>
 </body>
 </html>
