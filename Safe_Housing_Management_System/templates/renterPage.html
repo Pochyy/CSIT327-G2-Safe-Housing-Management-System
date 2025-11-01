@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Renter Dashboard - Safe Haven</title>
     {% load static %}
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'renterPage/renter.css' %}">
 </head>
 <body>
@@ -16,8 +17,39 @@
             <a href="#" class="navbar-link">Profile</a>
             <a href="#" class="navbar-link">Notifications (3)</a>
             <a href="{% url 'users:logout' %}" class="btn-primary">Logout</a>
+    <!-- Header Container -->
+    <div class="header-container">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+                <h2>Safe <span>Haven</span></h2>
+            </div>
+
+            <div class="header-right">
+                <div class="notification-icon">
+                    <i class="far fa-bell"></i>
+                    <div class="notification-badge">3</div>
+                </div>
+                
+                <div class="user-info" id="userDropdownBtn">
+                    <div>Sarah Johnson</div>
+                    <div class="user-avatar">SJ</div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-dropdown-item">
+                            <i class="fas fa-user-circle"></i> My Profile
+                        </div>
+                        <div class="user-dropdown-item">
+                            <i class="fas fa-cog"></i> Settings
+                        </div>
+                        <div class="user-dropdown-divider"></div>
+                        <div class="user-dropdown-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </nav>
+    </div>
 
     <!-- Filter Bar -->
     <div class="filter-bar">
@@ -92,3 +124,29 @@
     <script src="{% static 'renterPage/renter.js' %}"></script>
 </body>
 </html>
+
+
+    <script>
+        // Modal functionality
+        const modalOverlay = document.getElementById('modalOverlay');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const savePropertyBtn = document.getElementById('savePropertyBtn');
+        
+        // Open modal
+        openModalBtn.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+        });
+        
+        // Close modal
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+        }
+        
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+        
+        // Close modal
+
+        

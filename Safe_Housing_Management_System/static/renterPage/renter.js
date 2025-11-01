@@ -71,6 +71,7 @@ const properties = [
 document.addEventListener('DOMContentLoaded', function() {
     loadProperties();
     setupEventListeners();
+    setupDropdown();
 });
 
 function loadProperties() {
@@ -128,6 +129,156 @@ function setupEventListeners() {
     // View toggle functionality
     document.getElementById('grid-view').addEventListener('click', () => toggleView('grid'));
     document.getElementById('list-view').addEventListener('click', () => toggleView('list'));
+}
+
+function setupDropdown() {
+    const userDropdownBtn = document.getElementById('userDropdownBtn');
+    const userDropdown = document.getElementById('userDropdown');
+
+    if (userDropdownBtn && userDropdown) {
+        // Toggle dropdown on click
+        userDropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!userDropdownBtn.contains(e.target)) {
+                userDropdown.classList.remove('active');
+            }
+        });
+
+        // Close dropdown when clicking on dropdown items
+        const dropdownItems = document.querySelectorAll('.user-dropdown-item');
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function() {
+                userDropdown.classList.remove('active');
+                
+                // Handle specific dropdown items
+                if (this.id === 'logoutBtn') {
+                    showLogoutConfirmation();
+                } else if (this.textContent.includes('Profile')) {
+                    console.log('Profile clicked');
+                    // Add profile logic here
+                    showProfilePage();
+                } else if (this.textContent.includes('Settings')) {
+                    console.log('Settings clicked');
+                    // Add settings logic here
+                    showSettingsPage();
+                }
+            });
+        });
+
+        // Prevent dropdown from closing when clicking inside it
+        userDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+}
+
+function showLogoutConfirmation() {
+    // Create custom confirmation modal
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        ">
+            <div style="font-size: 3rem; color: #8B0000; margin-bottom: 1rem;">⚠️</div>
+            <h3 style="color: #1F2937; margin-bottom: 0.5rem; font-size: 1.25rem;">Logout Confirmation</h3>
+            <p style="color: #6B7280; margin-bottom: 2rem;">Are you sure you want to logout? You'll need to sign in again to access your account.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="cancelLogout" style="
+                    padding: 0.75rem 1.5rem;
+                    border: 1px solid #D1D5DB;
+                    background: white;
+                    color: #374151;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 500;
+                ">Cancel</button>
+                <button id="confirmLogout" style="
+                    padding: 0.75rem 1.5rem;
+                    border: none;
+                    background: #8B0000;
+                    color: white;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 500;
+                ">Yes, Logout</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Add event listeners for the modal buttons
+    document.getElementById('cancelLogout').addEventListener('click', function() {
+        document.body.removeChild(modal);
+    });
+    
+    document.getElementById('confirmLogout').addEventListener('click', function() {
+        // Perform logout action
+        performLogout();
+    });
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+function performLogout() {
+    // Show loading state
+    const confirmBtn = document.getElementById('confirmLogout');
+    confirmBtn.innerHTML = 'Logging out...';
+    confirmBtn.disabled = true;
+    
+    // Simulate API call or cleanup
+    setTimeout(() => {
+        // Clear any user data from localStorage/sessionStorage
+        localStorage.removeItem('userToken');
+        sessionStorage.removeItem('userData');
+        
+        // Redirect to login page
+        window.location.href = '/login'; // Change this to your actual login page URL
+        
+        // If you're using Django templates, you might use:
+        // window.location.href = "{% url 'login' %}";
+    }, 1000);
+}
+
+function showProfilePage() {
+    // Add your profile page navigation logic here
+    console.log('Navigating to profile page');
+    // window.location.href = '/profile';
+}
+
+function showSettingsPage() {
+    // Add your settings page navigation logic here
+    console.log('Navigating to settings page');
+    // window.location.href = '/settings';
 }
 
 function filterProperties() {
