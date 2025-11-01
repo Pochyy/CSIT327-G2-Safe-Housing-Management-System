@@ -28,3 +28,4 @@ def add_property(request):
     
     return render(request, 'add_property.html', {'form': form})     #renders the form template with the form instance
 
+#return render is wrong need to change for tomorrow or unya 
