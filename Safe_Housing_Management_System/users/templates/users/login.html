@@ -25,33 +25,28 @@
             <form method="POST" action="{% url 'users:login' %}" id="loginForm">
                 {% csrf_token %}
                 
-                <!-- Display form errors -->
-                {% if form.errors %}
-                <div class="error-message">
-                    Please enter a correct username and password. 
-                </div>
-                {% endif %}
-
-                <!-- Display non-form messages (success messages from redirects) -->
-                {% for message in messages %}
-                    <div class="message {{ message.tags }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" placeholder="Username" required>
-
+            
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Password" required>
-                
-                <button type="submit">Sign In</button>
 
+                <!-- ONLY ONE error section -->
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                    <div class="error-message" style="color: red; margin: 5px 0;">
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            
+                <button type="submit">Sign In</button>
+            
                 <div class="options">
                     <label><input type="checkbox" name="remember"> Remember Me</label>
-                    <a href="#">Forgot Password?</a>
+                    <a href="#">Forgot Password?</a>  <!-- FORGOT PASSWORD STAYS HERE -->
                 </div>
-
+            
                 <div class="signup">
                     Don't have an account? <a href="{% url 'users:register' %}">Sign Up</a>
                 </div>

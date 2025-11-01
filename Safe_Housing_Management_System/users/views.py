@@ -21,7 +21,7 @@ def login_view(request):
             # Handle "remember me"
             remember = request.POST.get("remember")
             if remember:
-                request.session.set_expiry(1209600)  # 2 weeks
+                request.session.set_expiry(1209600)
             else:
                 request.session.set_expiry(0)
             
@@ -31,7 +31,10 @@ def login_view(request):
             elif user.user_role == "renter":
                 return redirect('renter:home')  
             return redirect('dashboard')
-        # If form is invalid, errors are automatically attached to the form
+        else:
+            messages.error(request, "Invalid username or password.")
+            return redirect('users:login')  
+    
     else:
         form = AuthenticationForm()
     
