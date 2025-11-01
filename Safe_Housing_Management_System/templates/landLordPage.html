@@ -180,6 +180,8 @@
         <!-- Modal for Add New Property -->
         <div class="modal-overlay" id="modalOverlay">
             <div class="modal">
+                <form method="POST" enctype="multipart/form-data" action="{% url 'landlord:home' %}">
+                    {% csrf_token %}
                 <div class="modal-header">
                     <h2 class="modal-title">Add New Property</h2>
                     <button class="close-modal" id="closeModalBtn">
@@ -191,13 +193,14 @@
                     <div class="modal-subtitle">Fill in the details below to list a new property</div>
                     
                     <!-- Image Upload Section -->
-                    <div class="image-upload" id="imageUpload">
-                        <div class="upload-icon">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                        </div>
-                        <div class="upload-text">Click to upload property photo</div>
-                        <div class="upload-hint">PNG, JPG up to 5MB</div>
-                    </div>
+        <div class="image-upload" id="imageUpload">
+            <label for="propertyImage" class="upload-icon">
+            <i class="fas fa-cloud-upload-alt"></i>
+                </label>
+                    <div class="upload-text">Click to upload property photo</div>
+                    <div class="upload-hint">PNG, JPG up to 5MB</div>
+                    <input type="file" id="propertyImage" name="image" accept="image/*" style="display:none;">
+        </div>
                     
                     <!-- Property Details Section -->
                     <div class="form-section">
@@ -205,18 +208,18 @@
                         
                         <div class="form-group">
                             <label class="form-label" for="propertyName">Property Title</label>
-                            <input type="text" id="propertyName" class="form-input" placeholder="e.g., Modern Downtown Apartment">
+                            <input type="text" id="propertyName" class="form-input" placeholder="e.g., Modern Downtown Apartment" name="property_name">
                         </div>
                         
                         <div class="form-row">
                             <div class="form-group half-width">
                                 <label class="form-label" for="propertyLocation">Location</label>
-                                <input type="text" id="propertyLocation" class="form-input" placeholder="City, State">
+                                <input type="text" id="propertyLocation" class="form-input" placeholder="City, State" name="location">
                             </div>
                             
                             <div class="form-group half-width">
                                 <label class="form-label" for="propertyPrice">Monthly Rent (₱)</label>
-                                <input type="number" id="propertyPrice" class="form-input" placeholder="e.g., 25000">
+                                <input type="number" id="propertyPrice" class="form-input" placeholder="e.g., 25000" name="price">
                             </div>
                         </div>
                     </div>
@@ -228,23 +231,23 @@
                         <div class="form-row">
                             <div class="form-group third-width">
                                 <label class="form-label" for="beds">Bedrooms</label>
-                                <input type="number" id="beds" class="form-input" placeholder="2" min="1" max="10">
+                                <input type="number" id="beds" class="form-input" placeholder="2" min="1" max="10" name="beds">
                             </div>
                             
                             <div class="form-group third-width">
                                 <label class="form-label" for="baths">Bathrooms</label>
-                                <input type="number" id="baths" class="form-input" placeholder="2" min="1" max="10">
+                                <input type="number" id="baths" class="form-input" placeholder="2" min="1" max="10" name="bathrooms">
                             </div>
                             
                             <div class="form-group third-width">
                                 <label class="form-label" for="area">Square Feet</label>
-                                <input type="number" id="area" class="form-input" placeholder="1200" min="1">
+                                <input type="number" id="area" class="form-input" placeholder="1200" min="1" name="area">
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label class="form-label" for="propertyDescription">Description</label>
-                            <textarea id="propertyDescription" class="form-input" placeholder="Describe your property..." rows="3"></textarea>
+                            <textarea id="propertyDescription" class="form-input" placeholder="Describe your property..." rows="3" name="property_description"></textarea>
                         </div>
                     </div>
                     
@@ -264,35 +267,35 @@
                             <div class="amenity-content">
                                 <div class="amenity-grid">
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="electricity" class="amenity-checkbox">
+                                        <input type="checkbox" id="electricity" class="amenity-checkbox" name="electricity">
                                         <label for="electricity" class="amenity-label">Electricity</label>
                                     </div>
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="water" class="amenity-checkbox">
+                                        <input type="checkbox" id="water" class="amenity-checkbox" name="water">
                                         <label for="water" class="amenity-label">Water supply</label>
                                     </div>
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="internet" class="amenity-checkbox">
-                                        <label for="internet" class="amenity-label">Internet / Wi-Fi</label>
+                                        <input type="checkbox" id="internet" class="amenity-checkbox" name="internet">
+                                        <label for="internet" class="amenity-label" >Internet / Wi-Fi</label>
                                     </div>
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="airconditioning" class="amenity-checkbox">
-                                        <label for="airconditioning" class="amenity-label">Airconditioning</label>
+                                        <input type="checkbox" id="airconditioning" class="amenity-checkbox" name="airconditioning">
+                                        <label for="airconditioning" class="amenity-label" >Airconditioning</label>
                                     </div>
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="kitchen" class="amenity-checkbox">
+                                        <input type="checkbox" id="kitchen" class="amenity-checkbox" name="kitchen">
                                         <label for="kitchen" class="amenity-label">Kitchen</label>
                                     </div>
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="sharedKitchen" class="amenity-checkbox">
+                                        <input type="checkbox" id="sharedKitchen" class="amenity-checkbox" name="shared_kitchen">
                                         <label for="sharedKitchen" class="amenity-label">Shared Kitchen</label>
                                     </div>
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="privateBathroom" class="amenity-checkbox">
+                                        <input type="checkbox" id="privateBathroom" class="amenity-checkbox" name="private_bathroom">
                                         <label for="privateBathroom" class="amenity-label">Private bathroom</label>
                                     </div>
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="sharedBathroom" class="amenity-checkbox">
+                                        <input type="checkbox" id="sharedBathroom" class="amenity-checkbox" name="shared_bathroom">
                                         <label for="sharedBathroom" class="amenity-label">Shared bathroom</label>
                                     </div>
                                 </div>
@@ -311,19 +314,19 @@
                             <div class="amenity-content">
                                 <div class="amenity-grid">
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="secureLocks" class="amenity-checkbox">
+                                        <input type="checkbox" id="secureLocks" class="amenity-checkbox" name="secure_locks">
                                         <label for="secureLocks" class="amenity-label">Secure door locks</label>
                                     </div>
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="cctv" class="amenity-checkbox">
+                                        <input type="checkbox" id="cctv" class="amenity-checkbox" name="cctv">
                                         <label for="cctv" class="amenity-label">CCTV / Security cameras</label>
                                     </div>
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="gatedCompound" class="amenity-checkbox">
+                                        <input type="checkbox" id="gatedCompound" class="amenity-checkbox" name="gated_compound">
                                         <label for="gatedCompound" class="amenity-label">Gated compound / Community gate</label>
                                     </div>
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="securityGuard" class="amenity-checkbox">
+                                        <input type="checkbox" id="securityGuard" class="amenity-checkbox" name="security_guard">
                                         <label for="securityGuard" class="amenity-label">24/7 Security guard</label>
                                     </div>
                                 </div>
@@ -342,15 +345,15 @@
                             <div class="amenity-content">
                                 <div class="amenity-grid">
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="parking" class="amenity-checkbox">
+                                        <input type="checkbox" id="parking" class="amenity-checkbox" name="parking">
                                         <label for="parking" class="amenity-label">Parking space</label>
                                     </div>
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="furnished" class="amenity-checkbox">
+                                        <input type="checkbox" id="furnished" class="amenity-checkbox" name="furnished">
                                         <label for="furnished" class="amenity-label">Furnished</label>
                                     </div>
                                     <div class="amenity-item">
-                                        <input type="checkbox" id="petFriendly" class="amenity-checkbox">
+                                        <input type="checkbox" id="petFriendly" class="amenity-checkbox" name="pet_friendly">
                                         <label for="petFriendly" class="amenity-label">Pet-friendly</label>
                                     </div>
                                 </div>
@@ -360,9 +363,10 @@
                 </div>
                 
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                    <button class="btn btn-primary" id="savePropertyBtn">Submit for Approval</button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" >Submit for Approval</button>
                 </div>
+                </form>
             </div>
         </div>
     
