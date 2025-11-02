@@ -51,7 +51,55 @@ def add_property(request):
     
     return render(request, 'add_property.html', {'form': form})
 
-# ADD THIS DELETE VIEW (with correct decorator placement)
+@login_required
+def edit_property(request, property_id):
+    try:
+        property = Property.objects.get(id=property_id, landlord=request.user)
+        
+        if request.method == 'POST':
+            form = PropertyForm(request.POST, request.FILES, instance=property)
+            if form.is_valid():
+                form.save()
+                return JsonResponse({'success': True, 'message': 'Property updated successfully'})
+            else:
+                return JsonResponse({'success': False, 'message': 'Please correct the errors below', 'errors': form.errors})
+        
+        # For GET requests, return property data
+        elif request.method == 'GET':
+            property_data = {
+                'id': property.id,
+                'property_name': property.property_name,
+                'location': property.location,
+                'price': float(property.price),  # Convert Decimal to float for JSON
+                'beds': property.beds,
+                'bathrooms': property.bathrooms,
+                'area': property.area,
+                'property_description': property.property_description,
+                'image_url': property.image.url if property.image else None,
+                # Amenities
+                'electricity': property.electricity,
+                'water': property.water,
+                'internet': property.internet,
+                'airconditioning': property.airconditioning,
+                'kitchen': property.kitchen,
+                'shared_kitchen': property.shared_kitchen,
+                'private_bathroom': property.private_bathroom,
+                'shared_bathroom': property.shared_bathroom,
+                # Safety & Security
+                'secure_locks': property.secure_locks,
+                'cctv': property.cctv,
+                'gated_compound': property.gated_compound,
+                'security_guard': property.security_guard,
+                # Property Features
+                'parking': property.parking,
+                'furnished': property.furnished,
+                'pet_friendly': property.pet_friendly,
+            }
+            return JsonResponse(property_data)
+            
+    except Property.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Property not found'}, status=404)
+
 @login_required
 @require_http_methods(["DELETE", "POST"])  
 def delete_property(request, property_id):

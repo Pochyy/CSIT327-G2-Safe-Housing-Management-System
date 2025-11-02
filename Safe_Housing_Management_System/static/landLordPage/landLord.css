@@ -1005,3 +1005,58 @@ textarea.form-input {
 .mark-all-read:hover {
     text-decoration: underline;
 }
+
+/* Make the modal buttons container flex */
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+/* Improve modal buttons */
+.modal-footer {
+    display: flex !important;
+    gap: 12px !important;
+    justify-content: flex-end !important;
+    margin-top: 24px !important;
+    padding-top: 20px !important;
+    border-top: 1px solid #e5e7eb !important;
+}
+
+#cancelBtn, #submitBtn {
+    padding: 12px 24px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    border: none !important;
+    min-width: 140px !important;
+    text-align: center !important;
+}
+
+#cancelBtn {
+    background: #6b7280 !important;
+    color: white !important;
+}
+
+#cancelBtn:hover {
+    background: #4b5563 !important;
+}
+
+
+#submitBtn:disabled {
+    background: #9ca3af !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+#submitBtn {
+    background: #2C6E6F  !important;
+    color: white !important;
+}
+
+#submitBtn:hover {
+    background: #398c8e  !important;
+    transform: translateY(-1px) !important;
+}
