@@ -36,41 +36,6 @@ amenityGroups.forEach(group => {
     });
 });
 
-const imageUpload = document.getElementById('imageUpload');
-
-imageUpload.addEventListener('click', () => {
-    alert('To be added: this would open a file picker to upload property images.');
-});
-
-// Save property (placeholder functionality)
-savePropertyBtn.addEventListener('click', () => {
-    // Basic validation
-    const propertyName = document.getElementById('propertyName').value;
-    const propertyLocation = document.getElementById('propertyLocation').value;
-    const propertyPrice = document.getElementById('propertyPrice').value;
-    
-    if (!propertyName || !propertyLocation || !propertyPrice) {
-        alert('Please fill in all required fields: Property Name, Location, and Price.');
-        return;
-    }
-    
-    alert('Property submitted for approval successfully!');
-    closeModal();
-    
-    // Reset form
-    document.getElementById('propertyName').value = '';
-    document.getElementById('propertyLocation').value = '';
-    document.getElementById('beds').value = '';
-    document.getElementById('baths').value = '';
-    document.getElementById('area').value = '';
-    document.getElementById('propertyPrice').value = '';
-    
-    // Uncheck all amenities
-    const checkboxes = document.querySelectorAll('.amenity-checkbox');
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = false;
-    });
-});
 
 // User dropdown functionality
 const userDropdownBtn = document.getElementById('userDropdownBtn');
@@ -82,7 +47,7 @@ userDropdownBtn.addEventListener('click', function(e) {
     userDropdown.classList.toggle('active');
 });
 
-// Close dropdown when clicking outside
+// Close dropdown when clicking on dropdown items
 document.addEventListener('click', function(e) {
     if (!userDropdownBtn.contains(e.target)) {
         userDropdown.classList.remove('active');
@@ -108,6 +73,41 @@ dropdownItems.forEach(item => {
             showSettingsPage();
         }
     });
+});
+
+// Image upload functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const imageUpload = document.getElementById('imageUpload');
+    const imageFileName = document.getElementById('imageFileName');
+    const imageInput = document.getElementById('id_image');
+
+    // Make the image upload area clickable to trigger file input
+    if (imageUpload && imageInput) {
+        imageUpload.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        // Handle image file selection display
+        imageInput.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                const fileName = this.files[0].name;
+                if (imageFileName) {
+                    imageFileName.textContent = 'Selected: ' + fileName;
+                    imageFileName.style.display = 'block';
+                }
+                
+                // Optional: Change upload area appearance
+                imageUpload.style.borderColor = '#007bff';
+                imageUpload.style.backgroundColor = '#f8f9ff';
+            } else {
+                if (imageFileName) {
+                    imageFileName.style.display = 'none';
+                }
+                imageUpload.style.borderColor = '';
+                imageUpload.style.backgroundColor = '';
+            }
+        });
+    }
 });
 
 // Prevent dropdown from closing when clicking inside it
