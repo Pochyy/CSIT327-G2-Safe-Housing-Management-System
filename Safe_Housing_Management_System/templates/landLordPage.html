@@ -185,192 +185,243 @@
         <!-- Modal for Add New Property -->
         <div class="modal-overlay" id="modalOverlay">
             <div class="modal">
-                <form method="POST" enctype="multipart/form-data" action="{% url 'landlord:home' %}">
+                <form method="POST" enctype="multipart/form-data" action="{% url 'landlord:add_property' %}">
                     {% csrf_token %}
-                <div class="modal-header">
-                    <h2 class="modal-title">Add New Property</h2>
-                    <button class="close-modal" id="closeModalBtn">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div class="modal-body">
-                    <div class="modal-subtitle">Fill in the details below to list a new property</div>
-                    
-                    <!-- Image Upload Section -->
-        <div class="image-upload" id="imageUpload">
-            <label for="propertyImage" class="upload-icon">
-            <i class="fas fa-cloud-upload-alt"></i>
-                </label>
-                    <div class="upload-text">Click to upload property photo</div>
-                    <div class="upload-hint">PNG, JPG up to 5MB</div>
-                    <input type="file" id="propertyImage" name="image" accept="image/*" style="display:none;">
-        </div>
-                    
-                    <!-- Property Details Section -->
-                    <div class="form-section">
-                        <h3 class="section-title">Property Details</h3>
-                        
-                        <div class="form-group">
-                            <label class="form-label" for="propertyName">Property Title</label>
-                            <input type="text" id="propertyName" class="form-input" placeholder="e.g., Modern Downtown Apartment" name="property_name">
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group half-width">
-                                <label class="form-label" for="propertyLocation">Location</label>
-                                <input type="text" id="propertyLocation" class="form-input" placeholder="City, State" name="location">
-                            </div>
-                            
-                            <div class="form-group half-width">
-                                <label class="form-label" for="propertyPrice">Monthly Rent (₱)</label>
-                                <input type="number" id="propertyPrice" class="form-input" placeholder="e.g., 25000" name="price">
-                            </div>
-                        </div>
+                    <div class="modal-header">
+                        <h2 class="modal-title">Add New Property</h2>
+                        <button type="button" class="close-modal" id="closeModalBtn">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
                     
-                    <!-- Basic Info Section -->
-                    <div class="form-section">
-                        <h3 class="section-title">Basic Info</h3>
+                    <div class="modal-body">
+                        <div class="modal-subtitle">Fill in the details below to list a new property</div>
                         
-                        <div class="form-row">
-                            <div class="form-group third-width">
-                                <label class="form-label" for="beds">Bedrooms</label>
-                                <input type="number" id="beds" class="form-input" placeholder="2" min="1" max="10" name="beds">
+                        <!-- Image Upload Section -->
+                        <div class="image-upload" id="imageUpload">
+                            <label for="id_image" class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </label>
+                            <div class="upload-text">Click to upload property photo</div>
+                            <div class="upload-hint">PNG, JPG up to 5MB</div>
+                            {{ form.image }}
+                        </div>
+                        
+                        <!-- Display image name when selected -->
+                        <div id="imageFileName" style="display: none; margin-top: 10px; text-align: center; color: #007bff; font-size: 14px;"></div>
+                      
+                        <!-- Property Details Section -->
+                        <div class="form-section">
+                            <h3 class="section-title">Property Details</h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="id_property_name">Property Title</label>
+                                {{ form.property_name }}
+                                {% if form.property_name.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.property_name.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
                             
-                            <div class="form-group third-width">
-                                <label class="form-label" for="baths">Bathrooms</label>
-                                <input type="number" id="baths" class="form-input" placeholder="2" min="1" max="10" name="bathrooms">
+                            <div class="form-row">
+                                <div class="form-group half-width">
+                                    <label class="form-label" for="id_location">Location</label>
+                                    {{ form.location }}
+                                    {% if form.location.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.location.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group half-width">
+                                    <label class="form-label" for="id_price">Monthly Rent (₱)</label>
+                                    {{ form.price }}
+                                    {% if form.price.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.price.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Basic Info Section -->
+                        <div class="form-section">
+                            <h3 class="section-title">Basic Info</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group third-width">
+                                    <label class="form-label" for="id_beds">Bedrooms</label>
+                                    {{ form.beds }}
+                                    {% if form.beds.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.beds.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group third-width">
+                                    <label class="form-label" for="id_bathrooms">Bathrooms</label>
+                                    {{ form.bathrooms }}
+                                    {% if form.bathrooms.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.bathrooms.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group third-width">
+                                    <label class="form-label" for="id_area">Square Feet</label>
+                                    {{ form.area }}
+                                    {% if form.area.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.area.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
                             
-                            <div class="form-group third-width">
-                                <label class="form-label" for="area">Square Feet</label>
-                                <input type="number" id="area" class="form-input" placeholder="1200" min="1" name="area">
+                            <div class="form-group">
+                                <label class="form-label" for="id_property_description">Description</label>
+                                {{ form.property_description }}
+                                {% if form.property_description.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.property_description.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label class="form-label" for="propertyDescription">Description</label>
-                            <textarea id="propertyDescription" class="form-input" placeholder="Describe your property..." rows="3" name="property_description"></textarea>
+                        <!-- Amenities Section -->
+                        <div class="amenities-section">
+                            <h3 class="section-title">Amenities / Features</h3>
+                            
+                            <!-- Basic Amenities -->
+                            <div class="amenity-group" id="basicAmenities">
+                                <div class="amenity-header">
+                                    <div class="amenity-title">
+                                        <i class="fas fa-home amenity-icon"></i>
+                                        <span>Basic Amenities</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down amenity-chevron"></i>
+                                </div>
+                                <div class="amenity-content">
+                                    <div class="amenity-grid">
+                                        <div class="amenity-item">
+                                            {{ form.electricity }}
+                                            <label for="{{ form.electricity.id_for_label }}" class="amenity-label">Electricity</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.water }}
+                                            <label for="{{ form.water.id_for_label }}" class="amenity-label">Water supply</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.internet }}
+                                            <label for="{{ form.internet.id_for_label }}" class="amenity-label">Internet / Wi-Fi</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.airconditioning }}
+                                            <label for="{{ form.airconditioning.id_for_label }}" class="amenity-label">Airconditioning</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.kitchen }}
+                                            <label for="{{ form.kitchen.id_for_label }}" class="amenity-label">Kitchen</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.shared_kitchen }}
+                                            <label for="{{ form.shared_kitchen.id_for_label }}" class="amenity-label">Shared Kitchen</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.private_bathroom }}
+                                            <label for="{{ form.private_bathroom.id_for_label }}" class="amenity-label">Private bathroom</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.shared_bathroom }}
+                                            <label for="{{ form.shared_bathroom.id_for_label }}" class="amenity-label">Shared bathroom</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Safety & Security -->
+                            <div class="amenity-group" id="safetyAmenities">
+                                <div class="amenity-header">
+                                    <div class="amenity-title">
+                                        <i class="fas fa-lock amenity-icon"></i>
+                                        <span>Safety & Security</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down amenity-chevron"></i>
+                                </div>
+                                <div class="amenity-content">
+                                    <div class="amenity-grid">
+                                        <div class="amenity-item">
+                                            {{ form.secure_locks }}
+                                            <label for="{{ form.secure_locks.id_for_label }}" class="amenity-label">Secure door locks</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.cctv }}
+                                            <label for="{{ form.cctv.id_for_label }}" class="amenity-label">CCTV / Security cameras</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.gated_compound }}
+                                            <label for="{{ form.gated_compound.id_for_label }}" class="amenity-label">Gated compound / Community gate</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.security_guard }}
+                                            <label for="{{ form.security_guard.id_for_label }}" class="amenity-label">24/7 Security guard</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Property Features -->
+                            <div class="amenity-group" id="propertyFeatures">
+                                <div class="amenity-header">
+                                    <div class="amenity-title">
+                                        <i class="fas fa-tools amenity-icon"></i> 
+                                        <span>Property Features</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down amenity-chevron"></i>
+                                </div>
+                                <div class="amenity-content">
+                                    <div class="amenity-grid">
+                                        <div class="amenity-item">
+                                            {{ form.parking }}
+                                            <label for="{{ form.parking.id_for_label }}" class="amenity-label">Parking space</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.furnished }}
+                                            <label for="{{ form.furnished.id_for_label }}" class="amenity-label">Furnished</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.pet_friendly }}
+                                            <label for="{{ form.pet_friendly.id_for_label }}" class="amenity-label">Pet-friendly</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                                            
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit for Approval</button>
                     </div>
-                    
-                    <!-- Amenities Section -->
-                    <div class="amenities-section">
-                        <h3 class="section-title">Amenities / Features</h3>
-                        
-                        <!-- Basic Amenities -->
-                        <div class="amenity-group" id="basicAmenities">
-                            <div class="amenity-header">
-                                <div class="amenity-title">
-                                    <i class="fas fa-home amenity-icon"></i>
-                                    <span>Basic Amenities</span>
-                                </div>
-                                <i class="fas fa-chevron-down amenity-chevron"></i>
-                            </div>
-                            <div class="amenity-content">
-                                <div class="amenity-grid">
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="electricity" class="amenity-checkbox" name="electricity">
-                                        <label for="electricity" class="amenity-label">Electricity</label>
-                                    </div>
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="water" class="amenity-checkbox" name="water">
-                                        <label for="water" class="amenity-label">Water supply</label>
-                                    </div>
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="internet" class="amenity-checkbox" name="internet">
-                                        <label for="internet" class="amenity-label" >Internet / Wi-Fi</label>
-                                    </div>
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="airconditioning" class="amenity-checkbox" name="airconditioning">
-                                        <label for="airconditioning" class="amenity-label" >Airconditioning</label>
-                                    </div>
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="kitchen" class="amenity-checkbox" name="kitchen">
-                                        <label for="kitchen" class="amenity-label">Kitchen</label>
-                                    </div>
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="sharedKitchen" class="amenity-checkbox" name="shared_kitchen">
-                                        <label for="sharedKitchen" class="amenity-label">Shared Kitchen</label>
-                                    </div>
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="privateBathroom" class="amenity-checkbox" name="private_bathroom">
-                                        <label for="privateBathroom" class="amenity-label">Private bathroom</label>
-                                    </div>
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="sharedBathroom" class="amenity-checkbox" name="shared_bathroom">
-                                        <label for="sharedBathroom" class="amenity-label">Shared bathroom</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Safety & Security -->
-                        <div class="amenity-group" id="safetyAmenities">
-                            <div class="amenity-header">
-                                <div class="amenity-title">
-                                    <i class="fas fa-lock amenity-icon"></i>
-                                    <span>Safety & Security</span>
-                                </div>
-                                <i class="fas fa-chevron-down amenity-chevron"></i>
-                            </div>
-                            <div class="amenity-content">
-                                <div class="amenity-grid">
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="secureLocks" class="amenity-checkbox" name="secure_locks">
-                                        <label for="secureLocks" class="amenity-label">Secure door locks</label>
-                                    </div>
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="cctv" class="amenity-checkbox" name="cctv">
-                                        <label for="cctv" class="amenity-label">CCTV / Security cameras</label>
-                                    </div>
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="gatedCompound" class="amenity-checkbox" name="gated_compound">
-                                        <label for="gatedCompound" class="amenity-label">Gated compound / Community gate</label>
-                                    </div>
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="securityGuard" class="amenity-checkbox" name="security_guard">
-                                        <label for="securityGuard" class="amenity-label">24/7 Security guard</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Property Features -->
-                        <div class="amenity-group" id="propertyFeatures">
-                            <div class="amenity-header">
-                                <div class="amenity-title">
-                                    <i class="fas fa-tools amenity-icon"></i> 
-                                    <span>Property Features</span>
-                                </div>
-                                <i class="fas fa-chevron-down amenity-chevron"></i>
-                            </div>
-                            <div class="amenity-content">
-                                <div class="amenity-grid">
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="parking" class="amenity-checkbox" name="parking">
-                                        <label for="parking" class="amenity-label">Parking space</label>
-                                    </div>
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="furnished" class="amenity-checkbox" name="furnished">
-                                        <label for="furnished" class="amenity-label">Furnished</label>
-                                    </div>
-                                    <div class="amenity-item">
-                                        <input type="checkbox" id="petFriendly" class="amenity-checkbox" name="pet_friendly">
-                                        <label for="petFriendly" class="amenity-label">Pet-friendly</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                    <button type="submit" class="btn btn-primary" >Submit for Approval</button>
-                </div>
                 </form>
             </div>
         </div>
