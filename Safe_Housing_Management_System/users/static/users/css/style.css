@@ -223,7 +223,7 @@ button:hover {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s;
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .user-option.selected {
@@ -295,7 +295,7 @@ button:hover {
     flex: none;
 }
 
-/* NEW CUSTOM TOOLTIP STYLE for Django Errors */
+
 .message.error {
     position: relative; 
     text-align: left;
