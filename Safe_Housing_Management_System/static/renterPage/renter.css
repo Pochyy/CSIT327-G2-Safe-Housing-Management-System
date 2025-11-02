@@ -230,9 +230,21 @@ input:focus, select:focus {
     outline-offset: 2px;
 }
 
+.header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem; /* Same horizontal padding as .container */
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0; /* Vertical padding only */
+}
 /* --- Container and Cards --- */
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
 }

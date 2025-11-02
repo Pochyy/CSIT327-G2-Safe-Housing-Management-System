@@ -37,71 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('❌ Dropdown elements NOT found');
     }
 
-    // NOTIFICATION FUNCTIONALITY - UPDATED
-    const notificationIcon = document.querySelector('.notification-icon');
-    const notificationsDropdown = document.querySelector('.notifications-dropdown');
-
-    if (notificationIcon && notificationsDropdown) {
-        console.log('✅ Notification elements found');
-        
-        notificationIcon.addEventListener('click', function(e) {
-            e.stopPropagation();
-            console.log('🔔 Notification icon clicked');
-            notificationsDropdown.classList.toggle('active');
-        });
-
-        // Close notifications when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!notificationIcon.contains(e.target) && !notificationsDropdown.contains(e.target)) {
-                notificationsDropdown.classList.remove('active');
-            }
-        });
-
-        // Mark as read functionality
-        const markReadButtons = document.querySelectorAll('.mark-read-btn');
-        markReadButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const notificationItem = this.closest('.notification-item');
-                const notificationId = notificationItem.dataset.notificationId;
-                
-                // Mark as read visually
-                notificationItem.classList.remove('unread');
-                this.style.display = 'none';
-                
-                // Update badge count
-                updateNotificationBadge();
-                
-                // In a real app, you'd send AJAX request to mark as read
-                console.log('Marking notification as read:', notificationId);
-            });
-        });
-
-        // Mark all as read
-        const markAllReadBtn = document.querySelector('.mark-all-read');
-        if (markAllReadBtn) {
-            markAllReadBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const unreadItems = document.querySelectorAll('.notification-item.unread');
-                
-                unreadItems.forEach(item => {
-                    item.classList.remove('unread');
-                    const markBtn = item.querySelector('.mark-read-btn');
-                    if (markBtn) markBtn.style.display = 'none';
-                });
-                
-                // Update badge count to 0
-                const badge = document.querySelector('.notification-badge');
-                if (badge) badge.style.display = 'none';
-                
-                // In a real app, you'd send AJAX request to mark all as read
-                console.log('Marking all notifications as read');
-            });
-        }
-    } else {
-        console.log('❌ Notification elements NOT found');
-    }
-
     // Modal functionality
     const modalOverlay = document.getElementById('modalOverlay');
     const openModalBtn = document.getElementById('openModalBtn');
@@ -138,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const filterType = this.textContent.toLowerCase();
             const propertyCards = document.querySelectorAll('.property-card');
             
+            
             propertyCards.forEach(card => {
                 const status = card.getAttribute('data-status');
                 if (filterType.includes('all')) {
@@ -165,6 +101,15 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    // Notification functionality
+    const notificationIcon = document.querySelector('.notification-icon');
+    if (notificationIcon) {
+        notificationIcon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            alert('Notification dropdown would open here with 3 new notifications');
+        });
+    }
 
     // Image upload functionality
     const imageUpload = document.getElementById('imageUpload');
@@ -197,57 +142,135 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Property card hover effects
     const propertyCards = document.querySelectorAll('.property-card');
-    propertyCards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = 'translateY(-5px)';
-            card.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.12)';
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'translateY(0)';
-            card.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
-        });
+propertyCards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-5px)';
+        card.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.12)';
+    });
+    
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0)';
+        card.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
     });
 
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-        // Escape key closes modal
-        if (e.key === 'Escape' && modalOverlay && modalOverlay.classList.contains('active')) {
-            closeModal();
-        }
-        
-        // Ctrl+N opens new property modal (when modal is not open)
-        if (e.ctrlKey && e.key === 'n' && modalOverlay && !modalOverlay.classList.contains('active')) {
-            e.preventDefault();
-            modalOverlay.classList.add('active');
-        }
-    });
+    // Find and update the delete button
+    const deleteBtn = card.querySelector('.btn-delete');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const propertyId = this.getAttribute('data-property-id'); 
+            console.log('🗑️ Delete clicked for property ID:', propertyId);
+            deleteProperty(propertyId, card);
+        });
+    }
 });
 
-// Global functions for edit/delete property
-function editProperty(propertyId) {
-    console.log('Editing property:', propertyId);
-    alert(`Editing property ID: ${propertyId}\n\nThis would open an edit form in a real application.`);
-}
+// REAL DELETE FUNCTION - Add this new function
+function deleteProperty(propertyId, cardElement) {
+    if (confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
+        // Show loading state
+        cardElement.style.opacity = '0.5';
+        const deleteBtn = cardElement.querySelector('.btn-delete');
+        if (deleteBtn) {
+            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+            deleteBtn.disabled = true;
+        }
 
-function deleteProperty(propertyId) {
-    if (confirm('Are you sure you want to delete this property?')) {
-        console.log('Deleting property:', propertyId);
-        alert(`Property ID: ${propertyId} would be deleted in a real application.`);
+        // Send DELETE request to server
+        fetch(`/landlord/delete-property/${propertyId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Success - remove card with animation
+                cardElement.style.transition = 'all 0.3s ease';
+                cardElement.style.height = cardElement.offsetHeight + 'px';
+                cardElement.offsetHeight; // Force reflow
+                cardElement.style.height = '0';
+                cardElement.style.opacity = '0';
+                cardElement.style.margin = '0';
+                cardElement.style.padding = '0';
+                
+                setTimeout(() => {
+                    cardElement.remove();
+                    // Show success message
+                    showNotification('Property deleted successfully', 'success');
+                    // You might want to reload the page to update stats
+                    // window.location.reload();
+                }, 300);
+            } else {
+                // Error - reset button state
+                if (deleteBtn) {
+                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+                    deleteBtn.disabled = false;
+                }
+                cardElement.style.opacity = '1';
+                showNotification(data.message || 'Error deleting property', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            if (deleteBtn) {
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+                deleteBtn.disabled = false;
+            }
+            cardElement.style.opacity = '1';
+            showNotification('Error deleting property', 'error');
+        });
     }
 }
 
-// Notification badge update function
-function updateNotificationBadge() {
-    const unreadCount = document.querySelectorAll('.notification-item.unread').length;
-    const badge = document.querySelector('.notification-badge');
-    
-    if (badge) {
-        if (unreadCount > 0) {
-            badge.textContent = unreadCount;
-            badge.style.display = 'flex';
-        } else {
-            badge.style.display = 'none';
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
         }
     }
+    return cookieValue;
 }
+
+// Notification function
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        transition: all 0.3s ease;
+        ${type === 'success' ? 'background: #10b981;' : ''}
+        ${type === 'error' ? 'background: #ef4444;' : ''}
+        ${type === 'info' ? 'background: #3b82f6;' : ''}
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
+});
