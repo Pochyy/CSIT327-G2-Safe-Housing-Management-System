@@ -1,9 +1,10 @@
 from django.views.decorators.cache import never_cache   
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 from .forms import PropertyForm
 from .models import Property, Notification
-
 
 @never_cache
 @login_required
@@ -49,3 +50,14 @@ def add_property(request):
         form = PropertyForm()
     
     return render(request, 'add_property.html', {'form': form})
+
+# ADD THIS DELETE VIEW (with correct decorator placement)
+@login_required
+@require_http_methods(["DELETE", "POST"])  
+def delete_property(request, property_id):
+    try:
+        property = Property.objects.get(id=property_id, landlord=request.user)
+        property.delete()
+        return JsonResponse({'success': True, 'message': 'Property deleted successfully'})
+    except Property.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Property not found'}, status=404)
