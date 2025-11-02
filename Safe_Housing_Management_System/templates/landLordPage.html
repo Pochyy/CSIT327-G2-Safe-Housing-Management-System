@@ -1,4 +1,6 @@
 {% load static %}
+{% load custom_filters %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -168,8 +170,9 @@
                         
                         <!-- Action buttons -->
                         <div class="property-actions">
-                            <button class="btn-edit" onclick="editProperty({{ property.id }})">
+                            <button class="btn-edit" data-property-id="{{ property.id }}">
                                 <i class="fas fa-edit"></i> Edit
+                            </button>
                             </button>
                             <button class="btn-delete" data-property-id="{{ property.id }}">
                                 <i class="fas fa-trash"></i> Delete
@@ -234,20 +237,23 @@
         </footer>
     </div>
 
-        <!-- Modal for Add New Property -->
+        <!-- Modal for Add/Edit Property -->
         <div class="modal-overlay" id="modalOverlay">
             <div class="modal">
-                <form method="POST" enctype="multipart/form-data" action="{% url 'landlord:add_property' %}">
+                <form method="POST" enctype="multipart/form-data" id="propertyForm">
                     {% csrf_token %}
+                    <input type="hidden" id="propertyId" name="property_id">
+                    <input type="hidden" id="formAction" name="form_action" value="add">
+                    
                     <div class="modal-header">
-                        <h2 class="modal-title">Add New Property</h2>
+                        <h2 class="modal-title" id="modalTitle">Add New Property</h2>
                         <button type="button" class="close-modal" id="closeModalBtn">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
                     
                     <div class="modal-body">
-                        <div class="modal-subtitle">Fill in the details below to list a new property</div>
+                        <div class="modal-subtitle" id="modalSubtitle">Fill in the details below to list a new property</div>
                         
                         <!-- Image Upload Section -->
                         <div class="image-upload" id="imageUpload">
@@ -261,7 +267,7 @@
                         
                         <!-- Display image name when selected -->
                         <div id="imageFileName" style="display: none; margin-top: 10px; text-align: center; color: #007bff; font-size: 14px;"></div>
-                      
+                    
                         <!-- Property Details Section -->
                         <div class="form-section">
                             <h3 class="section-title">Property Details</h3>
@@ -269,38 +275,17 @@
                             <div class="form-group">
                                 <label class="form-label" for="id_property_name">Property Title</label>
                                 {{ form.property_name }}
-                                {% if form.property_name.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.property_name.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
                             </div>
                             
                             <div class="form-row">
                                 <div class="form-group half-width">
                                     <label class="form-label" for="id_location">Location</label>
                                     {{ form.location }}
-                                    {% if form.location.errors %}
-                                        <div class="text-danger">
-                                            {% for error in form.location.errors %}
-                                                <small>{{ error }}</small>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
                                 </div>
                                 
                                 <div class="form-group half-width">
                                     <label class="form-label" for="id_price">Monthly Rent (₱)</label>
                                     {{ form.price }}
-                                    {% if form.price.errors %}
-                                        <div class="text-danger">
-                                            {% for error in form.price.errors %}
-                                                <small>{{ error }}</small>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -313,50 +298,22 @@
                                 <div class="form-group third-width">
                                     <label class="form-label" for="id_beds">Bedrooms</label>
                                     {{ form.beds }}
-                                    {% if form.beds.errors %}
-                                        <div class="text-danger">
-                                            {% for error in form.beds.errors %}
-                                                <small>{{ error }}</small>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
                                 </div>
                                 
                                 <div class="form-group third-width">
                                     <label class="form-label" for="id_bathrooms">Bathrooms</label>
                                     {{ form.bathrooms }}
-                                    {% if form.bathrooms.errors %}
-                                        <div class="text-danger">
-                                            {% for error in form.bathrooms.errors %}
-                                                <small>{{ error }}</small>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
                                 </div>
                                 
                                 <div class="form-group third-width">
                                     <label class="form-label" for="id_area">Square Feet</label>
                                     {{ form.area }}
-                                    {% if form.area.errors %}
-                                        <div class="text-danger">
-                                            {% for error in form.area.errors %}
-                                                <small>{{ error }}</small>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
                                 </div>
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label" for="id_property_description">Description</label>
                                 {{ form.property_description }}
-                                {% if form.property_description.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.property_description.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
                             </div>
                         </div>
                         
@@ -375,38 +332,14 @@
                                 </div>
                                 <div class="amenity-content">
                                     <div class="amenity-grid">
-                                        <div class="amenity-item">
-                                            {{ form.electricity }}
-                                            <label for="{{ form.electricity.id_for_label }}" class="amenity-label">Electricity</label>
-                                        </div>
-                                        <div class="amenity-item">
-                                            {{ form.water }}
-                                            <label for="{{ form.water.id_for_label }}" class="amenity-label">Water supply</label>
-                                        </div>
-                                        <div class="amenity-item">
-                                            {{ form.internet }}
-                                            <label for="{{ form.internet.id_for_label }}" class="amenity-label">Internet / Wi-Fi</label>
-                                        </div>
-                                        <div class="amenity-item">
-                                            {{ form.airconditioning }}
-                                            <label for="{{ form.airconditioning.id_for_label }}" class="amenity-label">Airconditioning</label>
-                                        </div>
-                                        <div class="amenity-item">
-                                            {{ form.kitchen }}
-                                            <label for="{{ form.kitchen.id_for_label }}" class="amenity-label">Kitchen</label>
-                                        </div>
-                                        <div class="amenity-item">
-                                            {{ form.shared_kitchen }}
-                                            <label for="{{ form.shared_kitchen.id_for_label }}" class="amenity-label">Shared Kitchen</label>
-                                        </div>
-                                        <div class="amenity-item">
-                                            {{ form.private_bathroom }}
-                                            <label for="{{ form.private_bathroom.id_for_label }}" class="amenity-label">Private bathroom</label>
-                                        </div>
-                                        <div class="amenity-item">
-                                            {{ form.shared_bathroom }}
-                                            <label for="{{ form.shared_bathroom.id_for_label }}" class="amenity-label">Shared bathroom</label>
-                                        </div>
+                                        {% for field in form %}
+                                            {% if field.name in 'electricity,water,internet,airconditioning,kitchen,shared_kitchen,private_bathroom,shared_bathroom'|split:',' %}
+                                            <div class="amenity-item">
+                                                {{ field }}
+                                                <label for="{{ field.id_for_label }}" class="amenity-label">{{ field.label }}</label>
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
@@ -422,22 +355,14 @@
                                 </div>
                                 <div class="amenity-content">
                                     <div class="amenity-grid">
-                                        <div class="amenity-item">
-                                            {{ form.secure_locks }}
-                                            <label for="{{ form.secure_locks.id_for_label }}" class="amenity-label">Secure door locks</label>
-                                        </div>
-                                        <div class="amenity-item">
-                                            {{ form.cctv }}
-                                            <label for="{{ form.cctv.id_for_label }}" class="amenity-label">CCTV / Security cameras</label>
-                                        </div>
-                                        <div class="amenity-item">
-                                            {{ form.gated_compound }}
-                                            <label for="{{ form.gated_compound.id_for_label }}" class="amenity-label">Gated compound / Community gate</label>
-                                        </div>
-                                        <div class="amenity-item">
-                                            {{ form.security_guard }}
-                                            <label for="{{ form.security_guard.id_for_label }}" class="amenity-label">24/7 Security guard</label>
-                                        </div>
+                                        {% for field in form %}
+                                            {% if field.name in 'secure_locks,cctv,gated_compound,security_guard'|split:',' %}
+                                            <div class="amenity-item">
+                                                {{ field }}
+                                                <label for="{{ field.id_for_label }}" class="amenity-label">{{ field.label }}</label>
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
@@ -453,31 +378,28 @@
                                 </div>
                                 <div class="amenity-content">
                                     <div class="amenity-grid">
-                                        <div class="amenity-item">
-                                            {{ form.parking }}
-                                            <label for="{{ form.parking.id_for_label }}" class="amenity-label">Parking space</label>
-                                        </div>
-                                        <div class="amenity-item">
-                                            {{ form.furnished }}
-                                            <label for="{{ form.furnished.id_for_label }}" class="amenity-label">Furnished</label>
-                                        </div>
-                                        <div class="amenity-item">
-                                            {{ form.pet_friendly }}
-                                            <label for="{{ form.pet_friendly.id_for_label }}" class="amenity-label">Pet-friendly</label>
-                                        </div>
+                                        {% for field in form %}
+                                            {% if field.name in 'parking,furnished,pet_friendly'|split:',' %}
+                                            <div class="amenity-item">
+                                                {{ field }}
+                                                <label for="{{ field.id_for_label }}" class="amenity-label">{{ field.label }}</label>
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                                            
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Submit for Approval</button>
+                                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="submitBtn">Submit for Approval</button>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
-    
+            
         <script src="{% static 'LandLordPage/landLord.js' %}"></script>
     </body>
     </html>

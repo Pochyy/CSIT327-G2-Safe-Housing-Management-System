@@ -7,5 +7,5 @@ urlpatterns = [
     path('', views.landLordPage, name='home'),  # maps /landlord/ to views.home
     path('add-property/', views.add_property, name='add_property'),
     path('delete-property/<int:property_id>/', views.delete_property, name='delete_property'),  
-
+    path('edit-property/<int:property_id>/', views.edit_property, name='edit_property'),  
 ]
