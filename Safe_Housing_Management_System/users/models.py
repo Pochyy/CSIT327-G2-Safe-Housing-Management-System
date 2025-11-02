@@ -12,8 +12,19 @@ class CustomUser(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    def __str__(self):
-        return self.username
+    def save(self, *args, **kwargs):
+        if self.first_name:
+            self.first_name = self.first_name.title()
+        if self.last_name:
+            self.last_name = self.last_name.title()
+        
+        if self.email:
+            self.email = self.email.lower()
+            
+        if self.username:
+            self.username = self.username.lower()
+            
+        super().save(*args, **kwargs)
     
     @property
     def is_landlord(self):

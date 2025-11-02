@@ -19,14 +19,61 @@
             </div>
 
             <div class="header-right">
+                <!-- Notifications Bell - Update your existing bell -->
                 <div class="notification-icon">
                     <i class="far fa-bell"></i>
-                    <div class="notification-badge">3</div>
+                    {% if unread_count > 0 %}
+                    <div class="notification-badge">{{ unread_count }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Notifications Dropdown - Add this somewhere in your header -->
+                <div class="notifications-dropdown">
+                    <div class="notifications-header">
+                        <h3>Notifications</h3>
+                        {% if unread_count > 0 %}
+                        <span class="unread-count">{{ unread_count }} unread</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="notifications-list">
+                        {% for notification in notifications %}
+                        <div class="notification-item {% if not notification.is_read %}unread{% endif %}" 
+                            data-notification-id="{{ notification.id }}">
+                            <div class="notification-icon">
+                                {% if notification.notification_type == 'approval' %}✅
+                                {% elif notification.notification_type == 'rejection' %}❌
+                                {% else %}🔔{% endif %}
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-message">{{ notification.message }}</div>
+                                <div class="notification-time">{{ notification.created_at|timesince }} ago</div>
+                            </div>
+                            <button class="mark-read-btn" title="Mark as read">×</button>
+                        </div>
+                        {% empty %}
+                        <div class="no-notifications">
+                            <p>No new notifications</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if notifications %}
+                    <div class="notifications-footer">
+                        <button class="mark-all-read">Mark all as read</button>
+                    </div>
+                    {% endif %}
                 </div>
                 
                 <div class="user-info" id="userDropdownBtn">
-                    <div>Sarah Johnson</div>
-                    <div class="user-avatar">SJ</div>
+                    <div>{{ user.get_full_name|default:user.username }}</div>
+                    <div class="user-avatar">
+                        {% if user.first_name and user.last_name %}
+                            {{ user.first_name|first }}{{ user.last_name|first }}
+                        {% else %}
+                            {{ user.username|first|upper }}
+                        {% endif %}
+                    </div>
                     <div class="user-dropdown" id="userDropdown">
                         <div class="user-dropdown-item">
                             <i class="fas fa-user-circle"></i> My Profile
@@ -36,7 +83,7 @@
                         </div>
                         <div class="user-dropdown-divider"></div>
                         <div class="user-dropdown-item" id="logoutBtn">
-                            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                            <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
                                 {% csrf_token %}
                                 <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; width: 100%; text-align: left;">
                                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -66,70 +113,75 @@
             
             <div class="stats-container">
                 <div class="stat-card">
-                    <div class="stat-number">2</div>
+                    <div class="stat-number">{{ total_properties }}</div>
                     <div class="stat-label">Total Listings</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">2</div>
+                    <div class="stat-number">{{ approved_properties }}</div>
                     <div class="stat-label">Approved</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">0</div>
+                    <div class="stat-number">{{ pending_properties }}</div>
                     <div class="stat-label">Pending</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">0</div>
+                    <div class="stat-number">{{ rejected_properties }}</div>
                     <div class="stat-label">Rejected</div>
                 </div>
             </div>
             
             <div class="filter-section">
-                <div class="filter-item active">All (2)</div>
-                <div class="filter-item">Approved (2)</div>
-                <div class="filter-item">Pending (0)</div>
-                <div class="filter-item">Rejected (0)</div>
+                <div class="filter-item active">All ({{ total_properties }})</div>
+                <div class="filter-item">Approved ({{ approved_properties }})</div>
+                <div class="filter-item">Pending ({{ pending_properties }})</div>
+                <div class="filter-item">Rejected ({{ rejected_properties }})</div>
             </div>
             
             <div class="divider"></div>
             
             <div class="properties-container">
-                <div class="property-card">
+                {% for property in properties %}
+                <div class="property-card" data-status="{{ property.status|lower }}">
                     <div class="property-image">
-                        <div class="image-placeholder">
-                            <i class="fas fa-image"></i> Modern Apartment
+                        {% if property.image %}
+                            <img src="{{ property.image.url }}" alt="{{ property.property_name }}">
+                        {% else %}
+                            <div class="image-placeholder">
+                                <i class="fas fa-image"></i> {{ property.property_name }}
+                            </div>
+                        {% endif %}
+                        <div class="property-status-badge {{ property.status|lower }}">
+                            {{ property.status }}
                         </div>
                     </div>
                     <div class="property-content">
-                        <h3 class="property-title">Modern Downtown Apartment</h3>
+                        <h3 class="property-title">{{ property.property_name }}</h3>
                         <div class="property-location">
-                            <i class="fas fa-map-marker-alt"></i> Manila, Philippines
+                            <i class="fas fa-map-marker-alt"></i> {{ property.location }}
                         </div>
-                        <div class="property-reviews">
-                            <i class="fas fa-star"></i> 4.8 (24 reviews)
+                        <div class="property-details">
+                            <span>{{ property.beds }} bed</span> • 
+                            <span>{{ property.bathrooms }} bath</span> • 
+                            <span>{{ property.area }} sq ft</span>
                         </div>
-                        <div class="property-more">+1 more</div>
-                        <div class="property-price">₱25,000<span class="price-period">/month</span></div>
+                        <div class="property-price">₱{{ property.price }}<span class="price-period">/month</span></div>
+                        
+                        <!-- Action buttons -->
+                        <div class="property-actions">
+                            <button class="btn-edit" onclick="editProperty({{ property.id }})">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn-delete" onclick="deleteProperty({{ property.id }})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="property-card">
-                    <div class="property-image">
-                        <div class="image-placeholder">
-                            <i class="fas fa-image"></i> Luxury Condo
-                        </div>
-                    </div>
-                    <div class="property-content">
-                        <h3 class="property-title">Luxury Condo with Views</h3>
-                        <div class="property-location">
-                            <i class="fas fa-map-marker-alt"></i> Makati, Philippines
-                        </div>
-                        <div class="property-reviews">
-                            <i class="fas fa-star"></i> 5.0 (18 reviews)
-                        </div>
-                        <div class="property-more">+2 more</div>
-                        <div class="property-price">₱45,000<span class="price-period">/month</span></div>
-                    </div>
+                {% empty %}
+                <div class="no-properties">
+                    <p>No properties listed yet. Click "Add New Property" to get started!</p>
                 </div>
+                {% endfor %}
             </div>
         </main>
         
