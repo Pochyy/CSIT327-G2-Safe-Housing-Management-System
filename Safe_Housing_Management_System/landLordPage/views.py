@@ -5,12 +5,10 @@ from .forms import PropertyForm
 
 @login_required
 def landLordPage(request):
-    user = request.user  # This is your CustomUser, auto-populated
+    user = request.user 
     context = {
         'username': user.username,
         'role': user.user_role,
-        # add other user fields you want to show, e.g. 'phone': user.user_phone
-        # plus any landlord-specific objects you query from the DB
     }
     return render(request, 'landLordPage.html', context)
 
