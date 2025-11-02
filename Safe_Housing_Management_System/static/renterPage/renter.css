@@ -428,3 +428,89 @@ h1 {
         justify-content: space-between;
     }
 }
+
+/* Add these new styles to your existing CSS */
+
+.property-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.property-features {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    color: #6B7280;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.property-description {
+    color: #6B7280;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.property-amenities, .property-safety {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.amenity-tag, .safety-tag {
+    background-color: #A7D7C5;
+    color: #1F2937;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.safety-tag {
+    background-color: #FEF3C7;
+    color: #92400E;
+}
+
+.view-details-btn {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.no-properties {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: #6B7280;
+}
+
+.no-properties i {
+    margin-bottom: 1rem;
+    color: #D1D5DB;
+}
+
+.property-image.placeholder {
+    background-color: #F3F4F6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9CA3AF;
+    font-weight: 500;
+}
+
+/* Ensure property cards work with filtering */
+.property-card {
+    transition: all 0.3s ease;
+}
+
+.property-card[style*="display: none"] {
+    display: none !important;
+}

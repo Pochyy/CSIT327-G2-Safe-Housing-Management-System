@@ -5,18 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Renter Dashboard - Safe Haven</title>
     {% load static %}
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'renterPage/renter.css' %}">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-brand">🏡 Safe Haven</div>
-        <div class="navbar-menu">
-            <a href="#" class="navbar-link">Dashboard</a>
-            <a href="#" class="navbar-link">Profile</a>
-            <a href="#" class="navbar-link">Notifications (3)</a>
-            <a href="{% url 'users:logout' %}" class="btn-primary">Logout</a>
     <!-- Header Container -->
     <div class="header-container">
         <div class="header-content">
@@ -32,8 +24,8 @@
                 </div>
                 
                 <div class="user-info" id="userDropdownBtn">
-                    <div>Sarah Johnson</div>
-                    <div class="user-avatar">SJ</div>
+                    <div>{{ user.first_name }} {{ user.last_name }}</div>
+                    <div class="user-avatar">{{ user.first_name|first }}{{ user.last_name|first }}</div>
                     <div class="user-dropdown" id="userDropdown">
                         <div class="user-dropdown-item">
                             <i class="fas fa-user-circle"></i> My Profile
@@ -43,7 +35,12 @@
                         </div>
                         <div class="user-dropdown-divider"></div>
                         <div class="user-dropdown-item" id="logoutBtn">
-                            <i class="fas fa-sign-out-alt"></i> Logout
+                            <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; width: 100%; text-align: left;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                        </form>
                         </div>
                     </div>
                 </div>
@@ -86,7 +83,7 @@
         <div class="dashboard-header">
             <div>
                 <h1>Available Properties</h1>
-                <p class="text-muted"><span id="property-count">5</span> properties found</p>
+                <p class="text-muted"><span id="property-count">{{ properties.count }}</span> properties found</p>
             </div>
             <div class="view-toggle">
                 <button class="btn-icon active" id="grid-view">
@@ -112,7 +109,71 @@
 
         <!-- Property Grid -->
         <div class="property-grid" id="property-container">
-            <!-- Properties will be loaded here by JavaScript -->
+            {% for property in properties %}
+            <div class="property-card" data-price="{{ property.price }}" data-location="{{ property.location|lower }}">
+                {% if property.image %}
+                <img src="{{ property.image.url }}" alt="{{ property.property_name }}" class="property-image">
+                {% else %}
+                <div class="property-image placeholder">No Image</div>
+                {% endif %}
+                
+                <div class="property-content">
+                    <div class="property-header">
+                        <h3 class="property-title">{{ property.property_name }}</h3>
+                        <span class="property-price">₱{{ property.price }}/month</span>
+                    </div>
+                    
+                    <p class="property-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{ property.location }}
+                    </p>
+                    
+                    <div class="property-features">
+                        <span class="feature">
+                            <i class="fas fa-bed"></i>
+                            {{ property.beds }} bed{{ property.beds|pluralize }}
+                        </span>
+                        <span class="feature">
+                            <i class="fas fa-bath"></i>
+                            {{ property.bathrooms }} bath{{ property.bathrooms|pluralize }}
+                        </span>
+                        <span class="feature">
+                            <i class="fas fa-vector-square"></i>
+                            {{ property.area }} sq ft
+                        </span>
+                    </div>
+                    
+                    <p class="property-description">{{ property.property_description|truncatewords:20 }}</p>
+                    
+                    <div class="property-amenities">
+                        {% if property.electricity %}<span class="amenity-tag">⚡ Electricity</span>{% endif %}
+                        {% if property.water %}<span class="amenity-tag">💧 Water</span>{% endif %}
+                        {% if property.internet %}<span class="amenity-tag">🌐 Internet</span>{% endif %}
+                        {% if property.airconditioning %}<span class="amenity-tag">❄️ AC</span>{% endif %}
+                        {% if property.parking %}<span class="amenity-tag">🅿️ Parking</span>{% endif %}
+                        {% if property.furnished %}<span class="amenity-tag">🛋️ Furnished</span>{% endif %}
+                        {% if property.pet_friendly %}<span class="amenity-tag">🐾 Pet Friendly</span>{% endif %}
+                    </div>
+                    
+                    <div class="property-safety">
+                        {% if property.secure_locks %}<span class="safety-tag">🔒 Secure</span>{% endif %}
+                        {% if property.cctv %}<span class="safety-tag">📹 CCTV</span>{% endif %}
+                        {% if property.gated_compound %}<span class="safety-tag">🏘️ Gated</span>{% endif %}
+                        {% if property.security_guard %}<span class="safety-tag">👮 Security</span>{% endif %}
+                    </div>
+                    
+                    <button class="btn-primary view-details-btn" data-property-id="{{ property.id }}">
+                        View Details
+                    </button>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-properties">
+                <i class="fas fa-home fa-3x"></i>
+                <h3>No Properties Available</h3>
+                <p>There are currently no approved properties in the system.</p>
+            </div>
+            {% endfor %}
         </div>
     </div>
 
@@ -124,8 +185,6 @@
     <script src="{% static 'renterPage/renter.js' %}"></script>
 </body>
 </html>
-
-
     <script>
         // Modal functionality
         const modalOverlay = document.getElementById('modalOverlay');
