@@ -28,6 +28,31 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = ("username", "email", "first_name", "last_name", "password1", "password2")
 
+    # ADD THESE CLEAN METHODS:
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name')
+        if first_name:
+            return first_name.title()  # Capitalize first letter of each word
+        return first_name
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get('last_name')
+        if last_name:
+            return last_name.title()  # Capitalize first letter of each word
+        return last_name
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email:
+            return email.lower()  # Convert to lowercase
+        return email
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if username:
+            return username.lower()  # Convert to lowercase
+        return username
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.user_role = self.cleaned_data['user_type']
