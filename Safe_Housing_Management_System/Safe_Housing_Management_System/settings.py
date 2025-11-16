@@ -22,7 +22,9 @@ SECRET_KEY = 'django-insecure-your-secret-key-here-make-it-50-chars'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+  'csit327-g2-safe-housing-management-system.onrender.com',
+]
 
 AUTH_USER_MODEL = 'users.CustomUser'
 LOGIN_REDIRECT_URL = 'dashboard'  # You'll need to create this
