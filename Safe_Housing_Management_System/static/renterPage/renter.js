@@ -1,12 +1,17 @@
 // Initialize the dashboard
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Renter page loaded successfully!');
     setupEventListeners();
     setupDropdown();
+    setupFilterModal();
     updatePropertyCount();
+    updateFilterCount();
 });
 
+let selectedAmenities = [];
+
 function setupEventListeners() {
-    // Search and filter functionality
+    // Basic filter event listeners
     document.getElementById('search').addEventListener('input', filterProperties);
     document.getElementById('location').addEventListener('change', filterProperties);
     document.getElementById('price-min').addEventListener('input', filterProperties);
@@ -15,6 +20,9 @@ function setupEventListeners() {
     // View toggle functionality
     document.getElementById('grid-view').addEventListener('click', () => toggleView('grid'));
     document.getElementById('list-view').addEventListener('click', () => toggleView('list'));
+    
+    // View details buttons
+    setupViewDetailsButtons();
 }
 
 function setupDropdown() {
@@ -22,54 +30,158 @@ function setupDropdown() {
     const userDropdown = document.getElementById('userDropdown');
 
     if (userDropdownBtn && userDropdown) {
-        // Toggle dropdown on click
         userDropdownBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             userDropdown.classList.toggle('active');
         });
 
-        // Close dropdown when clicking outside
         document.addEventListener('click', function(e) {
             if (!userDropdownBtn.contains(e.target)) {
                 userDropdown.classList.remove('active');
             }
         });
 
-        // Close dropdown when clicking on dropdown items
         const dropdownItems = document.querySelectorAll('.user-dropdown-item');
         dropdownItems.forEach(item => {
             item.addEventListener('click', function() {
                 userDropdown.classList.remove('active');
-                
-                // Handle specific dropdown items (EXCEPT LOGOUT - it's handled by the form)
-                if (this.textContent.includes('Profile')) {
-                    console.log('Profile clicked');
-                    showProfilePage();
-                } else if (this.textContent.includes('Settings')) {
-                    console.log('Settings clicked');
-                    showSettingsPage();
-                }
-                // Logout is handled by the form submission, so no need for JavaScript
             });
         });
 
-        // Prevent dropdown from closing when clicking inside it
         userDropdown.addEventListener('click', function(e) {
             e.stopPropagation();
         });
     }
 }
 
-function showProfilePage() {
-    // Add your profile page navigation logic here
-    console.log('Navigating to profile page');
-    // window.location.href = '/profile';
+function setupFilterModal() {
+    const filterToggleBtn = document.getElementById('filterToggleBtn');
+    const closeFilterBtn = document.getElementById('closeFilterBtn');
+    const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    const filterModal = document.getElementById('filterModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+    
+    console.log('Setting up filter modal with elements:', {
+        button: !!filterToggleBtn,
+        modal: !!filterModal,
+        overlay: !!modalOverlay
+    });
+    
+    // Open filter modal - USING INLINE STYLES
+    if (filterToggleBtn && filterModal) {
+        filterToggleBtn.addEventListener('click', function() {
+            console.log('Opening modal with inline styles');
+            // Use inline styles instead of CSS classes
+            filterModal.style.right = '0';
+            if (modalOverlay) {
+                modalOverlay.style.display = 'block';
+            }
+        });
+    } else {
+        console.error('Missing elements for modal:', {
+            button: !filterToggleBtn,
+            modal: !filterModal
+        });
+    }
+    
+    // Close filter modal - USING INLINE STYLES
+    if (closeFilterBtn && filterModal) {
+        closeFilterBtn.addEventListener('click', function() {
+            console.log('Closing modal');
+            filterModal.style.right = '-400px';
+            if (modalOverlay) {
+                modalOverlay.style.display = 'none';
+            }
+        });
+    }
+    
+    // Apply filters
+    if (applyFiltersBtn && filterModal) {
+        applyFiltersBtn.addEventListener('click', function() {
+            console.log('Applying filters');
+            filterModal.style.right = '-400px';
+            if (modalOverlay) {
+                modalOverlay.style.display = 'none';
+            }
+            filterProperties();
+        });
+    }
+    
+    // Clear all filters
+    if (clearFiltersBtn && filterModal) {
+        clearFiltersBtn.addEventListener('click', function() {
+            console.log('Clearing all filters');
+            // Clear all amenity checkboxes
+            const checkboxes = document.querySelectorAll('input[name="amenities"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Clear price inputs
+            document.getElementById('price-min').value = '0';
+            document.getElementById('price-max').value = '50000';
+            
+            // Clear location
+            document.getElementById('location').value = 'all';
+            
+            // Clear search
+            document.getElementById('search').value = '';
+            
+            selectedAmenities = [];
+            updateFilterCount();
+            filterProperties();
+            filterModal.style.right = '-400px';
+            if (modalOverlay) {
+                modalOverlay.style.display = 'none';
+            }
+        });
+    }
+    
+    // Update selected amenities when checkboxes change
+    const checkboxes = document.querySelectorAll('input[name="amenities"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateSelectedAmenities();
+            updateFilterCount();
+        });
+    });
+    
+    // Close modal when clicking outside (on overlay)
+    if (modalOverlay && filterModal) {
+        modalOverlay.addEventListener('click', function() {
+            console.log('Closing modal via overlay click');
+            filterModal.style.right = '-400px';
+            modalOverlay.style.display = 'none';
+        });
+    }
+    
+    // Close modal when pressing Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && filterModal) {
+            console.log('Closing modal via Escape key');
+            filterModal.style.right = '-400px';
+            if (modalOverlay) {
+                modalOverlay.style.display = 'none';
+            }
+        }
+    });
 }
 
-function showSettingsPage() {
-    // Add your settings page navigation logic here
-    console.log('Navigating to settings page');
-    // window.location.href = '/settings';
+function updateSelectedAmenities() {
+    selectedAmenities = [];
+    const checkboxes = document.querySelectorAll('input[name="amenities"]:checked');
+    checkboxes.forEach(checkbox => {
+        selectedAmenities.push(checkbox.value);
+    });
+    console.log('Selected amenities:', selectedAmenities);
+}
+
+function updateFilterCount() {
+    const filterCount = document.getElementById('filterCount');
+    if (filterCount) {
+        filterCount.textContent = selectedAmenities.length;
+    }
 }
 
 function filterProperties() {
@@ -83,16 +195,25 @@ function filterProperties() {
     
     propertyCards.forEach(card => {
         const title = card.querySelector('.property-title').textContent.toLowerCase();
+        const description = card.querySelector('.property-description').textContent.toLowerCase();
         const location = card.getAttribute('data-location');
         const price = parseFloat(card.getAttribute('data-price'));
         
-        const matchesSearch = title.includes(searchTerm) || 
-                            location.includes(searchTerm);
+        const matchesSearch = !searchTerm || 
+                            title.includes(searchTerm) || 
+                            description.includes(searchTerm) ||
+                            location.includes(searchTerm) ||
+                            checkAmenitiesText(card, searchTerm);
+        
         const matchesLocation = locationFilter === 'all' || 
                               location.includes(locationFilter.toLowerCase());
+        
         const matchesPrice = price >= minPrice && price <= maxPrice;
         
-        if (matchesSearch && matchesLocation && matchesPrice) {
+        const matchesAmenities = selectedAmenities.length === 0 || 
+                               selectedAmenities.every(amenity => hasAmenity(card, amenity));
+        
+        if (matchesSearch && matchesLocation && matchesPrice && matchesAmenities) {
             card.style.display = 'block';
             visibleCount++;
         } else {
@@ -101,6 +222,45 @@ function filterProperties() {
     });
     
     updatePropertyCount(visibleCount);
+    console.log(`Filtered properties: ${visibleCount} visible`);
+}
+
+function hasAmenity(card, amenity) {
+    const amenityMap = {
+        'electricity': 'Electricity',
+        'water': 'Water',
+        'internet': 'Internet',
+        'airconditioning': 'AC',
+        'kitchen': 'Kitchen',
+        'private_bathroom': 'Private bathroom',
+        'secure_locks': 'Secure',
+        'fire_extinguisher': 'Fire extinguisher',
+        'cctv': 'CCTV',
+        'parking': 'Parking',
+        'furnished': 'Furnished',
+        'pet_friendly': 'Pet Friendly'
+    };
+    
+    const amenityText = amenityMap[amenity];
+    if (!amenityText) return false;
+    
+    const amenitiesSection = card.querySelector('.property-amenities');
+    if (amenitiesSection && amenitiesSection.textContent.includes(amenityText)) return true;
+    
+    const safetySection = card.querySelector('.property-safety');
+    if (safetySection && safetySection.textContent.includes(amenityText)) return true;
+    
+    return false;
+}
+
+function checkAmenitiesText(card, searchTerm) {
+    const amenitiesSection = card.querySelector('.property-amenities');
+    const safetySection = card.querySelector('.property-safety');
+    
+    if (amenitiesSection && amenitiesSection.textContent.toLowerCase().includes(searchTerm)) return true;
+    if (safetySection && safetySection.textContent.toLowerCase().includes(searchTerm)) return true;
+    
+    return false;
 }
 
 function updatePropertyCount(count) {
@@ -108,7 +268,6 @@ function updatePropertyCount(count) {
     if (count !== undefined) {
         countElement.textContent = count;
     } else {
-        // Count all visible property cards
         const visibleCards = document.querySelectorAll('.property-card[style=""]').length + 
                            document.querySelectorAll('.property-card:not([style])').length;
         countElement.textContent = visibleCards;
@@ -129,4 +288,18 @@ function toggleView(viewType) {
         listBtn.classList.add('active');
         gridBtn.classList.remove('active');
     }
+}
+
+function setupViewDetailsButtons() {
+    const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
+    viewDetailsButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const propertyId = this.getAttribute('data-property-id');
+            viewPropertyDetails(propertyId);
+        });
+    });
+}
+
+function viewPropertyDetails(propertyId) {
+    console.log('Viewing details for property:', propertyId);
 }

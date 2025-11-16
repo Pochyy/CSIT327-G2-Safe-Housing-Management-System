@@ -75,6 +75,135 @@
                 <label for="price-max">Max Price</label>
                 <input type="number" id="price-max" placeholder="₱50,000" value="50000">
             </div>
+            
+            <!-- Filter Button -->
+            <div class="input-group">
+                <label>&nbsp;</label>
+                <button class="filter-toggle-btn" id="filterToggleBtn">
+                    <i class="fas fa-filter"></i>
+                    Filters
+                    <span class="filter-count" id="filterCount">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Modal/Sidebar -->
+    <div class="filter-modal" id="filterModal">
+        <div class="filter-modal-content">
+            <div class="filter-modal-header">
+                <h3>Filter Properties</h3>
+               <button class="close-filter-btn" id="closeFilterBtn" title="Close filter menu">
+    <i class="fas fa-times"></i>
+</button>
+            </div>
+            
+            <div class="filter-modal-body">
+                <!-- Basic Amenities -->
+                <div class="filter-section">
+                    <h4>🏠 Basic Amenities</h4>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="electricity">
+                            <span class="checkmark"></span>
+                            Electricity
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="water">
+                            <span class="checkmark"></span>
+                            Water supply
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="internet">
+                            <span class="checkmark"></span>
+                            Internet / Wi-Fi
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="airconditioning">
+                            <span class="checkmark"></span>
+                            Airconditioning
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="kitchen">
+                            <span class="checkmark"></span>
+                            Kitchen
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="shared_kitchen">
+                            <span class="checkmark"></span>
+                            Shared kitchen
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="private_bathroom">
+                            <span class="checkmark"></span>
+                            Private bathroom
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="shared_bathroom">
+                            <span class="checkmark"></span>
+                            Shared bathroom
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Safety & Security -->
+                <div class="filter-section">
+                    <h4>🔒 Safety & Security</h4>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="secure_locks">
+                            <span class="checkmark"></span>
+                            Secure locks
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="cctv">
+                            <span class="checkmark"></span>
+                            CCTV
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="gated_compound">
+                            <span class="checkmark"></span>
+                            Gated compound
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="security_guard">
+                            <span class="checkmark"></span>
+                            Security guard
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Property Features -->
+                <div class="filter-section">
+                    <h4>🧰 Property Features</h4>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="parking">
+                            <span class="checkmark"></span>
+                            Parking
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="furnished">
+                            <span class="checkmark"></span>
+                            Furnished
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="pet_friendly">
+                            <span class="checkmark"></span>
+                            Pet friendly
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-modal-footer">
+                <button class="btn-secondary" id="clearFiltersBtn">
+                    Clear All
+                </button>
+                <button class="btn-primary" id="applyFiltersBtn">
+                    Apply Filters
+                </button>
+            </div>
         </div>
     </div>
 
@@ -86,25 +215,25 @@
                 <p class="text-muted"><span id="property-count">{{ properties.count }}</span> properties found</p>
             </div>
             <div class="view-toggle">
-                <button class="btn-icon active" id="grid-view">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="14" width="7" height="7"></rect>
-                        <rect x="3" y="14" width="7" height="7"></rect>
-                    </svg>
-                </button>
-                <button class="btn-icon" id="list-view">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="8" y1="6" x2="21" y2="6"></line>
-                        <line x1="8" y1="12" x2="21" y2="12"></line>
-                        <line x1="8" y1="18" x2="21" y2="18"></line>
-                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
+    <button class="btn-icon active" id="grid-view" aria-label="Grid view">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+    </button>
+    <button class="btn-icon" id="list-view" aria-label="List view">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+    </button>
+</div>
         </div>
 
         <!-- Property Grid -->
@@ -146,20 +275,24 @@
                     <p class="property-description">{{ property.property_description|truncatewords:20 }}</p>
                     
                     <div class="property-amenities">
-                        {% if property.electricity %}<span class="amenity-tag">⚡ Electricity</span>{% endif %}
-                        {% if property.water %}<span class="amenity-tag">💧 Water</span>{% endif %}
-                        {% if property.internet %}<span class="amenity-tag">🌐 Internet</span>{% endif %}
-                        {% if property.airconditioning %}<span class="amenity-tag">❄️ AC</span>{% endif %}
-                        {% if property.parking %}<span class="amenity-tag">🅿️ Parking</span>{% endif %}
-                        {% if property.furnished %}<span class="amenity-tag">🛋️ Furnished</span>{% endif %}
-                        {% if property.pet_friendly %}<span class="amenity-tag">🐾 Pet Friendly</span>{% endif %}
+                        {% if property.electricity %}<span class="amenity-tag">Electricity</span>{% endif %}
+                        {% if property.water %}<span class="amenity-tag">Water</span>{% endif %}
+                        {% if property.internet %}<span class="amenity-tag">Internet</span>{% endif %}
+                        {% if property.airconditioning %}<span class="amenity-tag">AC</span>{% endif %}
+                        {% if property.kitchen %}<span class="amenity-tag">Kitchen</span>{% endif %}
+                        {% if property.shared_kitchen %}<span class="amenity-tag">Shared Kitchen</span>{% endif %}
+                        {% if property.private_bathroom %}<span class="amenity-tag">Private Bathroom</span>{% endif %}
+                        {% if property.shared_bathroom %}<span class="amenity-tag">Shared Bathroom</span>{% endif %}
+                        {% if property.parking %}<span class="amenity-tag">Parking</span>{% endif %}
+                        {% if property.furnished %}<span class="amenity-tag">Furnished</span>{% endif %}
+                        {% if property.pet_friendly %}<span class="amenity-tag">Pet Friendly</span>{% endif %}
                     </div>
                     
                     <div class="property-safety">
-                        {% if property.secure_locks %}<span class="safety-tag">🔒 Secure</span>{% endif %}
-                        {% if property.cctv %}<span class="safety-tag">📹 CCTV</span>{% endif %}
-                        {% if property.gated_compound %}<span class="safety-tag">🏘️ Gated</span>{% endif %}
-                        {% if property.security_guard %}<span class="safety-tag">👮 Security</span>{% endif %}
+                        {% if property.secure_locks %}<span class="safety-tag">Secure Locks</span>{% endif %}
+                        {% if property.cctv %}<span class="safety-tag">CCTV</span>{% endif %}
+                        {% if property.gated_compound %}<span class="safety-tag">Gated Compound</span>{% endif %}
+                        {% if property.security_guard %}<span class="safety-tag">Security Guard</span>{% endif %}
                     </div>
                     
                     <button class="btn-primary view-details-btn" data-property-id="{{ property.id }}">
@@ -182,30 +315,79 @@
         <p>© 2025 Safe Haven. All rights reserved.</p>
     </footer>
 
+    <!-- Overlay for modal -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+   <!-- WORKING SOLUTION -->
+<script>
+console.log("🎯 Applying working modal solution...");
+
+const filterButton = document.getElementById('filterToggleBtn');
+const filterModal = document.getElementById('filterModal');
+const modalOverlay = document.getElementById('modalOverlay');
+const closeFilterBtn = document.getElementById('closeFilterBtn');
+const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+
+// Function to open modal
+function openModal() {
+    console.log("Opening modal...");
+    
+    // Use CSSText to set !important styles
+    filterModal.style.cssText = 'right: 0 !important; display: block !important; visibility: visible !important; z-index: 10000 !important;';
+    modalOverlay.style.cssText = 'display: block !important; z-index: 9999 !important;';
+}
+
+// Function to close modal
+function closeModal() {
+    console.log("Closing modal...");
+    filterModal.style.cssText = 'right: -400px !important;';
+    modalOverlay.style.cssText = 'display: none !important;';
+}
+
+// Set up event listeners
+if (filterButton && filterModal) {
+    // Open modal
+    filterButton.addEventListener('click', openModal);
+    
+    // Close modal
+    if (closeFilterBtn) {
+        closeFilterBtn.addEventListener('click', closeModal);
+    }
+    
+    // Apply filters and close
+    if (applyFiltersBtn) {
+        applyFiltersBtn.addEventListener('click', function() {
+            closeModal();
+            // Your filter logic will go here
+        });
+    }
+    
+    // Clear filters and close
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', function() {
+            // Clear checkboxes
+            const checkboxes = document.querySelectorAll('input[name="amenities"]');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+            closeModal();
+            // Your clear filter logic will go here
+        });
+    }
+    
+    // Close on overlay click
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', closeModal);
+    }
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
+    
+    console.log("✅ Modal event listeners set up successfully!");
+} else {
+    console.error("❌ Modal elements not found");
+}
+</script>
     <script src="{% static 'renterPage/renter.js' %}"></script>
 </body>
 </html>
-    <script>
-        // Modal functionality
-        const modalOverlay = document.getElementById('modalOverlay');
-        const openModalBtn = document.getElementById('openModalBtn');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const savePropertyBtn = document.getElementById('savePropertyBtn');
-        
-        // Open modal
-        openModalBtn.addEventListener('click', () => {
-            modalOverlay.classList.add('active');
-        });
-        
-        // Close modal
-        function closeModal() {
-            modalOverlay.classList.remove('active');
-        }
-        
-        closeModalBtn.addEventListener('click', closeModal);
-        cancelBtn.addEventListener('click', closeModal);
-        
-        // Close modal
-
-        
