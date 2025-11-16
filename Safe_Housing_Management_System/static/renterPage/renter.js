@@ -12,14 +12,22 @@ let selectedAmenities = [];
 
 function setupEventListeners() {
     // Basic filter event listeners
-    document.getElementById('search').addEventListener('input', filterProperties);
-    document.getElementById('location').addEventListener('change', filterProperties);
-    document.getElementById('price-min').addEventListener('input', filterProperties);
-    document.getElementById('price-max').addEventListener('input', filterProperties);
+    const searchInput = document.getElementById('search');
+    const locationSelect = document.getElementById('location');
+    const priceMin = document.getElementById('price-min');
+    const priceMax = document.getElementById('price-max');
+    
+    if (searchInput) searchInput.addEventListener('input', filterProperties);
+    if (locationSelect) locationSelect.addEventListener('change', filterProperties);
+    if (priceMin) priceMin.addEventListener('input', filterProperties);
+    if (priceMax) priceMax.addEventListener('input', filterProperties);
     
     // View toggle functionality
-    document.getElementById('grid-view').addEventListener('click', () => toggleView('grid'));
-    document.getElementById('list-view').addEventListener('click', () => toggleView('list'));
+    const gridView = document.getElementById('grid-view');
+    const listView = document.getElementById('list-view');
+    
+    if (gridView) gridView.addEventListener('click', () => toggleView('grid'));
+    if (listView) listView.addEventListener('click', () => toggleView('list'));
     
     // View details buttons
     setupViewDetailsButtons();
@@ -68,11 +76,10 @@ function setupFilterModal() {
         overlay: !!modalOverlay
     });
     
-    // Open filter modal - USING INLINE STYLES
+    // Open filter modal
     if (filterToggleBtn && filterModal) {
         filterToggleBtn.addEventListener('click', function() {
-            console.log('Opening modal with inline styles');
-            // Use inline styles instead of CSS classes
+            console.log('Opening modal');
             filterModal.style.right = '0';
             if (modalOverlay) {
                 modalOverlay.style.display = 'block';
@@ -85,7 +92,7 @@ function setupFilterModal() {
         });
     }
     
-    // Close filter modal - USING INLINE STYLES
+    // Close filter modal
     if (closeFilterBtn && filterModal) {
         closeFilterBtn.addEventListener('click', function() {
             console.log('Closing modal');
@@ -119,14 +126,18 @@ function setupFilterModal() {
             });
             
             // Clear price inputs
-            document.getElementById('price-min').value = '0';
-            document.getElementById('price-max').value = '50000';
+            const priceMin = document.getElementById('price-min');
+            const priceMax = document.getElementById('price-max');
+            if (priceMin) priceMin.value = '0';
+            if (priceMax) priceMax.value = '50000';
             
             // Clear location
-            document.getElementById('location').value = 'all';
+            const location = document.getElementById('location');
+            if (location) location.value = 'all';
             
             // Clear search
-            document.getElementById('search').value = '';
+            const search = document.getElementById('search');
+            if (search) search.value = '';
             
             selectedAmenities = [];
             updateFilterCount();
@@ -185,28 +196,43 @@ function updateFilterCount() {
 }
 
 function filterProperties() {
-    const searchTerm = document.getElementById('search').value.toLowerCase();
-    const locationFilter = document.getElementById('location').value;
-    const minPrice = parseInt(document.getElementById('price-min').value) || 0;
-    const maxPrice = parseInt(document.getElementById('price-max').value) || 100000;
+    const searchInput = document.getElementById('search');
+    const locationSelect = document.getElementById('location');
+    const priceMinInput = document.getElementById('price-min');
+    const priceMaxInput = document.getElementById('price-max');
+    
+    if (!searchInput || !locationSelect || !priceMinInput || !priceMaxInput) {
+        console.error('Filter inputs not found');
+        return;
+    }
+    
+    const searchTerm = searchInput.value.toLowerCase();
+    const locationFilter = locationSelect.value;
+    const minPrice = parseInt(priceMinInput.value) || 0;
+    const maxPrice = parseInt(priceMaxInput.value) || 100000;
     
     const propertyCards = document.querySelectorAll('.property-card');
     let visibleCount = 0;
     
     propertyCards.forEach(card => {
-        const title = card.querySelector('.property-title').textContent.toLowerCase();
-        const description = card.querySelector('.property-description').textContent.toLowerCase();
+        const titleElement = card.querySelector('.property-title');
+        const descriptionElement = card.querySelector('.property-description');
+        
+        if (!titleElement || !descriptionElement) return;
+        
+        const title = titleElement.textContent.toLowerCase();
+        const description = descriptionElement.textContent.toLowerCase();
         const location = card.getAttribute('data-location');
-        const price = parseFloat(card.getAttribute('data-price'));
+        const price = parseFloat(card.getAttribute('data-price')) || 0;
         
         const matchesSearch = !searchTerm || 
                             title.includes(searchTerm) || 
                             description.includes(searchTerm) ||
-                            location.includes(searchTerm) ||
+                            (location && location.includes(searchTerm)) ||
                             checkAmenitiesText(card, searchTerm);
         
         const matchesLocation = locationFilter === 'all' || 
-                              location.includes(locationFilter.toLowerCase());
+                              (location && location.includes(locationFilter.toLowerCase()));
         
         const matchesPrice = price >= minPrice && price <= maxPrice;
         
@@ -232,10 +258,13 @@ function hasAmenity(card, amenity) {
         'internet': 'Internet',
         'airconditioning': 'AC',
         'kitchen': 'Kitchen',
-        'private_bathroom': 'Private bathroom',
-        'secure_locks': 'Secure',
-        'fire_extinguisher': 'Fire extinguisher',
+        'shared_kitchen': 'Shared Kitchen',
+        'private_bathroom': 'Private Bathroom',
+        'shared_bathroom': 'Shared Bathroom',
+        'secure_locks': 'Secure Locks',
         'cctv': 'CCTV',
+        'gated_compound': 'Gated Compound',
+        'security_guard': 'Security Guard',
         'parking': 'Parking',
         'furnished': 'Furnished',
         'pet_friendly': 'Pet Friendly'
@@ -265,12 +294,14 @@ function checkAmenitiesText(card, searchTerm) {
 
 function updatePropertyCount(count) {
     const countElement = document.getElementById('property-count');
-    if (count !== undefined) {
-        countElement.textContent = count;
-    } else {
-        const visibleCards = document.querySelectorAll('.property-card[style=""]').length + 
-                           document.querySelectorAll('.property-card:not([style])').length;
-        countElement.textContent = visibleCards;
+    if (countElement) {
+        if (count !== undefined) {
+            countElement.textContent = count;
+        } else {
+            const visibleCards = document.querySelectorAll('.property-card[style=""]').length + 
+                               document.querySelectorAll('.property-card:not([style])').length;
+            countElement.textContent = visibleCards;
+        }
     }
 }
 
@@ -278,6 +309,8 @@ function toggleView(viewType) {
     const container = document.getElementById('property-container');
     const gridBtn = document.getElementById('grid-view');
     const listBtn = document.getElementById('list-view');
+    
+    if (!container || !gridBtn || !listBtn) return;
     
     if (viewType === 'grid') {
         container.className = 'property-grid';
@@ -302,4 +335,5 @@ function setupViewDetailsButtons() {
 
 function viewPropertyDetails(propertyId) {
     console.log('Viewing details for property:', propertyId);
+    // Add your property details logic here
 }
