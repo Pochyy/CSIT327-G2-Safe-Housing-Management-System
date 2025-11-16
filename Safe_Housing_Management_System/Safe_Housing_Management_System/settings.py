@@ -25,6 +25,7 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = [
   'csit327-g2-safe-housing-management-system.onrender.com',
   'localhost',
+  '127.0.0.1',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
