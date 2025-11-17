@@ -1,7 +1,7 @@
 from django.views.decorators.cache import never_cache   
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse  # Added HttpResponse
 from django.views.decorators.http import require_http_methods
 from .forms import PropertyForm
 from .models import Property, Notification
@@ -10,9 +10,8 @@ from .models import Property, Notification
 @login_required
 def landLordPage(request):
     user = request.user 
-    form = PropertyForm()  # Create an empty form instance
+    form = PropertyForm()
     notifications = Notification.objects.filter(user=user, is_read=False).order_by('-created_at')
-
     
     properties = Property.objects.filter(landlord=user)
     total_properties = properties.count()
@@ -40,21 +39,20 @@ def landLordPage(request):
 @login_required
 def add_property(request):
     if request.method == 'POST':
-        print("FILES received:", request.FILES) 
-        form = PropertyForm(request.POST, request.FILES)  # Include request.FILES for image upload
+        form = PropertyForm(request.POST, request.FILES)
         if form.is_valid():
             property = form.save(commit=False)
             property.landlord = request.user
             property.save()
             return JsonResponse({'success': True, 'message': 'Property added successfully!'})
-    else:
-        return JsonResponse({
+        else:
+            return JsonResponse({
                 'success': False, 
                 'message': 'Please correct the errors below', 
                 'errors': form.errors
             })
-    
-    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+    else:
+        return JsonResponse({'success': False, 'message': 'GET method not allowed for this endpoint'})
 
 @login_required
 def edit_property(request, property_id):
@@ -69,18 +67,17 @@ def edit_property(request, property_id):
             else:
                 return JsonResponse({'success': False, 'message': 'Please correct the errors below', 'errors': form.errors})
         
-        # For GET requests, return property data
         elif request.method == 'GET':
             property_data = {
                 'id': property.id,
                 'property_name': property.property_name,
                 'location': property.location,
-                'price': float(property.price),  # Convert Decimal to float for JSON
+                'price': float(property.price),
                 'beds': property.beds,
                 'bathrooms': property.bathrooms,
                 'area': property.area,
                 'property_description': property.property_description,
-                'image_url': property.image.url if property.image else None,
+                'image_url': property.image_url,  # Fixed: use the safe property
                 # Amenities
                 'electricity': property.electricity,
                 'water': property.water,
@@ -129,3 +126,34 @@ def mark_notification_read(request, notification_id):
 def mark_all_notifications_read(request):
     Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
     return JsonResponse({'success': True})
+
+# Debug view
+@login_required
+def check_property_images(request):
+    properties = Property.objects.filter(landlord=request.user)
+    
+    html = "<h1>Property Images Debug</h1>"
+    for prop in properties:
+        html += f"""
+        <div style='border: 1px solid #ccc; margin: 10px; padding: 10px;'>
+            <h3>{prop.property_name}</h3>
+            <p>Image field: {prop.image}</p>
+            <p>Image exists in DB: {bool(prop.image)}</p>
+            <p>Image name: {prop.image.name if prop.image else 'No image'}</p>
+            <p>Image URL: {prop.image_url}</p>
+        """
+        
+        if prop.image:
+            # Check if file actually exists
+            import os
+            from django.conf import settings
+            file_path = os.path.join(settings.MEDIA_ROOT, prop.image.name)
+            html += f"<p>File exists on disk: {os.path.exists(file_path)}</p>"
+            html += f"<p>Full path: {file_path}</p>"
+            
+            # Try to display the image
+            html += f"<img src='{prop.image_url}' style='max-width: 200px;' onerror='this.style.display=\"none\"'>"
+        
+        html += "</div>"
+    
+    return HttpResponse(html)

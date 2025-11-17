@@ -60,6 +60,10 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'Safe_Housing_Management_System.urls'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+print(f"=== DEBUG MODE: {DEBUG} ===")
+print(f"=== MEDIA_URL: {MEDIA_URL} ===")
+print(f"=== MEDIA_ROOT: {MEDIA_ROOT} ===")
+
 
 TEMPLATES = [
     {
@@ -68,9 +72,11 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -151,3 +157,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Production settings for Render
+if not DEBUG:
+    WHITENOISE_USE_FINDERS = True
+    WHITENOISE_MANIFEST_STRICT = False
+    
