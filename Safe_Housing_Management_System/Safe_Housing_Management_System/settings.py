@@ -5,7 +5,6 @@ Django settings for Safe_Housing_Management_System project.
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from decouple import config
 
 load_dotenv()
 
@@ -23,15 +22,15 @@ SECRET_KEY = 'django-insecure-your-secret-key-here-make-it-50-chars'
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = [
-  'csit327-g2-safe-housing-management-system.onrender.com',
-  'localhost',
-  '127.0.0.1',
+    'localhost',
+    '127.0.0.1', 
+    'csit327-g2-safe-housing-management-system.onrender.com' 
 ]
-
+    
 AUTH_USER_MODEL = 'users.CustomUser'
-LOGIN_REDIRECT_URL = 'dashboard'  # You'll need to create this
-LOGOUT_REDIRECT_URL = 'users:login'
 
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'users:login'
 
 # Application definition
 
@@ -49,7 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this line
+    'whitenoise.middleware.WhiteNoiseMiddleware',  
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -58,8 +57,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 ROOT_URLCONF = 'Safe_Housing_Management_System.urls'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 TEMPLATES = [
     {
@@ -86,23 +86,22 @@ WSGI_APPLICATION = 'Safe_Housing_Management_System.wsgi.application'
 # Database - Supabase PostgreSQL with direct connection
 DATABASES = {
     'default': {
-        'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
-        'NAME': config('DB_NAME', default='db.sqlite3'),
-        'USER': config('DB_USER', default=''),
-        'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST': config('DB_HOST', default=''),
-        'PORT': config('DB_PORT', default=''),
+        'ENGINE': os.getenv('DB_ENGINE'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
         'OPTIONS': {
             'sslmode': 'require',
-        } if config('DB_ENGINE', default='').endswith('postgresql') else {},
+        },
     }
 }
-
 
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_KEY')
 SUPABASE_SERVICE_KEY = os.getenv('SUPABASE_SERVICE_KEY')
-
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 
 # Password validation
