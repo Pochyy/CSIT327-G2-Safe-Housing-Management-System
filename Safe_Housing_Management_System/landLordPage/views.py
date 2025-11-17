@@ -40,6 +40,7 @@ def landLordPage(request):
 @login_required
 def add_property(request):
     if request.method == 'POST':
+        print("FILES received:", request.FILES) 
         form = PropertyForm(request.POST, request.FILES)  # Include request.FILES for image upload
         if form.is_valid():
             property = form.save(commit=False)
