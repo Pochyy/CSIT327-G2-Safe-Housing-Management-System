@@ -92,105 +92,120 @@
     <div class="filter-modal" id="filterModal">
         <div class="filter-modal-content">
             <div class="filter-modal-header">
-                <h3>Filter Properties</h3>
-               <button class="close-filter-btn" id="closeFilterBtn" title="Close filter menu">
-    <i class="fas fa-times"></i>
-</button>
+                <h3><i class="fas fa-filter"></i> Filter Properties</h3>
+                <button class="close-filter-btn" id="closeFilterBtn" title="Close filter menu">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             
             <div class="filter-modal-body">
                 <!-- Basic Amenities -->
                 <div class="filter-section">
-                    <h4>🏠 Basic Amenities</h4>
+                    <h4><i class="fas fa-home"></i> Basic Amenities</h4>
                     <div class="checkbox-group">
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="electricity">
-                            <span class="checkmark"></span>
-                            Electricity
+                            <span class="check-icon">
+                                <i class="fas fa-bolt"></i> Electricity
+                            </span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="water">
-                            <span class="checkmark"></span>
-                            Water supply
+                            <span class="check-icon">
+                                <i class="fas fa-tint"></i> Water supply
+                            </span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="internet">
-                            <span class="checkmark"></span>
-                            Internet / Wi-Fi
+                            <span class="check-icon">
+                                <i class="fas fa-wifi"></i> Internet / Wi-Fi
+                            </span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="airconditioning">
-                            <span class="checkmark"></span>
-                            Airconditioning
+                            <span class="check-icon">
+                                <i class="fas fa-wind"></i> Airconditioning
+                            </span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="kitchen">
-                            <span class="checkmark"></span>
-                            Kitchen
+                            <span class="check-icon">
+                                <i class="fas fa-utensils"></i> Kitchen
+                            </span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="shared_kitchen">
-                            <span class="checkmark"></span>
-                            Shared kitchen
+                            <span class="check-icon">
+                                <i class="fas fa-utensil-spoon"></i> Shared kitchen
+                            </span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="private_bathroom">
-                            <span class="checkmark"></span>
-                            Private bathroom
+                            <span class="check-icon">
+                                <i class="fas fa-bath"></i> Private bathroom
+                            </span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="shared_bathroom">
-                            <span class="checkmark"></span>
-                            Shared bathroom
+                            <span class="check-icon">
+                                <i class="fas fa-restroom"></i> Shared bathroom
+                            </span>
                         </label>
                     </div>
                 </div>
                 
                 <!-- Safety & Security -->
                 <div class="filter-section">
-                    <h4>🔒 Safety & Security</h4>
+                    <h4><i class="fas fa-shield-alt"></i> Safety & Security</h4>
                     <div class="checkbox-group">
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="secure_locks">
-                            <span class="checkmark"></span>
-                            Secure locks
+                            <span class="check-icon">
+                                <i class="fas fa-lock"></i> Secure locks
+                            </span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="cctv">
-                            <span class="checkmark"></span>
-                            CCTV
+                            <span class="check-icon">
+                                <i class="fas fa-video"></i> CCTV
+                            </span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="gated_compound">
-                            <span class="checkmark"></span>
-                            Gated compound
+                            <span class="check-icon">
+                                <i class="fas fa-door-closed"></i> Gated compound
+                            </span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="security_guard">
-                            <span class="checkmark"></span>
-                            Security guard
+                            <span class="check-icon">
+                                <i class="fas fa-user-shield"></i> Security guard
+                            </span>
                         </label>
                     </div>
                 </div>
                 
                 <!-- Property Features -->
                 <div class="filter-section">
-                    <h4>🧰 Property Features</h4>
+                    <h4><i class="fas fa-tools"></i> Property Features</h4>
                     <div class="checkbox-group">
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="parking">
-                            <span class="checkmark"></span>
-                            Parking
+                            <span class="check-icon">
+                                <i class="fas fa-parking"></i> Parking
+                            </span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="furnished">
-                            <span class="checkmark"></span>
-                            Furnished
+                            <span class="check-icon">
+                                <i class="fas fa-couch"></i> Furnished
+                            </span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="amenities" value="pet_friendly">
-                            <span class="checkmark"></span>
-                            Pet friendly
+                            <span class="check-icon">
+                                <i class="fas fa-paw"></i> Pet friendly
+                            </span>
                         </label>
                     </div>
                 </div>
@@ -198,10 +213,10 @@
             
             <div class="filter-modal-footer">
                 <button class="btn-secondary" id="clearFiltersBtn">
-                    Clear All
+                    <i class="fas fa-eraser"></i> Clear All
                 </button>
                 <button class="btn-primary" id="applyFiltersBtn">
-                    Apply Filters
+                    <i class="fas fa-check"></i> Apply Filters
                 </button>
             </div>
         </div>
@@ -214,100 +229,92 @@
                 <h1>Available Properties</h1>
                 <p class="text-muted"><span id="property-count">{{ properties.count }}</span> properties found</p>
             </div>
-            <div class="view-toggle">
-    <button class="btn-icon active" id="grid-view" aria-label="Grid view">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7"></rect>
-            <rect x="14" y="3" width="7" height="7"></rect>
-            <rect x="14" y="14" width="7" height="7"></rect>
-            <rect x="3" y="14" width="7" height="7"></rect>
-        </svg>
-    </button>
-    <button class="btn-icon" id="list-view" aria-label="List view">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="8" y1="6" x2="21" y2="6"></line>
-            <line x1="8" y1="12" x2="21" y2="12"></line>
-            <line x1="8" y1="18" x2="21" y2="18"></line>
-            <line x1="3" y1="6" x2="3.01" y2="6"></line>
-            <line x1="3" y1="12" x2="3.01" y2="12"></line>
-            <line x1="3" y1="18" x2="3.01" y2="18"></line>
-        </svg>
-    </button>
-</div>
         </div>
 
         <!-- Property Grid -->
-        <div class="property-grid" id="property-container">
-            {% for property in properties %}
-            <div class="property-card" data-price="{{ property.price }}" data-location="{{ property.location|lower }}">
-                {% if property.image %}
-                <img src="{{ property.image.url }}" alt="{{ property.property_name }}" class="property-image">
-                {% else %}
-                <div class="property-image placeholder">No Image</div>
-                {% endif %}
-                
-                <div class="property-content">
-                    <div class="property-header">
+    <div class="property-grid" id="property-container">
+        {% for property in properties %}
+        <div class="property-card" data-price="{{ property.price }}" data-location="{{ property.location|lower }}">
+            {% if property.image %}
+            <div class="property-image">
+                <img src="{{ property.image.url }}" alt="{{ property.property_name }}">
+            </div>
+            {% else %}
+            <div class="property-image placeholder">
+                <i class="fas fa-home"></i>
+                <span>No Image Available</span>
+            </div>
+            {% endif %}
+            
+            <div class="property-content">
+                <div class="property-header">
+                    <div class="property-info">
                         <h3 class="property-title">{{ property.property_name }}</h3>
-                        <span class="property-price">₱{{ property.price }}/month</span>
+                        <p class="property-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            {{ property.location }}
+                        </p>
                     </div>
-                    
-                    <p class="property-location">
-                        <i class="fas fa-map-marker-alt"></i>
-                        {{ property.location }}
-                    </p>
-                    
-                    <div class="property-features">
-                        <span class="feature">
-                            <i class="fas fa-bed"></i>
-                            {{ property.beds }} bed{{ property.beds|pluralize }}
-                        </span>
-                        <span class="feature">
-                            <i class="fas fa-bath"></i>
-                            {{ property.bathrooms }} bath{{ property.bathrooms|pluralize }}
-                        </span>
-                        <span class="feature">
-                            <i class="fas fa-vector-square"></i>
-                            {{ property.area }} sq ft
-                        </span>
-                    </div>
-                    
-                    <p class="property-description">{{ property.property_description|truncatewords:20 }}</p>
-                    
-                    <div class="property-amenities">
-                        {% if property.electricity %}<span class="amenity-tag">Electricity</span>{% endif %}
-                        {% if property.water %}<span class="amenity-tag">Water</span>{% endif %}
-                        {% if property.internet %}<span class="amenity-tag">Internet</span>{% endif %}
-                        {% if property.airconditioning %}<span class="amenity-tag">AC</span>{% endif %}
-                        {% if property.kitchen %}<span class="amenity-tag">Kitchen</span>{% endif %}
-                        {% if property.shared_kitchen %}<span class="amenity-tag">Shared Kitchen</span>{% endif %}
-                        {% if property.private_bathroom %}<span class="amenity-tag">Private Bathroom</span>{% endif %}
-                        {% if property.shared_bathroom %}<span class="amenity-tag">Shared Bathroom</span>{% endif %}
-                        {% if property.parking %}<span class="amenity-tag">Parking</span>{% endif %}
-                        {% if property.furnished %}<span class="amenity-tag">Furnished</span>{% endif %}
-                        {% if property.pet_friendly %}<span class="amenity-tag">Pet Friendly</span>{% endif %}
-                    </div>
-                    
-                    <div class="property-safety">
-                        {% if property.secure_locks %}<span class="safety-tag">Secure Locks</span>{% endif %}
-                        {% if property.cctv %}<span class="safety-tag">CCTV</span>{% endif %}
-                        {% if property.gated_compound %}<span class="safety-tag">Gated Compound</span>{% endif %}
-                        {% if property.security_guard %}<span class="safety-tag">Security Guard</span>{% endif %}
-                    </div>
-                    
-                    <button class="btn-primary view-details-btn" data-property-id="{{ property.id }}">
-                        View Details
-                    </button>
+                    <span class="property-price">₱{{ property.price }}/month</span>
                 </div>
+                
+                <div class="property-features">
+                    <span class="feature">
+                        <i class="fas fa-bed"></i>
+                        {{ property.beds }} bed{{ property.beds|pluralize }}
+                    </span>
+                    <span class="feature">
+                        <i class="fas fa-bath"></i>
+                        {{ property.bathrooms }} bath{{ property.bathrooms|pluralize }}
+                    </span>
+                    <span class="feature">
+                        <i class="fas fa-vector-square"></i>
+                        {{ property.area }} sq ft
+                    </span>
+                </div>
+                
+                <p class="property-description">{{ property.property_description|truncatewords:20 }}</p>
+                
+                <div class="amenities-container">
+                    <div class="amenities-section">
+                        <h5>Amenities</h5>
+                        <div class="property-amenities">
+                            {% if property.electricity %}<span class="amenity-tag"><i class="fas fa-bolt"></i> Electricity</span>{% endif %}
+                            {% if property.water %}<span class="amenity-tag"><i class="fas fa-tint"></i> Water</span>{% endif %}
+                            {% if property.internet %}<span class="amenity-tag"><i class="fas fa-wifi"></i> Internet</span>{% endif %}
+                            {% if property.airconditioning %}<span class="amenity-tag"><i class="fas fa-wind"></i> AC</span>{% endif %}
+                            {% if property.kitchen %}<span class="amenity-tag"><i class="fas fa-utensils"></i> Kitchen</span>{% endif %}
+                            {% if property.shared_kitchen %}<span class="amenity-tag"><i class="fas fa-utensil-spoon"></i> Shared Kitchen</span>{% endif %}
+                            {% if property.private_bathroom %}<span class="amenity-tag"><i class="fas fa-bath"></i> Private Bathroom</span>{% endif %}
+                            {% if property.shared_bathroom %}<span class="amenity-tag"><i class="fas fa-restroom"></i> Shared Bathroom</span>{% endif %}
+                            {% if property.parking %}<span class="amenity-tag"><i class="fas fa-parking"></i> Parking</span>{% endif %}
+                            {% if property.furnished %}<span class="amenity-tag"><i class="fas fa-couch"></i> Furnished</span>{% endif %}
+                            {% if property.pet_friendly %}<span class="amenity-tag"><i class="fas fa-paw"></i> Pet Friendly</span>{% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="amenities-section">
+                        <h5>Safety</h5>
+                        <div class="property-safety">
+                            {% if property.secure_locks %}<span class="safety-tag"><i class="fas fa-lock"></i> Secure Locks</span>{% endif %}
+                            {% if property.cctv %}<span class="safety-tag"><i class="fas fa-video"></i> CCTV</span>{% endif %}
+                            {% if property.gated_compound %}<span class="safety-tag"><i class="fas fa-gate"></i> Gated Compound</span>{% endif %}
+                            {% if property.security_guard %}<span class="safety-tag"><i class="fas fa-user-shield"></i> Security Guard</span>{% endif %}
+                        </div>
+                    </div>
+                </div>
+                <button class="view-details-btn" data-property-id="{{ property.id }}">
+                    View Details
+                </button>
             </div>
-            {% empty %}
-            <div class="no-properties">
-                <i class="fas fa-home fa-3x"></i>
-                <h3>No Properties Available</h3>
-                <p>There are currently no approved properties in the system.</p>
-            </div>
-            {% endfor %}
         </div>
+        {% empty %}
+        <div class="no-properties">
+            <i class="fas fa-home fa-3x"></i>
+            <h3>No Properties Available</h3>
+            <p>There are currently no approved properties in the system.</p>
+        </div>
+        {% endfor %}
     </div>
 
     <!-- Footer -->
@@ -318,385 +325,7 @@
     <!-- Overlay for modal -->
     <div class="modal-overlay" id="modalOverlay"></div>
    
-    <!-- WORKING SOLUTION -->
-<script>
-console.log("🎯 Applying working modal solution...");
-
-const filterButton = document.getElementById('filterToggleBtn');
-const filterModal = document.getElementById('filterModal');
-const modalOverlay = document.getElementById('modalOverlay');
-const closeFilterBtn = document.getElementById('closeFilterBtn');
-const applyFiltersBtn = document.getElementById('applyFiltersBtn');
-const clearFiltersBtn = document.getElementById('clearFiltersBtn');
-const propertyContainer = document.getElementById('property-container');
-const propertyCount = document.getElementById('property-count');
-const filterCount = document.getElementById('filterCount');
-
-// Store current filter state
-let currentFilters = {
-    amenities: [],
-    priceMin: 0,
-    priceMax: 50000,
-    location: 'all',
-    search: ''
-};
-
-// Function to open modal
-function openModal() {
-    console.log("Opening modal...");
-    
-    // Use CSSText to set !important styles
-    filterModal.style.cssText = 'right: 0 !important; display: block !important; visibility: visible !important; z-index: 10000 !important;';
-    modalOverlay.style.cssText = 'display: block !important; z-index: 9999 !important;';
-}
-
-// Function to close modal
-function closeModal() {
-    console.log("Closing modal...");
-    filterModal.style.cssText = 'right: -400px !important;';
-    modalOverlay.style.cssText = 'display: none !important;';
-}
-
-// Function to get selected amenities
-function getSelectedAmenities() {
-    const selectedAmenities = [];
-    const checkboxes = document.querySelectorAll('input[name="amenities"]:checked');
-    checkboxes.forEach(checkbox => {
-        selectedAmenities.push(checkbox.value);
-    });
-    return selectedAmenities;
-}
-
-// Function to update filter count display
-function updateFilterCount() {
-    const amenityCount = getSelectedAmenities().length;
-    const priceMin = document.getElementById('price-min').value;
-    const priceMax = document.getElementById('price-max').value;
-    const location = document.getElementById('location').value;
-    const search = document.getElementById('search').value;
-    
-    let count = amenityCount;
-    
-    // Count additional filters
-    if (priceMin > 0 || priceMax < 50000) count++;
-    if (location !== 'all') count++;
-    if (search.trim() !== '') count++;
-    
-    filterCount.textContent = count;
-}
-
-// Function to check if property matches selected amenities
-function propertyMatchesAmenities(propertyCard, selectedAmenities) {
-    if (selectedAmenities.length === 0) return true;
-    
-    // Check each selected amenity against the property
-    for (const amenity of selectedAmenities) {
-        let hasAmenity = false;
-        
-        // Check both amenities and safety sections
-        const amenitiesSection = propertyCard.querySelector('.property-amenities');
-        const safetySection = propertyCard.querySelector('.property-safety');
-        
-        switch(amenity) {
-            case 'electricity':
-                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Electricity');
-                break;
-            case 'water':
-                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Water');
-                break;
-            case 'internet':
-                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Internet');
-                break;
-            case 'airconditioning':
-                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('AC');
-                break;
-            case 'kitchen':
-                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Kitchen');
-                break;
-            case 'shared_kitchen':
-                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Shared Kitchen');
-                break;
-            case 'private_bathroom':
-                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Private Bathroom');
-                break;
-            case 'shared_bathroom':
-                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Shared Bathroom');
-                break;
-            case 'secure_locks':
-                hasAmenity = safetySection && safetySection.textContent.includes('Secure Locks');
-                break;
-            case 'cctv':
-                hasAmenity = safetySection && safetySection.textContent.includes('CCTV');
-                break;
-            case 'gated_compound':
-                hasAmenity = safetySection && safetySection.textContent.includes('Gated Compound');
-                break;
-            case 'security_guard':
-                hasAmenity = safetySection && safetySection.textContent.includes('Security Guard');
-                break;
-            case 'parking':
-                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Parking');
-                break;
-            case 'furnished':
-                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Furnished');
-                break;
-            case 'pet_friendly':
-                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Pet Friendly');
-                break;
-        }
-        
-        if (!hasAmenity) return false;
-    }
-    
-    return true;
-}
-
-// Function to check if property matches price range
-function propertyMatchesPrice(propertyCard, priceMin, priceMax) {
-    const propertyPrice = parseInt(propertyCard.getAttribute('data-price'));
-    return propertyPrice >= priceMin && propertyPrice <= priceMax;
-}
-
-// Function to check if property matches location
-function propertyMatchesLocation(propertyCard, location) {
-    if (location === 'all') return true;
-    const propertyLocation = propertyCard.getAttribute('data-location');
-    return propertyLocation.includes(location);
-}
-
-// Function to check if property matches search term
-function propertyMatchesSearch(propertyCard, searchTerm) {
-    if (!searchTerm) return true;
-    
-    const searchLower = searchTerm.toLowerCase();
-    const propertyTitle = propertyCard.querySelector('.property-title').textContent.toLowerCase();
-    const propertyLocation = propertyCard.querySelector('.property-location').textContent.toLowerCase();
-    const propertyDescription = propertyCard.querySelector('.property-description').textContent.toLowerCase();
-    
-    return propertyTitle.includes(searchLower) || 
-           propertyLocation.includes(searchLower) || 
-           propertyDescription.includes(searchLower);
-}
-
-// Function to apply filters
-function applyFilters() {
-    const selectedAmenities = getSelectedAmenities();
-    const priceMin = parseInt(document.getElementById('price-min').value) || 0;
-    const priceMax = parseInt(document.getElementById('price-max').value) || 50000;
-    const location = document.getElementById('location').value;
-    const search = document.getElementById('search').value.trim().toLowerCase();
-    
-    const propertyCards = propertyContainer.querySelectorAll('.property-card');
-    let visibleCount = 0;
-    
-    propertyCards.forEach(card => {
-        const matchesAmenities = propertyMatchesAmenities(card, selectedAmenities);
-        const matchesPrice = propertyMatchesPrice(card, priceMin, priceMax);
-        const matchesLocation = propertyMatchesLocation(card, location);
-        const matchesSearch = propertyMatchesSearch(card, search);
-        
-        if (matchesAmenities && matchesPrice && matchesLocation && matchesSearch) {
-            card.style.display = 'block';
-            visibleCount++;
-        } else {
-            card.style.display = 'none';
-        }
-    });
-    
-    // Update property count
-    propertyCount.textContent = visibleCount;
-    
-    // Show no properties message if none match
-    const noProperties = propertyContainer.querySelector('.no-properties');
-    if (visibleCount === 0 && !noProperties) {
-        const noPropertiesDiv = document.createElement('div');
-        noPropertiesDiv.className = 'no-properties';
-        noPropertiesDiv.innerHTML = `
-            <i class="fas fa-home fa-3x"></i>
-            <h3>No Properties Match Your Filters</h3>
-            <p>Try adjusting your filters to see more properties.</p>
-        `;
-        propertyContainer.appendChild(noPropertiesDiv);
-    } else if (visibleCount > 0 && noProperties) {
-        noProperties.remove();
-    }
-    
-    // Update current filters
-    currentFilters = {
-        amenities: selectedAmenities,
-        priceMin,
-        priceMax,
-        location,
-        search
-    };
-    
-    console.log(`Applied filters: ${visibleCount} properties visible`);
-}
-
-// Function to clear all filters
-function clearAllFilters() {
-    // Clear checkboxes
-    const checkboxes = document.querySelectorAll('input[name="amenities"]');
-    checkboxes.forEach(checkbox => checkbox.checked = false);
-    
-    // Reset price range
-    document.getElementById('price-min').value = 0;
-    document.getElementById('price-max').value = 50000;
-    
-    // Reset location
-    document.getElementById('location').value = 'all';
-    
-    // Reset search
-    document.getElementById('search').value = '';
-    
-    // Apply cleared filters
-    applyFilters();
-    updateFilterCount();
-}
-
-// Set up event listeners
-if (filterButton && filterModal) {
-    // Open modal
-    filterButton.addEventListener('click', openModal);
-    
-    // Close modal
-    if (closeFilterBtn) {
-        closeFilterBtn.addEventListener('click', closeModal);
-    }
-    
-    // Apply filters and close
-    if (applyFiltersBtn) {
-        applyFiltersBtn.addEventListener('click', function() {
-            applyFilters();
-            updateFilterCount();
-            closeModal();
-        });
-    }
-    
-    // Clear filters and close
-    if (clearFiltersBtn) {
-        clearFiltersBtn.addEventListener('click', function() {
-            clearAllFilters();
-            closeModal();
-        });
-    }
-    
-    // Close on overlay click
-    if (modalOverlay) {
-        modalOverlay.addEventListener('click', closeModal);
-    }
-    
-    // Close on Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeModal();
-    });
-    
-    // Add event listeners for real-time filtering
-    document.getElementById('search').addEventListener('input', function() {
-        applyFilters();
-        updateFilterCount();
-    });
-    
-    document.getElementById('location').addEventListener('change', function() {
-        applyFilters();
-        updateFilterCount();
-    });
-    
-    document.getElementById('price-min').addEventListener('input', function() {
-        applyFilters();
-        updateFilterCount();
-    });
-    
-    document.getElementById('price-max').addEventListener('input', function() {
-        applyFilters();
-        updateFilterCount();
-    });
-    
-    // Add event listeners to amenity checkboxes
-    const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]');
-    amenityCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            updateFilterCount();
-        });
-    });
-    
-    // Initialize filter count
-    updateFilterCount();
-    
-    console.log("✅ Modal event listeners set up successfully!");
-} else {
-    console.error("❌ Modal elements not found");
-}
-
-// View toggle functionality
-document.getElementById('grid-view').addEventListener('click', () => toggleView('grid'));
-document.getElementById('list-view').addEventListener('click', () => toggleView('list'));
-
-function toggleView(viewType) {
-    const container = document.getElementById('property-container');
-    const gridBtn = document.getElementById('grid-view');
-    const listBtn = document.getElementById('list-view');
-    
-    if (viewType === 'grid') {
-        container.className = 'property-grid';
-        gridBtn.classList.add('active');
-        listBtn.classList.remove('active');
-    } else {
-        container.className = 'property-list';
-        listBtn.classList.add('active');
-        gridBtn.classList.remove('active');
-    }
-}
-
-// User dropdown functionality
-const userDropdownBtn = document.getElementById('userDropdownBtn');
-const userDropdown = document.getElementById('userDropdown');
-
-if (userDropdownBtn && userDropdown) {
-    userDropdownBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        userDropdown.classList.toggle('active');
-    });
-
-    document.addEventListener('click', function(e) {
-        if (!userDropdownBtn.contains(e.target)) {
-            userDropdown.classList.remove('active');
-        }
-    });
-
-    const dropdownItems = document.querySelectorAll('.user-dropdown-item');
-    dropdownItems.forEach(item => {
-        item.addEventListener('click', function() {
-            userDropdown.classList.remove('active');
-        });
-    });
-
-    userDropdown.addEventListener('click', function(e) {
-        e.stopPropagation();
-    });
-}
-
-// View details buttons
-const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
-viewDetailsButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        const propertyId = this.getAttribute('data-property-id');
-        viewPropertyDetails(propertyId);
-    });
-});
-
-function viewPropertyDetails(propertyId) {
-    console.log('Viewing details for property:', propertyId);
-    // Add your property details logic here
-}
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Renter page loaded successfully!');
-    updateFilterCount();
-});
-</script>
-
     <script src="{% static 'renterPage/renter.js' %}"></script>
+
 </body>
 </html>
