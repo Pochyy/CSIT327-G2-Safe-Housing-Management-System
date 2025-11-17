@@ -42,7 +42,7 @@
                         {% for notification in notifications %}
                         <div class="notification-item {% if not notification.is_read %}unread{% endif %}" 
                             data-notification-id="{{ notification.id }}">
-                            <div class="notification-icon">
+                            <div class="notification-type-icon">
                                 {% if notification.notification_type == 'approval' %}✅
                                 {% elif notification.notification_type == 'rejection' %}❌
                                 {% else %}🔔{% endif %}
@@ -403,29 +403,5 @@
         <script src="{% static 'LandLordPage/landLord.js' %}"></script>
     </body>
     </html>
-    
-
-    <script>
-        // Modal functionality
-        const modalOverlay = document.getElementById('modalOverlay');
-        const openModalBtn = document.getElementById('openModalBtn');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const savePropertyBtn = document.getElementById('savePropertyBtn');
-        
-        // Open modal
-        openModalBtn.addEventListener('click', () => {
-            modalOverlay.classList.add('active');
-        });
-        
-        // Close modal
-        function closeModal() {
-            modalOverlay.classList.remove('active');
-        }
-        
-        closeModalBtn.addEventListener('click', closeModal);
-        cancelBtn.addEventListener('click', closeModal);
-        
-        // Close modal
 
         

@@ -894,12 +894,15 @@ textarea.form-input {
     width: 350px;
     max-height: 400px;
     overflow-y: auto;
-    z-index: 1000;
+    z-index: 10000;
     display: none;
+    margin-top: 10px;
 }
 
 .notifications-dropdown.active {
-    display: block;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .notifications-header {
@@ -947,7 +950,7 @@ textarea.form-input {
     background-color: #f5f5f5;
 }
 
-.notification-icon {
+.notification-type-icon {
     font-size: 16px;
     margin-top: 2px;
 }
@@ -1059,4 +1062,20 @@ textarea.form-input {
 #submitBtn:hover {
     background: #398c8e  !important;
     transform: translateY(-1px) !important;
+}
+
+
+/* Fix parent containers to allow dropdown to show */
+.header-right {
+    position: relative;
+    overflow: visible !important;
+}
+
+.header-content {
+    overflow: visible !important;
+}
+
+.header-container {
+    overflow: visible !important;
+    position: relative;
 }

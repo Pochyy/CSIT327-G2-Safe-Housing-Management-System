@@ -37,6 +37,60 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('❌ Dropdown elements NOT found');
     }
 
+    
+    // Notification dropdown functionality
+    const notificationIcon = document.querySelector('.notification-icon');
+    const notificationsDropdown = document.querySelector('.notifications-dropdown');
+    
+    console.log('🔔 DEBUG - Notification Icon found:', !!notificationIcon);
+    console.log('🔔 DEBUG - Notifications Dropdown found:', !!notificationsDropdown);
+
+    if (notificationIcon && notificationsDropdown) {
+        console.log('✅ Notification elements found - adding event listeners');
+
+        // Toggle dropdown
+        notificationIcon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            console.log('🎯 Notification icon CLICKED!');
+            console.log('📂 Current display:', notificationsDropdown.style.display);
+            console.log('📂 Current classes:', notificationsDropdown.className);
+            notificationsDropdown.classList.toggle('active');
+            console.log('📂 New classes:', notificationsDropdown.className);
+
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!notificationIcon.contains(e.target) && !notificationsDropdown.contains(e.target)) {
+                notificationsDropdown.classList.remove('active');
+            }
+        });
+
+        // Mark as read functionality
+        const markReadButtons = document.querySelectorAll('.mark-read-btn');
+        markReadButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const notificationItem = this.closest('.notification-item');
+                const notificationId = notificationItem.getAttribute('data-notification-id');
+                
+                markAsRead(notificationId, notificationItem);
+            });
+        });
+
+        // Mark all as read
+        const markAllReadBtn = document.querySelector('.mark-all-read');
+        if (markAllReadBtn) {
+            markAllReadBtn.addEventListener('click', function() {
+                markAllAsRead();
+            });
+        }
+
+    } else {
+        console.log('❌ Notification elements NOT found');
+    }
+    
+
     // Modal functionality
     const modalOverlay = document.getElementById('modalOverlay');
     const openModalBtn = document.getElementById('openModalBtn');
@@ -100,14 +154,83 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+    
 
-    // Notification functionality
-    const notificationIcon = document.querySelector('.notification-icon');
-    if (notificationIcon) {
-        notificationIcon.addEventListener('click', function(e) {
-            e.stopPropagation();
-            alert('Notification dropdown would open here with 3 new notifications');
+    // Mark single notification as read
+    function markAsRead(notificationId, notificationElement) {
+        fetch(`/landlord/notifications/mark-read/${notificationId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                notificationElement.classList.remove('unread');
+                notificationElement.remove();
+                updateNotificationBadge();
+            }
+        })
+        .catch(error => {
+            console.error('Error marking notification as read:', error);
         });
+    }
+
+    // Mark all notifications as read
+    function markAllAsRead() {
+        fetch('/landlord/notifications/mark-all-read/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove all unread notifications from the list
+                document.querySelectorAll('.notification-item.unread').forEach(item => {
+                    item.remove();
+                });
+                
+                // Update badge count to 0
+                updateNotificationBadge();
+                
+                // Show "no notifications" message if empty
+                const notificationsList = document.querySelector('.notifications-list');
+                if (notificationsList.children.length === 0) {
+                    notificationsList.innerHTML = '<div class="no-notifications"><p>No new notifications</p></div>';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error marking all notifications as read:', error);
+        });
+    }
+
+    // Update notification badge count
+    function updateNotificationBadge() {
+        const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+        const notificationBadge = document.querySelector('.notification-badge');
+        
+        if (unreadCount > 0) {
+            if (notificationBadge) {
+                notificationBadge.textContent = unreadCount;
+            } else {
+                // Create badge if it doesn't exist
+                const badge = document.createElement('div');
+                badge.className = 'notification-badge';
+                badge.textContent = unreadCount;
+                document.querySelector('.notification-icon').appendChild(badge);
+            }
+        } else {
+            // Remove badge if no unread notifications
+            if (notificationBadge) {
+                notificationBadge.remove();
+            }
+        }
     }
 
     // Image upload functionality
