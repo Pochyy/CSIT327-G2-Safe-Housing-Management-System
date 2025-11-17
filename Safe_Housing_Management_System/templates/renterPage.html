@@ -317,7 +317,8 @@
 
     <!-- Overlay for modal -->
     <div class="modal-overlay" id="modalOverlay"></div>
-   <!-- WORKING SOLUTION -->
+   
+    <!-- WORKING SOLUTION -->
 <script>
 console.log("🎯 Applying working modal solution...");
 
@@ -327,6 +328,18 @@ const modalOverlay = document.getElementById('modalOverlay');
 const closeFilterBtn = document.getElementById('closeFilterBtn');
 const applyFiltersBtn = document.getElementById('applyFiltersBtn');
 const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+const propertyContainer = document.getElementById('property-container');
+const propertyCount = document.getElementById('property-count');
+const filterCount = document.getElementById('filterCount');
+
+// Store current filter state
+let currentFilters = {
+    amenities: [],
+    priceMin: 0,
+    priceMax: 50000,
+    location: 'all',
+    search: ''
+};
 
 // Function to open modal
 function openModal() {
@@ -344,6 +357,203 @@ function closeModal() {
     modalOverlay.style.cssText = 'display: none !important;';
 }
 
+// Function to get selected amenities
+function getSelectedAmenities() {
+    const selectedAmenities = [];
+    const checkboxes = document.querySelectorAll('input[name="amenities"]:checked');
+    checkboxes.forEach(checkbox => {
+        selectedAmenities.push(checkbox.value);
+    });
+    return selectedAmenities;
+}
+
+// Function to update filter count display
+function updateFilterCount() {
+    const amenityCount = getSelectedAmenities().length;
+    const priceMin = document.getElementById('price-min').value;
+    const priceMax = document.getElementById('price-max').value;
+    const location = document.getElementById('location').value;
+    const search = document.getElementById('search').value;
+    
+    let count = amenityCount;
+    
+    // Count additional filters
+    if (priceMin > 0 || priceMax < 50000) count++;
+    if (location !== 'all') count++;
+    if (search.trim() !== '') count++;
+    
+    filterCount.textContent = count;
+}
+
+// Function to check if property matches selected amenities
+function propertyMatchesAmenities(propertyCard, selectedAmenities) {
+    if (selectedAmenities.length === 0) return true;
+    
+    // Check each selected amenity against the property
+    for (const amenity of selectedAmenities) {
+        let hasAmenity = false;
+        
+        // Check both amenities and safety sections
+        const amenitiesSection = propertyCard.querySelector('.property-amenities');
+        const safetySection = propertyCard.querySelector('.property-safety');
+        
+        switch(amenity) {
+            case 'electricity':
+                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Electricity');
+                break;
+            case 'water':
+                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Water');
+                break;
+            case 'internet':
+                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Internet');
+                break;
+            case 'airconditioning':
+                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('AC');
+                break;
+            case 'kitchen':
+                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Kitchen');
+                break;
+            case 'shared_kitchen':
+                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Shared Kitchen');
+                break;
+            case 'private_bathroom':
+                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Private Bathroom');
+                break;
+            case 'shared_bathroom':
+                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Shared Bathroom');
+                break;
+            case 'secure_locks':
+                hasAmenity = safetySection && safetySection.textContent.includes('Secure Locks');
+                break;
+            case 'cctv':
+                hasAmenity = safetySection && safetySection.textContent.includes('CCTV');
+                break;
+            case 'gated_compound':
+                hasAmenity = safetySection && safetySection.textContent.includes('Gated Compound');
+                break;
+            case 'security_guard':
+                hasAmenity = safetySection && safetySection.textContent.includes('Security Guard');
+                break;
+            case 'parking':
+                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Parking');
+                break;
+            case 'furnished':
+                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Furnished');
+                break;
+            case 'pet_friendly':
+                hasAmenity = amenitiesSection && amenitiesSection.textContent.includes('Pet Friendly');
+                break;
+        }
+        
+        if (!hasAmenity) return false;
+    }
+    
+    return true;
+}
+
+// Function to check if property matches price range
+function propertyMatchesPrice(propertyCard, priceMin, priceMax) {
+    const propertyPrice = parseInt(propertyCard.getAttribute('data-price'));
+    return propertyPrice >= priceMin && propertyPrice <= priceMax;
+}
+
+// Function to check if property matches location
+function propertyMatchesLocation(propertyCard, location) {
+    if (location === 'all') return true;
+    const propertyLocation = propertyCard.getAttribute('data-location');
+    return propertyLocation.includes(location);
+}
+
+// Function to check if property matches search term
+function propertyMatchesSearch(propertyCard, searchTerm) {
+    if (!searchTerm) return true;
+    
+    const searchLower = searchTerm.toLowerCase();
+    const propertyTitle = propertyCard.querySelector('.property-title').textContent.toLowerCase();
+    const propertyLocation = propertyCard.querySelector('.property-location').textContent.toLowerCase();
+    const propertyDescription = propertyCard.querySelector('.property-description').textContent.toLowerCase();
+    
+    return propertyTitle.includes(searchLower) || 
+           propertyLocation.includes(searchLower) || 
+           propertyDescription.includes(searchLower);
+}
+
+// Function to apply filters
+function applyFilters() {
+    const selectedAmenities = getSelectedAmenities();
+    const priceMin = parseInt(document.getElementById('price-min').value) || 0;
+    const priceMax = parseInt(document.getElementById('price-max').value) || 50000;
+    const location = document.getElementById('location').value;
+    const search = document.getElementById('search').value.trim().toLowerCase();
+    
+    const propertyCards = propertyContainer.querySelectorAll('.property-card');
+    let visibleCount = 0;
+    
+    propertyCards.forEach(card => {
+        const matchesAmenities = propertyMatchesAmenities(card, selectedAmenities);
+        const matchesPrice = propertyMatchesPrice(card, priceMin, priceMax);
+        const matchesLocation = propertyMatchesLocation(card, location);
+        const matchesSearch = propertyMatchesSearch(card, search);
+        
+        if (matchesAmenities && matchesPrice && matchesLocation && matchesSearch) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Update property count
+    propertyCount.textContent = visibleCount;
+    
+    // Show no properties message if none match
+    const noProperties = propertyContainer.querySelector('.no-properties');
+    if (visibleCount === 0 && !noProperties) {
+        const noPropertiesDiv = document.createElement('div');
+        noPropertiesDiv.className = 'no-properties';
+        noPropertiesDiv.innerHTML = `
+            <i class="fas fa-home fa-3x"></i>
+            <h3>No Properties Match Your Filters</h3>
+            <p>Try adjusting your filters to see more properties.</p>
+        `;
+        propertyContainer.appendChild(noPropertiesDiv);
+    } else if (visibleCount > 0 && noProperties) {
+        noProperties.remove();
+    }
+    
+    // Update current filters
+    currentFilters = {
+        amenities: selectedAmenities,
+        priceMin,
+        priceMax,
+        location,
+        search
+    };
+    
+    console.log(`Applied filters: ${visibleCount} properties visible`);
+}
+
+// Function to clear all filters
+function clearAllFilters() {
+    // Clear checkboxes
+    const checkboxes = document.querySelectorAll('input[name="amenities"]');
+    checkboxes.forEach(checkbox => checkbox.checked = false);
+    
+    // Reset price range
+    document.getElementById('price-min').value = 0;
+    document.getElementById('price-max').value = 50000;
+    
+    // Reset location
+    document.getElementById('location').value = 'all';
+    
+    // Reset search
+    document.getElementById('search').value = '';
+    
+    // Apply cleared filters
+    applyFilters();
+    updateFilterCount();
+}
+
 // Set up event listeners
 if (filterButton && filterModal) {
     // Open modal
@@ -357,19 +567,17 @@ if (filterButton && filterModal) {
     // Apply filters and close
     if (applyFiltersBtn) {
         applyFiltersBtn.addEventListener('click', function() {
+            applyFilters();
+            updateFilterCount();
             closeModal();
-            // Your filter logic will go here
         });
     }
     
     // Clear filters and close
     if (clearFiltersBtn) {
         clearFiltersBtn.addEventListener('click', function() {
-            // Clear checkboxes
-            const checkboxes = document.querySelectorAll('input[name="amenities"]');
-            checkboxes.forEach(checkbox => checkbox.checked = false);
+            clearAllFilters();
             closeModal();
-            // Your clear filter logic will go here
         });
     }
     
@@ -383,11 +591,112 @@ if (filterButton && filterModal) {
         if (e.key === 'Escape') closeModal();
     });
     
+    // Add event listeners for real-time filtering
+    document.getElementById('search').addEventListener('input', function() {
+        applyFilters();
+        updateFilterCount();
+    });
+    
+    document.getElementById('location').addEventListener('change', function() {
+        applyFilters();
+        updateFilterCount();
+    });
+    
+    document.getElementById('price-min').addEventListener('input', function() {
+        applyFilters();
+        updateFilterCount();
+    });
+    
+    document.getElementById('price-max').addEventListener('input', function() {
+        applyFilters();
+        updateFilterCount();
+    });
+    
+    // Add event listeners to amenity checkboxes
+    const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]');
+    amenityCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateFilterCount();
+        });
+    });
+    
+    // Initialize filter count
+    updateFilterCount();
+    
     console.log("✅ Modal event listeners set up successfully!");
 } else {
     console.error("❌ Modal elements not found");
 }
+
+// View toggle functionality
+document.getElementById('grid-view').addEventListener('click', () => toggleView('grid'));
+document.getElementById('list-view').addEventListener('click', () => toggleView('list'));
+
+function toggleView(viewType) {
+    const container = document.getElementById('property-container');
+    const gridBtn = document.getElementById('grid-view');
+    const listBtn = document.getElementById('list-view');
+    
+    if (viewType === 'grid') {
+        container.className = 'property-grid';
+        gridBtn.classList.add('active');
+        listBtn.classList.remove('active');
+    } else {
+        container.className = 'property-list';
+        listBtn.classList.add('active');
+        gridBtn.classList.remove('active');
+    }
+}
+
+// User dropdown functionality
+const userDropdownBtn = document.getElementById('userDropdownBtn');
+const userDropdown = document.getElementById('userDropdown');
+
+if (userDropdownBtn && userDropdown) {
+    userDropdownBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        userDropdown.classList.toggle('active');
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!userDropdownBtn.contains(e.target)) {
+            userDropdown.classList.remove('active');
+        }
+    });
+
+    const dropdownItems = document.querySelectorAll('.user-dropdown-item');
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function() {
+            userDropdown.classList.remove('active');
+        });
+    });
+
+    userDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+}
+
+// View details buttons
+const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
+viewDetailsButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const propertyId = this.getAttribute('data-property-id');
+        viewPropertyDetails(propertyId);
+    });
+});
+
+function viewPropertyDetails(propertyId) {
+    console.log('Viewing details for property:', propertyId);
+    // Add your property details logic here
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Renter page loaded successfully!');
+    updateFilterCount();
+});
 </script>
+
     <script src="{% static 'renterPage/renter.js' %}"></script>
 </body>
 </html>
