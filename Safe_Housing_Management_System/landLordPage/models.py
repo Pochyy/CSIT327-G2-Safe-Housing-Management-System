@@ -48,7 +48,7 @@ class Property(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name_plural = "Properties"  # Fixed indentation
+        verbose_name_plural = "Properties"  
 
     def __str__(self):
         return f"{self.property_name} ({self.status})"
