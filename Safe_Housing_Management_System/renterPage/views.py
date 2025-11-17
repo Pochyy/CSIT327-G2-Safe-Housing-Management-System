@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from landLordPage.models import Property  # Import the Property model from landlord app
 
 @login_required
@@ -16,3 +16,14 @@ def renterPage(request):
         'properties': approved_properties  # Now using real database properties
     }
     return render(request, 'renterPage.html', context)
+
+@login_required
+def property_details(request, property_id):
+    # Get the specific property or return 404
+    property_obj = get_object_or_404(Property, id=property_id, status='Approved')
+    
+    context = {
+        'property': property_obj,
+        'user': request.user
+    }
+    return render(request, 'renterPage/property_details.html', context)

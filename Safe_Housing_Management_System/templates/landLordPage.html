@@ -146,11 +146,13 @@
                 <div class="property-card" data-status="{{ property.status|lower }}">
                     <div class="property-image">
                         {% if property.image %}
-                            <img src="{{ property.image.url }}" alt="{{ property.property_name }}">
+                            <!-- Try to load from static property_images folder -->
+                            <img src="{% static 'property_images/' %}{{ property.image.name }}" 
+                                 alt="{{ property.property_name }}"
+                                 onerror="this.src='{% static 'images/default-property.jpg' %}'">
                         {% else %}
-                            <div class="image-placeholder">
-                                <i class="fas fa-image"></i> {{ property.property_name }}
-                            </div>
+                            <!-- Fallback to default image -->
+                            <img src="{% static 'images/default-property.jpg' %}" alt="{{ property.property_name }}">
                         {% endif %}
                         <div class="property-status-badge {{ property.status|lower }}">
                             {{ property.status }}
