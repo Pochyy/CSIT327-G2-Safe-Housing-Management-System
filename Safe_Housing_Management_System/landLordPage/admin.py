@@ -53,6 +53,29 @@ class PropertyAdmin(admin.ModelAdmin):
         self.message_user(request, f'{queryset.count()} properties rejected.')
     reject_properties.short_description = "Reject selected properties"
 
+    def save_model(self, request, obj, form, change):
+    # Check if status is being changed
+        if change and 'status' in form.changed_data:
+            old_status = Property.objects.get(pk=obj.pk).status
+            new_status = obj.status
+            
+            # Only create notification if status actually changed
+            if old_status != new_status:
+                if new_status == 'Approved':
+                    Notification.objects.create(
+                        user=obj.landlord,
+                        message=f'Your property "{obj.property_name}" has been approved and is now live!',
+                        notification_type='approval'
+                    )
+                elif new_status == 'Rejected':
+                    Notification.objects.create(
+                        user=obj.landlord,
+                        message=f'Your property "{obj.property_name}" has been rejected. Please review the requirements.',
+                        notification_type='rejection'
+                    )
+        
+        super().save_model(request, obj, form, change)
+
 # Register Notification model too
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):

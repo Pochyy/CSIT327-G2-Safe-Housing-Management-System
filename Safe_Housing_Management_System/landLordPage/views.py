@@ -45,11 +45,15 @@ def add_property(request):
             property = form.save(commit=False)
             property.landlord = request.user
             property.save()
-            return redirect('landlord:home')
+            return JsonResponse({'success': True, 'message': 'Property added successfully!'})
     else:
-        form = PropertyForm()
+        return JsonResponse({
+                'success': False, 
+                'message': 'Please correct the errors below', 
+                'errors': form.errors
+            })
     
-    return render(request, 'add_property.html', {'form': form})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 @login_required
 def edit_property(request, property_id):
@@ -109,3 +113,18 @@ def delete_property(request, property_id):
         return JsonResponse({'success': True, 'message': 'Property deleted successfully'})
     except Property.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Property not found'}, status=404)
+    
+@login_required
+def mark_notification_read(request, notification_id):
+    try:
+        notification = Notification.objects.get(id=notification_id, user=request.user)
+        notification.is_read = True
+        notification.save()
+        return JsonResponse({'success': True})
+    except Notification.DoesNotExist:
+        return JsonResponse({'success': False}, status=404)
+
+@login_required
+def mark_all_notifications_read(request):
+    Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+    return JsonResponse({'success': True})
