@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ property.property_name }} - Safe Haven</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'renterPage/renter.css' %}">
+    <style>
+        .property-details-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            color: #2C6E6F;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #2C6E6F;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background-color: #2C6E6F;
+            color: white;
+            transform: translateX(-5px);
+        }
+        
+        .property-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        
+        .property-images {
+            position: relative;
+        }
+        
+        .property-image-large {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .property-image-large:hover {
+            transform: scale(1.02);
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border-radius: 1rem;
+            color: #9ca3af;
+            font-weight: 500;
+            font-size: 1.1rem;
+            border: 2px dashed #d1d5db;
+        }
+        
+        .property-info {
+            padding: 1rem 0;
+        }
+        
+        .property-title-large {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #1F2937;
+            line-height: 1.2;
+        }
+        
+        .property-price-large {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2C6E6F;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #2C6E6F, #4F9D9E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .property-location-large {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #6B7280;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 0.75rem;
+            border-left: 4px solid #2C6E6F;
+        }
+        
+        .property-features-large {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 1rem;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-item {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            background: white;
+            transition: transform 0.2s ease;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2C6E6F;
+            margin-bottom: 0.5rem;
+        }
+        
+        .feature-label {
+            font-size: 0.875rem;
+            color: #6B7280;
+            font-weight: 500;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .section-title i {
+            color: #2C6E6F;
+        }
+        
+        .description-text {
+            line-height: 1.7;
+            color: #4B5563;
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+            padding: 1.5rem;
+            background: #fafafa;
+            border-radius: 0.75rem;
+            border-left: 4px solid #2C6E6F;
+        }
+        
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .amenity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+        
+        .amenity-item:hover {
+            background: #f0f9f9;
+            border-color: #2C6E6F;
+            transform: translateX(5px);
+        }
+        
+        .amenity-check {
+            color: #10B981;
+            font-size: 1.1rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .btn-contact {
+            background: linear-gradient(135deg, #2C6E6F, #4F9D9E);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(44, 110, 111, 0.3);
+        }
+        
+        .btn-contact:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 110, 111, 0.4);
+            background: linear-gradient(135deg, #245a5b, #398c8e);
+        }
+        
+        .btn-save {
+            background-color: white;
+            color: #2C6E6F;
+            padding: 1rem 2rem;
+            border: 2px solid #2C6E6F;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+        }
+        
+        .btn-save:hover {
+            background-color: #2C6E6F;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(44, 110, 111, 0.3);
+        }
+        
+        .btn-save.saved {
+            background-color: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+        
+        .property-status-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: #10B981;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .gallery-thumb {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .gallery-thumb:hover {
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .property-details-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .property-features-large {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .amenities-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .property-title-large {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* Loading animation for images */
+        .image-loading {
+            background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Header -->
+    <div class="header-container">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+                <h2>Safe <span>Haven</span></h2>
+            </div>
+
+            <div class="header-right">
+                <div class="notification-icon">
+                    <i class="far fa-bell"></i>
+                    <div class="notification-badge">3</div>
+                </div>
+                
+                <div class="user-info" id="userDropdownBtn">
+                    <div>Welcome, {{ user.first_name }}</div>
+                    <div class="user-avatar">{{ user.first_name|first }}{{ user.last_name|first }}</div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-dropdown-item">
+                            <i class="fas fa-user-circle"></i> My Profile
+                        </div>
+                        <div class="user-dropdown-item">
+                            <i class="fas fa-heart"></i> Saved Properties
+                        </div>
+                        <div class="user-dropdown-item">
+                            <i class="fas fa-cog"></i> Settings
+                        </div>
+                        <div class="user-dropdown-divider"></div>
+                        <div class="user-dropdown-item" id="logoutBtn">
+                            <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; width: 100%; text-align: left;">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Details Content -->
+    <div class="property-details-container">
+        <a href="{% url 'renter:home' %}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Properties
+        </a>
+        
+        <div class="property-details-grid">
+            <!-- Property Images Section -->
+            <div class="property-images">
+                {% if property.image %}
+                    <img src="{{ property.image.url }}" 
+                         alt="{{ property.property_name }}" 
+                         class="property-image-large"
+                         onerror="this.style.display='none'; document.getElementById('image-placeholder').style.display='flex';"
+                         id="main-property-image">
+                {% endif %}
+                
+                <div class="image-placeholder" id="image-placeholder" {% if property.image %}style="display: none;"{% endif %}>
+                    <div class="text-center">
+                        <i class="fas fa-home fa-3x mb-3" style="color: #9ca3af;"></i>
+                        <div>Property Image</div>
+                        <div class="text-sm" style="color: #6b7280;">Image preview available soon</div>
+                    </div>
+                </div>
+                
+                <!-- Image Gallery Placeholder -->
+                <div class="image-gallery">
+                    <div class="gallery-thumb image-loading"></div>
+                    <div class="gallery-thumb image-loading"></div>
+                    <div class="gallery-thumb image-loading"></div>
+                </div>
+            </div>
+            
+            <!-- Property Info Section -->
+            <div class="property-info">
+                <h1 class="property-title-large">{{ property.property_name }}</h1>
+                <div class="property-price-large">₱{{ property.price|floatformat:0 }}/month</div>
+                
+                <div class="property-location-large">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ property.location }}</span>
+                </div>
+                
+                <div class="property-features-large">
+                    <div class="feature-item">
+                        <div class="feature-value">{{ property.beds }}</div>
+                        <div class="feature-label">
+                            <i class="fas fa-bed"></i> Bedroom{{ property.beds|pluralize }}
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-value">{{ property.bathrooms }}</div>
+                        <div class="feature-label">
+                            <i class="fas fa-bath"></i> Bathroom{{ property.bathrooms|pluralize }}
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-value">{{ property.area }}</div>
+                        <div class="feature-label">
+                            <i class="fas fa-vector-square"></i> Sq Ft
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 class="section-title">
+                    <i class="fas fa-file-alt"></i> Description
+                </h3>
+                <p class="description-text">{{ property.property_description|default:"No description provided for this property." }}</p>
+                
+                <h3 class="section-title">
+                    <i class="fas fa-star"></i> Amenities & Features
+                </h3>
+                <div class="amenities-grid">
+                    {% if property.electricity %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Electricity</span></div>{% endif %}
+                    {% if property.water %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Water Supply</span></div>{% endif %}
+                    {% if property.internet %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Internet/Wi-Fi</span></div>{% endif %}
+                    {% if property.airconditioning %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Air Conditioning</span></div>{% endif %}
+                    {% if property.kitchen %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Kitchen</span></div>{% endif %}
+                    {% if property.shared_kitchen %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Shared Kitchen</span></div>{% endif %}
+                    {% if property.private_bathroom %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Private Bathroom</span></div>{% endif %}
+                    {% if property.shared_bathroom %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Shared Bathroom</span></div>{% endif %}
+                    {% if property.parking %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Parking</span></div>{% endif %}
+                    {% if property.furnished %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Furnished</span></div>{% endif %}
+                    {% if property.pet_friendly %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Pet Friendly</span></div>{% endif %}
+                </div>
+                
+                <h3 class="section-title">
+                    <i class="fas fa-shield-alt"></i> Safety & Security
+                </h3>
+                <div class="amenities-grid">
+                    {% if property.secure_locks %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Secure Locks</span></div>{% endif %}
+                    {% if property.cctv %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>CCTV Surveillance</span></div>{% endif %}
+                    {% if property.gated_compound %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Gated Compound</span></div>{% endif %}
+                    {% if property.security_guard %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Security Guard</span></div>{% endif %}
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-contact" onclick="contactLandlord()">
+                        <i class="fas fa-envelope"></i> Contact Landlord
+                    </button>
+                    <button class="btn-save" id="savePropertyBtn" onclick="toggleSaveProperty()">
+                        <i class="fas fa-heart"></i> Save Property
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced dropdown

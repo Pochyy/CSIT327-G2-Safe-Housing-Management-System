@@ -335,5 +335,7 @@ function setupViewDetailsButtons() {
 
 function viewPropertyDetails(propertyId) {
     console.log('Viewing details for property:', propertyId);
+    window.location.href = `/renter/property/${propertyId}/`;
+
     // Add your property details logic here
 }
