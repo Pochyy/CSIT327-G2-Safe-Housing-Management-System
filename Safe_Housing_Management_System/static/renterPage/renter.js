@@ -1,649 +1,188 @@
-// Initialize the dashboard
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Renter page loaded successfully!');
-    setupEventListeners();
-    setupDropdown();
-    setupFilterModal();
-    updatePropertyCount();
-    updateFilterCount();
-});
+// Renter Dashboard JavaScript
+console.log("🎯 Initializing renter dashboard...");
 
-let selectedAmenities = [];// Initialize the dashboard
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Renter page loaded successfully!');
-    setupEventListeners();
-    setupDropdown();
-    setupFilterModal();
-    updatePropertyCount();
-    updateFilterCount();
-});
-
+// Global variables
 let selectedAmenities = [];
+let currentFilters = {
+    amenities: [],
+    priceMin: 0,
+    priceMax: 50000,
+    location: 'all',
+    search: ''
+};
 
-function setupEventListeners() {
-    // Basic filter event listeners
-    const searchInput = document.getElementById('search');
-    const locationSelect = document.getElementById('location');
-    const priceMin = document.getElementById('price-min');
-    const priceMax = document.getElementById('price-max');
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Renter page loaded successfully!');
+    initializeDashboard();
+});
+
+function initializeDashboard() {
+    setupFilterModal();
+    setupViewDetailsButtons();
+    setupDropdown();
+    setupRealTimeFilters();
+    updateFilterCount();
+    console.log("✅ Dashboard initialized successfully!");
+}
+
+// FILTER MODAL FUNCTIONALITY
+function setupFilterModal() {
+    const filterButton = document.getElementById('filterToggleBtn');
+    const filterModal = document.getElementById('filterModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const closeFilterBtn = document.getElementById('closeFilterBtn');
+    const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+
+    if (!filterButton || !filterModal) {
+        console.error("❌ Filter modal elements not found");
+        return;
+    }
+
+    // Open modal
+    filterButton.addEventListener('click', openModal);
     
-    if (searchInput) searchInput.addEventListener('input', filterProperties);
-    if (locationSelect) locationSelect.addEventListener('change', filterProperties);
-    if (priceMin) priceMin.addEventListener('input', filterProperties);
-    if (priceMax) priceMax.addEventListener('input', filterProperties);
+    // Close modal
+    closeFilterBtn.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', closeModal);
     
-    // View toggle functionality
+    // Apply filters
+    applyFiltersBtn.addEventListener('click', function() {
+        applyFilters();
+        updateFilterCount();
+        closeModal();
+    });
+    
+    // Clear filters
+    clearFiltersBtn.addEventListener('click', function() {
+        clearAllFilters();
+        closeModal();
+    });
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    console.log("✅ Filter modal setup complete");
+}
+
+function openModal() {
+    const filterModal = document.getElementById('filterModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+    
+    filterModal.style.cssText = 'right: 0 !important; display: block !important; visibility: visible !important; z-index: 10000 !important;';
+    modalOverlay.style.cssText = 'display: block !important; z-index: 9999 !important;';
+}
+
+function closeModal() {
+    const filterModal = document.getElementById('filterModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+    
+    filterModal.style.cssText = 'right: -400px !important;';
+    modalOverlay.style.cssText = 'display: none !important;';
+}
+
+// VIEW DETAILS BUTTONS
+function setupViewDetailsButtons() {
+    const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
+    console.log(`🔍 Found ${viewDetailsButtons.length} view details buttons`);
+    
+    viewDetailsButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            console.log("✅ View Details button CLICKED!");
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const propertyId = this.getAttribute('data-property-id');
+            console.log('Property ID:', propertyId);
+            
+            if (propertyId) {
+                const url = `/renter/property/${propertyId}/`;
+                console.log('Navigating to:', url);
+                window.location.href = url;
+            }
+        });
+        
+        button.style.cursor = 'pointer';
+    });
+}
+
+// DROPDOWN FUNCTIONALITY
+function setupDropdown() {
+    const userDropdownBtn = document.getElementById('userDropdownBtn');
+    const userDropdown = document.getElementById('userDropdown');
+
+    if (userDropdownBtn && userDropdown) {
+        userDropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!userDropdownBtn.contains(e.target)) {
+                userDropdown.classList.remove('active');
+            }
+        });
+
+        const dropdownItems = document.querySelectorAll('.user-dropdown-item');
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function() {
+                userDropdown.classList.remove('active');
+            });
+        });
+
+        userDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+}
+
+// REAL-TIME FILTERS
+function setupRealTimeFilters() {
+    // Search input
+    document.getElementById('search').addEventListener('input', function() {
+        applyFilters();
+        updateFilterCount();
+    });
+    
+    // Location select
+    document.getElementById('location').addEventListener('change', function() {
+        applyFilters();
+        updateFilterCount();
+    });
+    
+    // Price inputs
+    document.getElementById('price-min').addEventListener('input', function() {
+        applyFilters();
+        updateFilterCount();
+    });
+    
+    document.getElementById('price-max').addEventListener('input', function() {
+        applyFilters();
+        updateFilterCount();
+    });
+    
+    // Amenity checkboxes
+    const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]');
+    amenityCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateSelectedAmenities();
+            updateFilterCount();
+            applyFilters();
+        });
+    });
+}
+
+// VIEW TOGGLE FUNCTIONALITY
+function setupViewToggle() {
     const gridView = document.getElementById('grid-view');
     const listView = document.getElementById('list-view');
     
-    if (gridView) gridView.addEventListener('click', () => toggleView('grid'));
-    if (listView) listView.addEventListener('click', () => toggleView('list'));
-    
-    // View details buttons
-    setupViewDetailsButtons();
-}
-
-function setupDropdown() {
-    const userDropdownBtn = document.getElementById('userDropdownBtn');
-    const userDropdown = document.getElementById('userDropdown');
-
-    if (userDropdownBtn && userDropdown) {
-        userDropdownBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            userDropdown.classList.toggle('active');
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!userDropdownBtn.contains(e.target)) {
-                userDropdown.classList.remove('active');
-            }
-        });
-
-        const dropdownItems = document.querySelectorAll('.user-dropdown-item');
-        dropdownItems.forEach(item => {
-            item.addEventListener('click', function() {
-                userDropdown.classList.remove('active');
-            });
-        });
-
-        userDropdown.addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
-    }
-}
-
-function setupFilterModal() {
-    const filterToggleBtn = document.getElementById('filterToggleBtn');
-    const closeFilterBtn = document.getElementById('closeFilterBtn');
-    const applyFiltersBtn = document.getElementById('applyFiltersBtn');
-    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
-    const filterModal = document.getElementById('filterModal');
-    const modalOverlay = document.getElementById('modalOverlay');
-    
-    console.log('Setting up filter modal with elements:', {
-        button: !!filterToggleBtn,
-        modal: !!filterModal,
-        overlay: !!modalOverlay
-    });
-    
-    // Open filter modal
-    if (filterToggleBtn && filterModal) {
-        filterToggleBtn.addEventListener('click', function() {
-            console.log('Opening modal');
-            filterModal.style.right = '0';
-            if (modalOverlay) {
-                modalOverlay.style.display = 'block';
-            }
-        });
-    } else {
-        console.error('Missing elements for modal:', {
-            button: !filterToggleBtn,
-            modal: !filterModal
-        });
-    }
-    
-    // Close filter modal
-    if (closeFilterBtn && filterModal) {
-        closeFilterBtn.addEventListener('click', function() {
-            console.log('Closing modal');
-            filterModal.style.right = '-400px';
-            if (modalOverlay) {
-                modalOverlay.style.display = 'none';
-            }
-        });
-    }
-    
-    // Apply filters
-    if (applyFiltersBtn && filterModal) {
-        applyFiltersBtn.addEventListener('click', function() {
-            console.log('Applying filters');
-            filterModal.style.right = '-400px';
-            if (modalOverlay) {
-                modalOverlay.style.display = 'none';
-            }
-            filterProperties();
-        });
-    }
-    
-    // Clear all filters
-    if (clearFiltersBtn && filterModal) {
-        clearFiltersBtn.addEventListener('click', function() {
-            console.log('Clearing all filters');
-            // Clear all amenity checkboxes
-            const checkboxes = document.querySelectorAll('input[name="amenities"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            
-            // Clear price inputs
-            const priceMin = document.getElementById('price-min');
-            const priceMax = document.getElementById('price-max');
-            if (priceMin) priceMin.value = '0';
-            if (priceMax) priceMax.value = '50000';
-            
-            // Clear location
-            const location = document.getElementById('location');
-            if (location) location.value = 'all';
-            
-            // Clear search
-            const search = document.getElementById('search');
-            if (search) search.value = '';
-            
-            selectedAmenities = [];
-            updateFilterCount();
-            filterProperties();
-            filterModal.style.right = '-400px';
-            if (modalOverlay) {
-                modalOverlay.style.display = 'none';
-            }
-        });
-    }
-    
-    // Update selected amenities when checkboxes change
-    const checkboxes = document.querySelectorAll('input[name="amenities"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            updateSelectedAmenities();
-            updateFilterCount();
-        });
-    });
-    
-    // Close modal when clicking outside (on overlay)
-    if (modalOverlay && filterModal) {
-        modalOverlay.addEventListener('click', function() {
-            console.log('Closing modal via overlay click');
-            filterModal.style.right = '-400px';
-            modalOverlay.style.display = 'none';
-        });
-    }
-    
-    // Close modal when pressing Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && filterModal) {
-            console.log('Closing modal via Escape key');
-            filterModal.style.right = '-400px';
-            if (modalOverlay) {
-                modalOverlay.style.display = 'none';
-            }
-        }
-    });
-}
-
-function updateSelectedAmenities() {
-    selectedAmenities = [];
-    const checkboxes = document.querySelectorAll('input[name="amenities"]:checked');
-    checkboxes.forEach(checkbox => {
-        selectedAmenities.push(checkbox.value);
-    });
-    console.log('Selected amenities:', selectedAmenities);
-}
-
-function updateFilterCount() {
-    const filterCount = document.getElementById('filterCount');
-    if (filterCount) {
-        const amenityCount = selectedAmenities.length;
-        const priceMin = document.getElementById('price-min').value;
-        const priceMax = document.getElementById('price-max').value;
-        const location = document.getElementById('location').value;
-        const search = document.getElementById('search').value;
-        
-        let count = amenityCount;
-        
-        // Count additional filters
-        if (priceMin > 0 || priceMax < 50000) count++;
-        if (location !== 'all') count++;
-        if (search.trim() !== '') count++;
-        
-        filterCount.textContent = count;
-    }
-}
-
-function filterProperties() {
-    const searchTerm = document.getElementById('search').value.toLowerCase();
-    const locationFilter = document.getElementById('location').value;
-    const minPrice = parseInt(document.getElementById('price-min').value) || 0;
-    const maxPrice = parseInt(document.getElementById('price-max').value) || 100000;
-    
-    const propertyCards = document.querySelectorAll('.property-card');
-    let visibleCount = 0;
-    
-    propertyCards.forEach(card => {
-        const title = card.querySelector('.property-title').textContent.toLowerCase();
-        const description = card.querySelector('.property-description').textContent.toLowerCase();
-        const location = card.getAttribute('data-location');
-        const price = parseFloat(card.getAttribute('data-price'));
-        
-        const matchesSearch = !searchTerm || 
-                            title.includes(searchTerm) || 
-                            description.includes(searchTerm) ||
-                            location.includes(searchTerm) ||
-                            checkAmenitiesText(card, searchTerm);
-        
-        const matchesLocation = locationFilter === 'all' || 
-                              location.includes(locationFilter.toLowerCase());
-        
-        const matchesPrice = price >= minPrice && price <= maxPrice;
-        
-        const matchesAmenities = selectedAmenities.length === 0 || 
-                               selectedAmenities.every(amenity => hasAmenity(card, amenity));
-        
-        if (matchesSearch && matchesLocation && matchesPrice && matchesAmenities) {
-            card.style.display = 'block';
-            visibleCount++;
-        } else {
-            card.style.display = 'none';
-        }
-    });
-    
-    updatePropertyCount(visibleCount);
-    
-    // Show no properties message if none match
-    const propertyContainer = document.getElementById('property-container');
-    const noProperties = propertyContainer.querySelector('.no-properties');
-    if (visibleCount === 0 && !noProperties) {
-        const noPropertiesDiv = document.createElement('div');
-        noPropertiesDiv.className = 'no-properties';
-        noPropertiesDiv.innerHTML = `
-            <i class="fas fa-home fa-3x"></i>
-            <h3>No Properties Match Your Filters</h3>
-            <p>Try adjusting your filters to see more properties.</p>
-        `;
-        propertyContainer.appendChild(noPropertiesDiv);
-    } else if (visibleCount > 0 && noProperties) {
-        noProperties.remove();
-    }
-    
-    console.log(`Filtered properties: ${visibleCount} visible`);
-}
-
-function hasAmenity(card, amenity) {
-    const amenityMap = {
-        'electricity': 'Electricity',
-        'water': 'Water',
-        'internet': 'Internet',
-        'airconditioning': 'AC',
-        'kitchen': 'Kitchen',
-        'shared_kitchen': 'Shared Kitchen',
-        'private_bathroom': 'Private Bathroom',
-        'shared_bathroom': 'Shared Bathroom',
-        'secure_locks': 'Secure Locks',
-        'cctv': 'CCTV',
-        'gated_compound': 'Gated Compound',
-        'security_guard': 'Security Guard',
-        'parking': 'Parking',
-        'furnished': 'Furnished',
-        'pet_friendly': 'Pet Friendly'
-    };
-    
-    const amenityText = amenityMap[amenity];
-    if (!amenityText) return false;
-    
-    // Check amenities section
-    const amenitiesSection = card.querySelector('.property-amenities');
-    if (amenitiesSection && amenitiesSection.textContent.includes(amenityText)) return true;
-    
-    // Check safety section
-    const safetySection = card.querySelector('.property-safety');
-    if (safetySection && safetySection.textContent.includes(amenityText)) return true;
-    
-    return false;
-}
-
-function checkAmenitiesText(card, searchTerm) {
-    const amenitiesSection = card.querySelector('.property-amenities');
-    const safetySection = card.querySelector('.property-safety');
-    
-    if (amenitiesSection && amenitiesSection.textContent.toLowerCase().includes(searchTerm)) return true;
-    if (safetySection && safetySection.textContent.toLowerCase().includes(searchTerm)) return true;
-    
-    return false;
-}
-
-function updatePropertyCount(count) {
-    const countElement = document.getElementById('property-count');
-    if (count !== undefined) {
-        countElement.textContent = count;
-    } else {
-        const visibleCards = document.querySelectorAll('.property-card[style=""]').length + 
-                           document.querySelectorAll('.property-card:not([style])').length;
-        countElement.textContent = visibleCards;
-    }
-}
-
-function toggleView(viewType) {
-    const container = document.getElementById('property-container');
-    const gridBtn = document.getElementById('grid-view');
-    const listBtn = document.getElementById('list-view');
-    
-    if (viewType === 'grid') {
-        container.className = 'property-grid';
-        gridBtn.classList.add('active');
-        listBtn.classList.remove('active');
-    } else {
-        container.className = 'property-list';
-        listBtn.classList.add('active');
-        gridBtn.classList.remove('active');
-    }
-}
-
-function setupViewDetailsButtons() {
-    const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
-    viewDetailsButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const propertyId = this.getAttribute('data-property-id');
-            viewPropertyDetails(propertyId);
-        });
-    });
-}
-
-function viewPropertyDetails(propertyId) {
-    console.log('Viewing details for property:', propertyId);
-    // Add your property details logic here
-    // This could redirect to a property details page or show a modal
-    // window.location.href = `/property/${propertyId}/`;
-}
-
-function setupEventListeners() {
-    // Basic filter event listeners
-    document.getElementById('search').addEventListener('input', filterProperties);
-    document.getElementById('location').addEventListener('change', filterProperties);
-    document.getElementById('price-min').addEventListener('input', filterProperties);
-    document.getElementById('price-max').addEventListener('input', filterProperties);
-    
-    // View toggle functionality
-    document.getElementById('grid-view').addEventListener('click', () => toggleView('grid'));
-    document.getElementById('list-view').addEventListener('click', () => toggleView('list'));
-    
-    // View details buttons
-    setupViewDetailsButtons();
-}
-
-function setupDropdown() {
-    const userDropdownBtn = document.getElementById('userDropdownBtn');
-    const userDropdown = document.getElementById('userDropdown');
-
-    if (userDropdownBtn && userDropdown) {
-        userDropdownBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            userDropdown.classList.toggle('active');
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!userDropdownBtn.contains(e.target)) {
-                userDropdown.classList.remove('active');
-            }
-        });
-
-        const dropdownItems = document.querySelectorAll('.user-dropdown-item');
-        dropdownItems.forEach(item => {
-            item.addEventListener('click', function() {
-                userDropdown.classList.remove('active');
-            });
-        });
-
-        userDropdown.addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
-    }
-}
-
-function setupFilterModal() {
-    const filterToggleBtn = document.getElementById('filterToggleBtn');
-    const closeFilterBtn = document.getElementById('closeFilterBtn');
-    const applyFiltersBtn = document.getElementById('applyFiltersBtn');
-    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
-    const filterModal = document.getElementById('filterModal');
-    const modalOverlay = document.getElementById('modalOverlay');
-    
-    console.log('Setting up filter modal with elements:', {
-        button: !!filterToggleBtn,
-        modal: !!filterModal,
-        overlay: !!modalOverlay
-    });
-    
-    // Open filter modal - USING INLINE STYLES
-    if (filterToggleBtn && filterModal) {
-        filterToggleBtn.addEventListener('click', function() {
-            console.log('Opening modal with inline styles');
-            // Use inline styles instead of CSS classes
-            filterModal.style.right = '0';
-            if (modalOverlay) {
-                modalOverlay.style.display = 'block';
-            }
-        });
-    } else {
-        console.error('Missing elements for modal:', {
-            button: !filterToggleBtn,
-            modal: !filterModal
-        });
-    }
-    
-    // Close filter modal - USING INLINE STYLES
-    if (closeFilterBtn && filterModal) {
-        closeFilterBtn.addEventListener('click', function() {
-            console.log('Closing modal');
-            filterModal.style.right = '-400px';
-            if (modalOverlay) {
-                modalOverlay.style.display = 'none';
-            }
-        });
-    }
-    
-    // Apply filters
-    if (applyFiltersBtn && filterModal) {
-        applyFiltersBtn.addEventListener('click', function() {
-            console.log('Applying filters');
-            filterModal.style.right = '-400px';
-            if (modalOverlay) {
-                modalOverlay.style.display = 'none';
-            }
-            filterProperties();
-        });
-    }
-    
-    // Clear all filters
-    if (clearFiltersBtn && filterModal) {
-        clearFiltersBtn.addEventListener('click', function() {
-            console.log('Clearing all filters');
-            // Clear all amenity checkboxes
-            const checkboxes = document.querySelectorAll('input[name="amenities"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            
-            // Clear price inputs
-            document.getElementById('price-min').value = '0';
-            document.getElementById('price-max').value = '50000';
-            
-            // Clear location
-            document.getElementById('location').value = 'all';
-            
-            // Clear search
-            document.getElementById('search').value = '';
-            
-            selectedAmenities = [];
-            updateFilterCount();
-            filterProperties();
-            filterModal.style.right = '-400px';
-            if (modalOverlay) {
-                modalOverlay.style.display = 'none';
-            }
-        });
-    }
-    
-    // Update selected amenities when checkboxes change
-    const checkboxes = document.querySelectorAll('input[name="amenities"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            updateSelectedAmenities();
-            updateFilterCount();
-        });
-    });
-    
-    // Close modal when clicking outside (on overlay)
-    if (modalOverlay && filterModal) {
-        modalOverlay.addEventListener('click', function() {
-            console.log('Closing modal via overlay click');
-            filterModal.style.right = '-400px';
-            modalOverlay.style.display = 'none';
-        });
-    }
-    
-    // Close modal when pressing Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && filterModal) {
-            console.log('Closing modal via Escape key');
-            filterModal.style.right = '-400px';
-            if (modalOverlay) {
-                modalOverlay.style.display = 'none';
-            }
-        }
-    });
-}
-
-function updateSelectedAmenities() {
-    selectedAmenities = [];
-    const checkboxes = document.querySelectorAll('input[name="amenities"]:checked');
-    checkboxes.forEach(checkbox => {
-        selectedAmenities.push(checkbox.value);
-    });
-    console.log('Selected amenities:', selectedAmenities);
-}
-
-function updateFilterCount() {
-    const filterCount = document.getElementById('filterCount');
-    if (filterCount) {
-        filterCount.textContent = selectedAmenities.length;
-    }
-}
-
-function filterProperties() {
-    const searchInput = document.getElementById('search');
-    const locationSelect = document.getElementById('location');
-    const priceMinInput = document.getElementById('price-min');
-    const priceMaxInput = document.getElementById('price-max');
-    
-    if (!searchInput || !locationSelect || !priceMinInput || !priceMaxInput) {
-        console.error('Filter inputs not found');
-        return;
-    }
-    
-    const searchTerm = searchInput.value.toLowerCase();
-    const locationFilter = locationSelect.value;
-    const minPrice = parseInt(priceMinInput.value) || 0;
-    const maxPrice = parseInt(priceMaxInput.value) || 100000;
-    
-    const propertyCards = document.querySelectorAll('.property-card');
-    let visibleCount = 0;
-    
-    propertyCards.forEach(card => {
-        const titleElement = card.querySelector('.property-title');
-        const descriptionElement = card.querySelector('.property-description');
-        
-        if (!titleElement || !descriptionElement) return;
-        
-        const title = titleElement.textContent.toLowerCase();
-        const description = descriptionElement.textContent.toLowerCase();
-        const location = card.getAttribute('data-location');
-        const price = parseFloat(card.getAttribute('data-price')) || 0;
-        
-        const matchesSearch = !searchTerm || 
-                            title.includes(searchTerm) || 
-                            description.includes(searchTerm) ||
-                            (location && location.includes(searchTerm)) ||
-                            checkAmenitiesText(card, searchTerm);
-        
-        const matchesLocation = locationFilter === 'all' || 
-                              (location && location.includes(locationFilter.toLowerCase()));
-        
-        const matchesPrice = price >= minPrice && price <= maxPrice;
-        
-        const matchesAmenities = selectedAmenities.length === 0 || 
-                               selectedAmenities.every(amenity => hasAmenity(card, amenity));
-        
-        if (matchesSearch && matchesLocation && matchesPrice && matchesAmenities) {
-            card.style.display = 'block';
-            visibleCount++;
-        } else {
-            card.style.display = 'none';
-        }
-    });
-    
-    updatePropertyCount(visibleCount);
-    console.log(`Filtered properties: ${visibleCount} visible`);
-}
-
-function hasAmenity(card, amenity) {
-    const amenityMap = {
-        'electricity': 'Electricity',
-        'water': 'Water',
-        'internet': 'Internet',
-        'airconditioning': 'AC',
-        'kitchen': 'Kitchen',
-        'shared_kitchen': 'Shared Kitchen',
-        'private_bathroom': 'Private Bathroom',
-        'shared_bathroom': 'Shared Bathroom',
-        'secure_locks': 'Secure Locks',
-        'cctv': 'CCTV',
-        'gated_compound': 'Gated Compound',
-        'security_guard': 'Security Guard',
-        'parking': 'Parking',
-        'furnished': 'Furnished',
-        'pet_friendly': 'Pet Friendly'
-    };
-    
-    const amenityText = amenityMap[amenity];
-    if (!amenityText) return false;
-    
-    const amenitiesSection = card.querySelector('.property-amenities');
-    if (amenitiesSection && amenitiesSection.textContent.includes(amenityText)) return true;
-    
-    const safetySection = card.querySelector('.property-safety');
-    if (safetySection && safetySection.textContent.includes(amenityText)) return true;
-    
-    return false;
-}
-
-function checkAmenitiesText(card, searchTerm) {
-    const amenitiesSection = card.querySelector('.property-amenities');
-    const safetySection = card.querySelector('.property-safety');
-    
-    if (amenitiesSection && amenitiesSection.textContent.toLowerCase().includes(searchTerm)) return true;
-    if (safetySection && safetySection.textContent.toLowerCase().includes(searchTerm)) return true;
-    
-    return false;
-}
-
-function updatePropertyCount(count) {
-    const countElement = document.getElementById('property-count');
-    if (countElement) {
-        if (count !== undefined) {
-            countElement.textContent = count;
-        } else {
-            const visibleCards = document.querySelectorAll('.property-card[style=""]').length + 
-                               document.querySelectorAll('.property-card:not([style])').length;
-            countElement.textContent = visibleCards;
-        }
+    if (gridView && listView) {
+        gridView.addEventListener('click', () => toggleView('grid'));
+        listView.addEventListener('click', () => toggleView('list'));
     }
 }
 
@@ -665,19 +204,188 @@ function toggleView(viewType) {
     }
 }
 
-function setupViewDetailsButtons() {
-    const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
-    viewDetailsButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const propertyId = this.getAttribute('data-property-id');
-            viewPropertyDetails(propertyId);
-        });
+// FILTER FUNCTIONS
+function updateSelectedAmenities() {
+    selectedAmenities = [];
+    const checkboxes = document.querySelectorAll('input[name="amenities"]:checked');
+    checkboxes.forEach(checkbox => {
+        selectedAmenities.push(checkbox.value);
     });
+    console.log('Selected amenities:', selectedAmenities);
 }
 
-function viewPropertyDetails(propertyId) {
-    console.log('Viewing details for property:', propertyId);
-    window.location.href = `/renter/property/${propertyId}/`;
+function getSelectedAmenities() {
+    const selectedAmenities = [];
+    const checkboxes = document.querySelectorAll('input[name="amenities"]:checked');
+    checkboxes.forEach(checkbox => {
+        selectedAmenities.push(checkbox.value);
+    });
+    return selectedAmenities;
+}
 
-    // Add your property details logic here
+function applyFilters() {
+    const selectedAmenities = getSelectedAmenities();
+    const priceMin = parseInt(document.getElementById('price-min').value) || 0;
+    const priceMax = parseInt(document.getElementById('price-max').value) || 50000;
+    const location = document.getElementById('location').value;
+    const search = document.getElementById('search').value.trim().toLowerCase();
+    
+    const propertyContainer = document.getElementById('property-container');
+    const propertyCards = propertyContainer.querySelectorAll('.property-card');
+    let visibleCount = 0;
+    
+    propertyCards.forEach(card => {
+        const matchesAmenities = propertyMatchesAmenities(card, selectedAmenities);
+        const matchesPrice = propertyMatchesPrice(card, priceMin, priceMax);
+        const matchesLocation = propertyMatchesLocation(card, location);
+        const matchesSearch = propertyMatchesSearch(card, search);
+        
+        if (matchesAmenities && matchesPrice && matchesLocation && matchesSearch) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Update property count
+    const propertyCount = document.getElementById('property-count');
+    propertyCount.textContent = visibleCount;
+    
+    // Show no properties message if none match
+    const noProperties = propertyContainer.querySelector('.no-properties');
+    if (visibleCount === 0 && !noProperties) {
+        const noPropertiesDiv = document.createElement('div');
+        noPropertiesDiv.className = 'no-properties';
+        noPropertiesDiv.innerHTML = `
+            <i class="fas fa-home fa-3x"></i>
+            <h3>No Properties Match Your Filters</h3>
+            <p>Try adjusting your filters to see more properties.</p>
+        `;
+        propertyContainer.appendChild(noPropertiesDiv);
+    } else if (visibleCount > 0 && noProperties) {
+        noProperties.remove();
+    }
+    
+    currentFilters = {
+        amenities: selectedAmenities,
+        priceMin,
+        priceMax,
+        location,
+        search
+    };
+    
+    console.log(`Filtered properties: ${visibleCount} visible`);
+}
+
+function clearAllFilters() {
+    // Clear checkboxes
+    const checkboxes = document.querySelectorAll('input[name="amenities"]');
+    checkboxes.forEach(checkbox => checkbox.checked = false);
+    
+    // Reset inputs
+    document.getElementById('price-min').value = 0;
+    document.getElementById('price-max').value = 50000;
+    document.getElementById('location').value = 'all';
+    document.getElementById('search').value = '';
+    
+    // Apply cleared filters
+    applyFilters();
+    updateFilterCount();
+}
+
+function updateFilterCount() {
+    const filterCount = document.getElementById('filterCount');
+    if (filterCount) {
+        const amenityCount = getSelectedAmenities().length;
+        const priceMin = document.getElementById('price-min').value;
+        const priceMax = document.getElementById('price-max').value;
+        const location = document.getElementById('location').value;
+        const search = document.getElementById('search').value;
+        
+        let count = amenityCount;
+        if (priceMin > 0 || priceMax < 50000) count++;
+        if (location !== 'all') count++;
+        if (search.trim() !== '') count++;
+        
+        filterCount.textContent = count;
+    }
+}
+
+// HELPER FUNCTIONS
+function propertyMatchesAmenities(propertyCard, selectedAmenities) {
+    if (selectedAmenities.length === 0) return true;
+    
+    for (const amenity of selectedAmenities) {
+        let hasAmenity = false;
+        const amenitiesSection = propertyCard.querySelector('.property-amenities');
+        const safetySection = propertyCard.querySelector('.property-safety');
+        
+        switch(amenity) {
+            case 'electricity': hasAmenity = amenitiesSection?.textContent.includes('Electricity'); break;
+            case 'water': hasAmenity = amenitiesSection?.textContent.includes('Water'); break;
+            case 'internet': hasAmenity = amenitiesSection?.textContent.includes('Internet'); break;
+            case 'airconditioning': hasAmenity = amenitiesSection?.textContent.includes('AC'); break;
+            case 'kitchen': hasAmenity = amenitiesSection?.textContent.includes('Kitchen'); break;
+            case 'shared_kitchen': hasAmenity = amenitiesSection?.textContent.includes('Shared Kitchen'); break;
+            case 'private_bathroom': hasAmenity = amenitiesSection?.textContent.includes('Private Bathroom'); break;
+            case 'shared_bathroom': hasAmenity = amenitiesSection?.textContent.includes('Shared Bathroom'); break;
+            case 'secure_locks': hasAmenity = safetySection?.textContent.includes('Secure Locks'); break;
+            case 'cctv': hasAmenity = safetySection?.textContent.includes('CCTV'); break;
+            case 'gated_compound': hasAmenity = safetySection?.textContent.includes('Gated Compound'); break;
+            case 'security_guard': hasAmenity = safetySection?.textContent.includes('Security Guard'); break;
+            case 'parking': hasAmenity = amenitiesSection?.textContent.includes('Parking'); break;
+            case 'furnished': hasAmenity = amenitiesSection?.textContent.includes('Furnished'); break;
+            case 'pet_friendly': hasAmenity = amenitiesSection?.textContent.includes('Pet Friendly'); break;
+        }
+        
+        if (!hasAmenity) return false;
+    }
+    return true;
+}
+
+function propertyMatchesPrice(propertyCard, priceMin, priceMax) {
+    const propertyPrice = parseInt(propertyCard.getAttribute('data-price')) || 0;
+    return propertyPrice >= priceMin && propertyPrice <= priceMax;
+}
+
+function propertyMatchesLocation(propertyCard, location) {
+    if (location === 'all') return true;
+    const propertyLocation = propertyCard.getAttribute('data-location') || '';
+    return propertyLocation.includes(location.toLowerCase());
+}
+
+function propertyMatchesSearch(propertyCard, searchTerm) {
+    if (!searchTerm) return true;
+    const searchLower = searchTerm.toLowerCase();
+    const propertyTitle = propertyCard.querySelector('.property-title')?.textContent.toLowerCase() || '';
+    const propertyLocation = propertyCard.querySelector('.property-location')?.textContent.toLowerCase() || '';
+    const propertyDescription = propertyCard.querySelector('.property-description')?.textContent.toLowerCase() || '';
+    
+    return propertyTitle.includes(searchLower) || 
+           propertyLocation.includes(searchLower) || 
+           propertyDescription.includes(searchLower);
+}
+
+function checkAmenitiesText(card, searchTerm) {
+    const amenitiesSection = card.querySelector('.property-amenities');
+    const safetySection = card.querySelector('.property-safety');
+    
+    if (amenitiesSection && amenitiesSection.textContent.toLowerCase().includes(searchTerm)) return true;
+    if (safetySection && safetySection.textContent.toLowerCase().includes(searchTerm)) return true;
+    
+    return false;
+}
+
+function updatePropertyCount(count) {
+    const countElement = document.getElementById('property-count');
+    if (countElement) {
+        if (count !== undefined) {
+            countElement.textContent = count;
+        } else {
+            const visibleCards = document.querySelectorAll('.property-card[style=""]').length + 
+                            document.querySelectorAll('.property-card:not([style])').length;
+            countElement.textContent = visibleCards;
+        }
+    }
 }

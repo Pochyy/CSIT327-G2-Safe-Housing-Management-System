@@ -57,11 +57,6 @@
             object-fit: cover;
             border-radius: 1rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .property-image-large:hover {
-            transform: scale(1.02);
         }
         
         .image-placeholder {
@@ -131,12 +126,6 @@
             padding: 1rem;
             border-radius: 0.75rem;
             background: white;
-            transition: transform 0.2s ease;
-        }
-        
-        .feature-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         .feature-value {
@@ -194,18 +183,13 @@
             background: white;
             border-radius: 0.5rem;
             border: 1px solid #e5e7eb;
-            transition: all 0.2s ease;
         }
         
-        .amenity-item:hover {
-            background: #f0f9f9;
-            border-color: #2C6E6F;
-            transform: translateX(5px);
-        }
-        
-        .amenity-check {
-            color: #10B981;
+        .amenity-icon {
+            color: #2C6E6F;
             font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
         }
         
         .action-buttons {
@@ -225,7 +209,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            flex: 2;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -238,36 +222,6 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(44, 110, 111, 0.4);
             background: linear-gradient(135deg, #245a5b, #398c8e);
-        }
-        
-        .btn-save {
-            background-color: white;
-            color: #2C6E6F;
-            padding: 1rem 2rem;
-            border: 2px solid #2C6E6F;
-            border-radius: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            font-size: 1.1rem;
-        }
-        
-        .btn-save:hover {
-            background-color: #2C6E6F;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(44, 110, 111, 0.3);
-        }
-        
-        .btn-save.saved {
-            background-color: #ef4444;
-            border-color: #ef4444;
-            color: white;
         }
         
         .property-status-badge {
@@ -284,24 +238,9 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         
+        /* Remove gallery styles since we only have one image */
         .image-gallery {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .gallery-thumb {
-            width: 100%;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-        
-        .gallery-thumb:hover {
-            transform: scale(1.05);
+            display: none;
         }
         
         @media (max-width: 768px) {
@@ -325,18 +264,6 @@
             .property-title-large {
                 font-size: 1.75rem;
             }
-        }
-
-        /* Loading animation for images */
-        .image-loading {
-            background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-        
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
         }
     </style>
 </head>
@@ -408,13 +335,6 @@
                         <div class="text-sm" style="color: #6b7280;">Image preview available soon</div>
                     </div>
                 </div>
-                
-                <!-- Image Gallery Placeholder -->
-                <div class="image-gallery">
-                    <div class="gallery-thumb image-loading"></div>
-                    <div class="gallery-thumb image-loading"></div>
-                    <div class="gallery-thumb image-loading"></div>
-                </div>
             </div>
             
             <!-- Property Info Section -->
@@ -457,35 +377,32 @@
                     <i class="fas fa-star"></i> Amenities & Features
                 </h3>
                 <div class="amenities-grid">
-                    {% if property.electricity %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Electricity</span></div>{% endif %}
-                    {% if property.water %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Water Supply</span></div>{% endif %}
-                    {% if property.internet %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Internet/Wi-Fi</span></div>{% endif %}
-                    {% if property.airconditioning %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Air Conditioning</span></div>{% endif %}
-                    {% if property.kitchen %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Kitchen</span></div>{% endif %}
-                    {% if property.shared_kitchen %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Shared Kitchen</span></div>{% endif %}
-                    {% if property.private_bathroom %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Private Bathroom</span></div>{% endif %}
-                    {% if property.shared_bathroom %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Shared Bathroom</span></div>{% endif %}
-                    {% if property.parking %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Parking</span></div>{% endif %}
-                    {% if property.furnished %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Furnished</span></div>{% endif %}
-                    {% if property.pet_friendly %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Pet Friendly</span></div>{% endif %}
+                    {% if property.electricity %}<div class="amenity-item"><i class="fas fa-bolt amenity-icon"></i> <span>Electricity</span></div>{% endif %}
+                    {% if property.water %}<div class="amenity-item"><i class="fas fa-tint amenity-icon"></i> <span>Water Supply</span></div>{% endif %}
+                    {% if property.internet %}<div class="amenity-item"><i class="fas fa-wifi amenity-icon"></i> <span>Internet/Wi-Fi</span></div>{% endif %}
+                    {% if property.airconditioning %}<div class="amenity-item"><i class="fas fa-wind amenity-icon"></i> <span>Air Conditioning</span></div>{% endif %}
+                    {% if property.kitchen %}<div class="amenity-item"><i class="fas fa-utensils amenity-icon"></i> <span>Kitchen</span></div>{% endif %}
+                    {% if property.shared_kitchen %}<div class="amenity-item"><i class="fas fa-utensil-spoon amenity-icon"></i> <span>Shared Kitchen</span></div>{% endif %}
+                    {% if property.private_bathroom %}<div class="amenity-item"><i class="fas fa-bath amenity-icon"></i> <span>Private Bathroom</span></div>{% endif %}
+                    {% if property.shared_bathroom %}<div class="amenity-item"><i class="fas fa-restroom amenity-icon"></i> <span>Shared Bathroom</span></div>{% endif %}
+                    {% if property.parking %}<div class="amenity-item"><i class="fas fa-parking amenity-icon"></i> <span>Parking</span></div>{% endif %}
+                    {% if property.furnished %}<div class="amenity-item"><i class="fas fa-couch amenity-icon"></i> <span>Furnished</span></div>{% endif %}
+                    {% if property.pet_friendly %}<div class="amenity-item"><i class="fas fa-paw amenity-icon"></i> <span>Pet Friendly</span></div>{% endif %}
                 </div>
                 
                 <h3 class="section-title">
                     <i class="fas fa-shield-alt"></i> Safety & Security
                 </h3>
                 <div class="amenities-grid">
-                    {% if property.secure_locks %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Secure Locks</span></div>{% endif %}
-                    {% if property.cctv %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>CCTV Surveillance</span></div>{% endif %}
-                    {% if property.gated_compound %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Gated Compound</span></div>{% endif %}
-                    {% if property.security_guard %}<div class="amenity-item"><i class="fas fa-check amenity-check"></i> <span>Security Guard</span></div>{% endif %}
+                    {% if property.secure_locks %}<div class="amenity-item"><i class="fas fa-lock amenity-icon"></i> <span>Secure Locks</span></div>{% endif %}
+                    {% if property.cctv %}<div class="amenity-item"><i class="fas fa-video amenity-icon"></i> <span>CCTV Surveillance</span></div>{% endif %}
+                    {% if property.gated_compound %}<div class="amenity-item"><i class="fas fa-door-closed amenity-icon"></i> <span>Gated Compound</span></div>{% endif %}
+                    {% if property.security_guard %}<div class="amenity-item"><i class="fas fa-user-shield amenity-icon"></i> <span>Security Guard</span></div>{% endif %}
                 </div>
                 
                 <div class="action-buttons">
                     <button class="btn-contact" onclick="contactLandlord()">
                         <i class="fas fa-envelope"></i> Contact Landlord
-                    </button>
-                    <button class="btn-save" id="savePropertyBtn" onclick="toggleSaveProperty()">
-                        <i class="fas fa-heart"></i> Save Property
                     </button>
                 </div>
             </div>
@@ -493,4 +410,27 @@
     </div>
 
     <script>
-        // Enhanced dropdown
+        // Enhanced dropdown functionality
+        const userDropdownBtn = document.getElementById('userDropdownBtn');
+        const userDropdown = document.getElementById('userDropdown');
+
+        if (userDropdownBtn && userDropdown) {
+            userDropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('active');
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!userDropdownBtn.contains(e.target)) {
+                    userDropdown.classList.remove('active');
+                }
+            });
+        }
+
+        function contactLandlord() {
+            alert('Contact landlord functionality will be implemented soon!');
+            // You can replace this with actual contact logic
+        }
+    </script>
+</body>
+</html>
