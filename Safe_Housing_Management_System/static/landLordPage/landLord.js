@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (modalOverlay && openModalBtn) {
         openModalBtn.addEventListener('click', () => {
+            console.log("Opened Modal")
             modalOverlay.classList.add('active');
         });
         
@@ -241,13 +242,18 @@ document.addEventListener('DOMContentLoaded', function() {
     if (imageUpload && imageInput) {
         imageUpload.addEventListener('click', () => {
             imageInput.click();
+            console.log("Image Picker opened!")
         });
 
         imageInput.addEventListener('change', function(e) {
             if (this.files && this.files[0]) {
                 const fileName = this.files[0].name;
+                console.log(imageInput.files)
+                
                 if (imageFileName) {
                     imageFileName.textContent = 'Selected: ' + fileName;
+                    
+                    console.log("Selected:", fileName)
                     imageFileName.style.display = 'block';
                 }
                 imageUpload.style.borderColor = '#007bff';
@@ -443,6 +449,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     submitBtn.disabled = true;
                 }
                 
+                console.log(imageInput.files); // before creating FormData
+
                 const formData = new FormData(this);
                 
                 let url = '/landlord/add-property/';

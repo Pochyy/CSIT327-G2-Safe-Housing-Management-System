@@ -147,9 +147,8 @@
                     <div class="property-image">
                         {% if property.image %}
                             <!-- Try to load from static property_images folder -->
-                            <img src="{% static 'property_images/' %}{{ property.image.name }}" 
-                                 alt="{{ property.property_name }}"
-                                 onerror="this.src='{% static 'images/default-property.jpg' %}'">
+                            <img src="{{ property.image.url }}" 
+                                 alt="{{ property.property_name }}">
                         {% else %}
                             <!-- Fallback to default image -->
                             <img src="{% static 'images/default-property.jpg' %}" alt="{{ property.property_name }}">
