@@ -242,6 +242,101 @@
         .image-gallery {
             display: none;
         }
+    
+        /* CONTACT MODAL STYLES - MOVED OUTSIDE MEDIA QUERY */
+        .contact-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        }
+    
+        .contact-modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+            animation: slideUp 0.3s ease;
+        }
+    
+        @keyframes slideUp {
+            from { opacity: 0; transform: translate(-50%, -40%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+    
+        .contact-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+    
+        .contact-modal-header h3 {
+            margin: 0;
+            color: #1F2937;
+            font-size: 1.25rem;
+        }
+    
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+    
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+            border-left: 3px solid #2C6E6F;
+        }
+    
+        .contact-item i {
+            color: #2C6E6F;
+            width: 20px;
+            text-align: center;
+        }
+    
+        .contact-label {
+            font-weight: 600;
+            color: #374151;
+            min-width: 80px;
+        }
+    
+        .contact-value {
+            color: #6B7280;
+        }
+    
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6B7280;
+            padding: 0.25rem;
+        }
+    
+        .close-modal:hover {
+            color: #374151;
+        }
         
         @media (max-width: 768px) {
             .property-details-grid {
@@ -276,14 +371,10 @@
                 <h2>Safe <span>Haven</span></h2>
             </div>
 
-            <div class="header-right">
-                <div class="notification-icon">
-                    <i class="far fa-bell"></i>
-                    <div class="notification-badge">3</div>
-                </div>
+
                 
                 <div class="user-info" id="userDropdownBtn">
-                    <div>Welcome, {{ user.first_name }}</div>
+                    <div>{{ user.first_name }} {{ user.last_name }}</div>
                     <div class="user-avatar">{{ user.first_name|first }}{{ user.last_name|first }}</div>
                     <div class="user-dropdown" id="userDropdown">
                         <div class="user-dropdown-item">
@@ -428,9 +519,64 @@
         }
 
         function contactLandlord() {
-            alert('Contact landlord functionality will be implemented soon!');
-            // You can replace this with actual contact logic
+            document.getElementById('contactModalOverlay').style.display = 'block';
         }
+        
+        function closeContactModal() {
+            document.getElementById('contactModalOverlay').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('contactModalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeContactModal();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeContactModal();
+            }
+        });
     </script>
+
+    <!-- Contact Landlord Modal -->
+<div class="contact-modal-overlay" id="contactModalOverlay">
+    <div class="contact-modal">
+        <button class="close-modal" onclick="closeContactModal()">×</button>
+        
+        <div class="contact-modal-header">
+            <i class="fas fa-phone-alt" style="color: #2C6E6F;"></i>
+            <h3>Contact Information</h3>
+        </div>
+        
+        <div class="contact-info">
+            <div class="contact-item">
+                <i class="fas fa-home"></i>
+                <span class="contact-label">PROPERTY:</span>
+                <span class="contact-value">{{ property.property_name }}</span>
+            </div>
+            
+            <div class="contact-item">
+                <i class="fas fa-user"></i>
+                <span class="contact-label">LANDLORD:</span>
+                <span class="contact-value">{{ landlord_name }}</span>
+            </div>
+            
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <span class="contact-label">CONTACT:</span>
+                <span class="contact-value">{{ landlord_phone|default:"Not provided" }}</span>
+            </div>
+            
+            <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <span class="contact-label">EMAIL:</span>
+                <span class="contact-value">{{ landlord_email }}</span>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
