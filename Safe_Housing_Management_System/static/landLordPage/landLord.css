@@ -1079,3 +1079,30 @@ textarea.form-input {
     overflow: visible !important;
     position: relative;
 }
+
+.rejection-reason {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.rejection-title {
+    color: #e53e3e;
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rejection-title i {
+    font-size: 16px;
+}
+
+.rejection-message {
+    color: #742a2a;
+    line-height: 1.4;
+}

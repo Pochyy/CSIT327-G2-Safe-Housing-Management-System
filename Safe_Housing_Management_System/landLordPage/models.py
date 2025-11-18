@@ -46,6 +46,7 @@ class Property(models.Model):
     pet_friendly = models.BooleanField(default=False)
 
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    rejection_reason = models.TextField(blank=True, null=True, help_text="Reason for rejection if applicable")  
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

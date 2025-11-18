@@ -27,12 +27,12 @@ class PropertyAdmin(admin.ModelAdmin):
             'fields': ('parking', 'furnished', 'pet_friendly')
         }),
         ('Status', {
-            'fields': ('status', 'created_at')
+            'fields': ('status', 'rejection_reason', 'created_at')
         }),
     )
     
     def approve_properties(self, request, queryset):
-        queryset.update(status='Approved')
+        queryset.update(status='Approved', rejection_reason='')
         for property in queryset:
             Notification.objects.create(
                 user=property.landlord,
@@ -43,18 +43,19 @@ class PropertyAdmin(admin.ModelAdmin):
     approve_properties.short_description = "Approve selected properties"
     
     def reject_properties(self, request, queryset):
+        # Simple bulk rejection - just mark as rejected
         queryset.update(status='Rejected')
         for property in queryset:
             Notification.objects.create(
                 user=property.landlord,
-                message=f'Your property "{property.property_name}" has been rejected.',
+                message=f'Your property "{property.property_name}" has been rejected. Please check property details for more information.',
                 notification_type='rejection'
             )
-        self.message_user(request, f'{queryset.count()} properties rejected.')
+        self.message_user(request, f'{queryset.count()} properties rejected. You can edit individual properties to add specific rejection reasons.')
     reject_properties.short_description = "Reject selected properties"
 
     def save_model(self, request, obj, form, change):
-    # Check if status is being changed
+        # Check if status is being changed
         if change and 'status' in form.changed_data:
             old_status = Property.objects.get(pk=obj.pk).status
             new_status = obj.status
@@ -62,21 +63,27 @@ class PropertyAdmin(admin.ModelAdmin):
             # Only create notification if status actually changed
             if old_status != new_status:
                 if new_status == 'Approved':
+                    obj.rejection_reason = ''  # Clear rejection reason when approving
                     Notification.objects.create(
                         user=obj.landlord,
                         message=f'Your property "{obj.property_name}" has been approved and is now live!',
                         notification_type='approval'
                     )
                 elif new_status == 'Rejected':
+                    # Include the rejection reason in the notification if provided
+                    if obj.rejection_reason:
+                        notification_message = f'Your property "{obj.property_name}" has been rejected. Reason: {obj.rejection_reason}'
+                    else:
+                        notification_message = f'Your property "{obj.property_name}" has been rejected. Please contact admin for details.'
+                    
                     Notification.objects.create(
                         user=obj.landlord,
-                        message=f'Your property "{obj.property_name}" has been rejected. Please review the requirements.',
+                        message=notification_message,
                         notification_type='rejection'
                     )
         
         super().save_model(request, obj, form, change)
 
-# Register Notification model too
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ['user', 'message', 'notification_type', 'is_read', 'created_at']
