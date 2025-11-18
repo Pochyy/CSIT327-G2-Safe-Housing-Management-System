@@ -17,11 +17,6 @@
                 <h2>Safe <span>Haven</span></h2>
             </div>
 
-            <div class="header-right">
-                <div class="notification-icon">
-                    <i class="far fa-bell"></i>
-                    <div class="notification-badge">3</div>
-                </div>
                 
                 <div class="user-info" id="userDropdownBtn">
                     <div>{{ user.first_name }} {{ user.last_name }}</div>
@@ -57,15 +52,7 @@
             </div>
             <div class="input-group">
                 <label for="location">Location</label>
-                <select id="location">
-                    <option value="all">All Locations</option>
-                    <option value="manila">Manila, Metro Manila</option>
-                    <option value="cebu">Cebu City, Cebu</option>
-                    <option value="davao">Davao City, Davao</option>
-                    <option value="quezon">Quezon City, Metro Manila</option>
-                    <option value="makati">Makati, Metro Manila</option>
-                    <option value="baguio">Baguio, Benguet</option>
-                </select>
+                <input type="text" id="location" placeholder="Enter city or area...">
             </div>
             <div class="input-group">
                 <label for="price-min">Min Price</label>

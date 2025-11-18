@@ -227,7 +227,7 @@ function applyFilters() {
     const selectedAmenities = getSelectedAmenities();
     const priceMin = parseInt(document.getElementById('price-min').value) || 0;
     const priceMax = parseInt(document.getElementById('price-max').value) || 50000;
-    const location = document.getElementById('location').value;
+    const location = document.getElementById('location').value.trim().toLowerCase();
     const search = document.getElementById('search').value.trim().toLowerCase();
     
     const propertyContainer = document.getElementById('property-container');
@@ -286,7 +286,7 @@ function clearAllFilters() {
     // Reset inputs
     document.getElementById('price-min').value = 0;
     document.getElementById('price-max').value = 50000;
-    document.getElementById('location').value = 'all';
+    document.getElementById('location').value = '';
     document.getElementById('search').value = '';
     
     // Apply cleared filters
@@ -305,7 +305,7 @@ function updateFilterCount() {
         
         let count = amenityCount;
         if (priceMin > 0 || priceMax < 50000) count++;
-        if (location !== 'all') count++;
+        if (location.trim() !== '') count++;
         if (search.trim() !== '') count++;
         
         filterCount.textContent = count;
@@ -350,7 +350,7 @@ function propertyMatchesPrice(propertyCard, priceMin, priceMax) {
 }
 
 function propertyMatchesLocation(propertyCard, location) {
-    if (location === 'all') return true;
+    if (!location) return true; // Show all if no location entered
     const propertyLocation = propertyCard.getAttribute('data-location') || '';
     return propertyLocation.includes(location.toLowerCase());
 }
