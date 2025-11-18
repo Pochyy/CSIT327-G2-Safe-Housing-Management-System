@@ -22,8 +22,14 @@ def property_details(request, property_id):
     # Get the specific property or return 404
     property_obj = get_object_or_404(Property, id=property_id, status='Approved')
     
+    landlord = property_obj.landlord  
+
     context = {
         'property': property_obj,
-        'user': request.user
+        'user': request.user,
+        'landlord': landlord,
+        'landlord_name': f"{landlord.first_name} {landlord.last_name}",
+        'landlord_phone': landlord.user_phone,
+        'landlord_email': landlord.email
     }
     return render(request, 'renterPage/property_details.html', context)
