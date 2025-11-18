@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ property.property_name }} - Safe Haven</title>
     {% load static %}
+    {% load custom_filters %}
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'renterPage/renter.css' %}">
     <style>
@@ -431,7 +433,7 @@
             <!-- Property Info Section -->
             <div class="property-info">
                 <h1 class="property-title-large">{{ property.property_name }}</h1>
-                <div class="property-price-large">₱{{ property.price|floatformat:0 }}/month</div>
+                <div class="property-price-large">₱{{ property.price|intcomma }}/month</div>
                 
                 <div class="property-location-large">
                     <i class="fas fa-map-marker-alt"></i>
