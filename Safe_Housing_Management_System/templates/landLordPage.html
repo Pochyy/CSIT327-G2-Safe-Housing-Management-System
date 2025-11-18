@@ -146,12 +146,14 @@
                 <div class="property-card" data-status="{{ property.status|lower }}">
                     <div class="property-image">
                         {% if property.image %}
-                            <!-- Try to load from static property_images folder -->
+                            <!-- Cloudinary image -->
                             <img src="{{ property.image.url }}" 
-                                 alt="{{ property.property_name }}">
+                                 alt="{{ property.property_name }}"
+                                 onerror="this.onerror=null; this.src='{% static 'images/default-property.jpg' %}'">
                         {% else %}
                             <!-- Fallback to default image -->
-                            <img src="{% static 'images/default-property.jpg' %}" alt="{{ property.property_name }}">
+                            <img src="{% static 'images/default-property.jpg' %}" 
+                                alt="{{ property.property_name }}">
                         {% endif %}
                         <div class="property-status-badge {{ property.status|lower }}">
                             {{ property.status }}
@@ -168,12 +170,12 @@
                             <span>{{ property.area }} sq ft</span>
                         </div>
                         <div class="property-price">₱{{ property.price }}<span class="price-period">/month</span></div>
-                        
+                    
+
                         <!-- Action buttons -->
                         <div class="property-actions">
                             <button class="btn-edit" data-property-id="{{ property.id }}">
                                 <i class="fas fa-edit"></i> Edit
-                            </button>
                             </button>
                             <button class="btn-delete" data-property-id="{{ property.id }}">
                                 <i class="fas fa-trash"></i> Delete
@@ -406,3 +408,4 @@
     </html>
 
         
+    

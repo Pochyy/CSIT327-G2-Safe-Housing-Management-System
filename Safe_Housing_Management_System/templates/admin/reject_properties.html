@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reject Properties</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+        .properties-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .property-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .property-item:last-child {
+            border-bottom: none;
+        }
+        .reason-option {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .reason-option:hover {
+            background: #e9ecef;
+            border-color: #007bff;
+        }
+        .reason-option input[type="radio"] {
+            margin-right: 10px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            margin-top: 10px;
+            resize: vertical;
+            display: none;
+        }
+        .button-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .reason-detail {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 4px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚫 Reject Properties</h1>
+        
+        <p>You are rejecting <strong>{{ properties.count }}</strong> propert{{ properties.count|pluralize:"y,ies" }}:</p>
+        
+        <div class="properties-list">
+            {% for property in properties %}
+            <div class="property-item">
+                <strong>"{{ property.property_name }}"</strong> 
+                - {{ property.location }}
+                - ₱{{ property.price }}/month
+                - {{ property.landlord.username }}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div>
+                <label><strong>Select rejection reason:</strong></label>
+                
+                {% for value, label in rejection_reasons %}
+                <label class="reason-option">
+                    <input type="radio" name="rejection_reason" value="{{ label }}" required>
+                    <div>
+                        <strong>{{ value }}</strong>
+                        <span class="reason-detail">{{ label }}</span>
+                    </div>
+                </label>
+                {% endfor %}
+                
+                <textarea name="custom_reason" placeholder="Please provide specific details for rejection..." rows="4"></textarea>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" name="apply" class="btn btn-danger">Reject {{ properties.count }} Propert{{ properties.count|pluralize:"y,ies" }}</button>
+                <a href="{% url 'admin:landLordPage_property_changelist' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const radioButtons = document.querySelectorAll('input[name="rejection_reason"]');
+            const customTextarea = document.querySelector('textarea[name="custom_reason"]');
+            const form = document.querySelector('form');
+            
+            // Show/hide custom reason textarea
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'Other - please specify reason below') {
+                        customTextarea.style.display = 'block';
+                        customTextarea.required = true;
+                        customTextarea.placeholder = 'Please provide specific details for rejection...';
+                    } else {
+                        customTextarea.style.display = 'none';
+                        customTextarea.required = false;
+                        customTextarea.value = '';
+                    }
+                });
+            });
+            
+            // Handle custom rejection reason on form submit
+            form.addEventListener('submit', function(e) {
+                const selectedReason = document.querySelector('input[name="rejection_reason"]:checked');
+                
+                if (selectedReason && selectedReason.value === 'Other - please specify reason below') {
+                    if (customTextarea.value.trim()) {
+                        // Remove all existing rejection_reason inputs first
+                        const existingInputs = document.querySelectorAll('input[name="rejection_reason"]');
+                        existingInputs.forEach(input => {
+                            if (input.type === 'hidden') {
+                                input.remove();
+                            }
+                        });
+                        
+                        // Create new hidden input with custom reason
+                        const customInput = document.createElement('input');
+                        customInput.type = 'hidden';
+                        customInput.name = 'rejection_reason';
+                        customInput.value = 'Other: ' + customTextarea.value.trim();
+                        form.appendChild(customInput);
+                    }
+                }
+                // If it's not "Other", the radio button value will be submitted automatically
+            });
+            
+            // Hide custom textarea initially
+            customTextarea.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
