@@ -1,6 +1,6 @@
+from cloudinary.models import CloudinaryField
 from django.db import models
 from django.conf import settings
-import os
 
 class Property(models.Model):
     STATUS_CHOICES = [
@@ -22,7 +22,7 @@ class Property(models.Model):
     bathrooms = models.PositiveIntegerField(default=0)
     area = models.PositiveIntegerField(help_text="Area in square feet")
     property_description = models.TextField(max_length=1000)
-    image = models.ImageField(upload_to='property_images/', null=True, blank=True)
+    image = CloudinaryField('image', folder='property_images', null=True, blank=True)
 
     # Amenities Sections
     electricity = models.BooleanField(default=False)
@@ -53,31 +53,6 @@ class Property(models.Model):
 
     def __str__(self):
         return f"{self.property_name} ({self.status})"
-    
-    def save(self, *args, **kwargs):
-        """Override save to handle image cleanup"""
-        try:
-            # Get the old instance if it exists
-            if self.pk:
-                old_property = Property.objects.get(pk=self.pk)
-                
-                # Check if image is being changed or removed
-                if old_property.image and old_property.image != self.image:
-                    # Delete the old image file from storage
-                    if os.path.isfile(old_property.image.path):
-                        os.remove(old_property.image.path)
-        except Property.DoesNotExist:
-            pass  # It's a new property, no old image to delete
-        
-        super().save(*args, **kwargs)
-    
-    def delete(self, *args, **kwargs):
-        """Override delete to remove image file"""
-        if self.image:
-            # Delete the image file from storage
-            if os.path.isfile(self.image.path):
-                os.remove(self.image.path)
-        super().delete(*args, **kwargs)
     
     @property
     def image_url(self):
