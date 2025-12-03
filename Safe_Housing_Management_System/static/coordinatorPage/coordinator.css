@@ -1,0 +1,390 @@
+/* Coordinator specific styles */
+.coordinator-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.btn-approve, .btn-reject {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: 1;
+    transition: all 0.2s;
+}
+
+.btn-approve {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-approve:hover {
+    background-color: #0da271;
+    transform: translateY(-1px);
+}
+
+.btn-reject {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btn-reject:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+}
+
+.view-details-btn {
+    background-color: #3b82f6;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.view-details-btn:hover {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.property-stats {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #6b7280;
+}
+
+.stat-value {
+    font-weight: 500;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+/* Status specific colors */
+.property-card[data-status="pending"] {
+    border-left: 4px solid #f59e0b;
+}
+
+.property-card[data-status="approved"] {
+    border-left: 4px solid #10b981;
+}
+
+.property-card[data-status="rejected"] {
+    border-left: 4px solid #ef4444;
+}
+
+.landlord-info {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+.landlord-name {
+    font-weight: 600;
+    color: #374151;
+}
+
+.landlord-contact {
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+/* Coordinator header styling */
+.logo-section h2 span {
+    color: #A7D7C5;
+    text-shadow: 
+        -1px -1px 0  #2C6E6F, 
+        1px -1px 0  #2C6E6F, 
+        -1px 1px 0  #2C6E6F, 
+        1px 1px 0  #2C6E6F;
+}
+
+.add-property-container {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.add-property-container:hover {
+    background-color: var(--primary-dark);
+    color: white;
+    text-decoration: none;
+}
+
+.add-property-text {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.add-property-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Reject page styles */
+.reject-page-body {
+    background-color: #f9fafb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.reject-container {
+    max-width: 600px;
+    width: 100%;
+}
+
+.reject-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.reject-header h1 {
+    color: #2C6E6F;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.reject-header p {
+    color: #6b7280;
+    font-size: 16px;
+}
+
+.property-summary {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #ef4444;
+}
+
+.property-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.info-item {
+    font-size: 14px;
+}
+
+.info-label {
+    color: #6b7280;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    color: #111827;
+    font-weight: 600;
+}
+
+.reject-form {
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.btn-submit, .btn-cancel {
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.2s;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-submit {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btn-submit:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+    color: white;
+}
+
+.btn-cancel {
+    background-color: #6b7280;
+    color: white;
+}
+
+.btn-cancel:hover {
+    background-color: #4b5563;
+    transform: translateY(-1px);
+    color: white;
+}
+
+.reject-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    resize: vertical;
+    min-height: 100px;
+}
+
+.reject-textarea:focus {
+    outline: none;
+    border-color: #2C6E6F;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #111827;
+}
+
+.form-note {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 4px;
+}
+
+/* All properties page */
+.all-properties-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+    gap: 20px;
+}
+
+.back-btn {
+    background-color: #6b7280;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.back-btn:hover {
+    background-color: #4b5563;
+    color: white;
+    text-decoration: none;
+}
+
+.amenity-badge {
+    background-color: #f3f4f6;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: #374151;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+/* Property details modal */
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.details-section {
+    margin-bottom: 20px;
+}
+
+.amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-approved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}

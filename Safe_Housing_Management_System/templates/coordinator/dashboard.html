@@ -1,0 +1,213 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Haven - Coordinator Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'landLordPage/landLord.css' %}">
+    <link rel="stylesheet" href="{% static 'coordinatorPage/coordinator.css' %}">
+</head>
+<body>
+    <!-- Header Container -->
+    <div class="header-container">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+                <h2>Safe <span>Haven</span> - Coordinator</h2>
+            </div>
+
+            <div class="header-right">
+                <div class="user-info" id="userDropdownBtn">
+                    <div>{{ user.get_full_name|default:user.username }}</div>
+                    <div class="user-avatar">
+                        {% if user.first_name and user.last_name %}
+                            {{ user.first_name|first }}{{ user.last_name|first }}
+                        {% else %}
+                            {{ user.username|first|upper }}
+                        {% endif %}
+                    </div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-dropdown-item" id="logoutBtn">
+                            <form action="/logout/" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; width: 100%; text-align: left;">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <main>
+            <div class="dashboard-header">
+                <div class="dashboard-title-section">
+                    <h1 class="dashboard-title">Properties Pending Approval</h1>
+                    <p class="dashboard-subtitle">Review and approve/reject property listings</p>
+                </div>
+                <a href="{% url 'view_all_properties' %}" class="add-property-container" style="text-decoration: none;">
+                    <span class="add-property-text">View All Properties</span>
+                    <div class="add-property-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number">{{ pending_properties.count }}</div>
+                    <div class="stat-label">Pending Review</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ total_properties }}</div>
+                    <div class="stat-label">Total Properties</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ approved_properties }}</div>
+                    <div class="stat-label">Approved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ rejected_properties }}</div>
+                    <div class="stat-label">Rejected</div>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="properties-container">
+                {% for property in pending_properties %}
+                <div class="property-card" data-status="{{ property.status|lower }}">
+                    <div class="property-image">
+                        {% if property.image %}
+                            <img src="{{ property.image.url }}" 
+                                 alt="{{ property.property_name }}"
+                                 onerror="this.onerror=null; this.src='{% static 'images/default-property.jpg' %}'">
+                        {% else %}
+                            <img src="{% static 'images/default-property.jpg' %}" 
+                                alt="{{ property.property_name }}">
+                        {% endif %}
+                        <div class="property-status-badge {{ property.status|lower }}">
+                            {{ property.status }}
+                        </div>
+                    </div>
+                    <div class="property-content">
+                        <h3 class="property-title">{{ property.property_name }}</h3>
+                        <div class="property-location">
+                            <i class="fas fa-map-marker-alt"></i> {{ property.location }}
+                        </div>
+                        <div class="property-details">
+                            <span>{{ property.beds }} bed</span> • 
+                            <span>{{ property.bathrooms }} bath</span> • 
+                            <span>{{ property.area }} sq ft</span>
+                        </div>
+                        <div class="property-price">₱{{ property.price|intcomma }}<span class="price-period">/month</span></div>
+                        
+                        <!-- Landlord info -->
+                        <div class="landlord-info">
+                            <div class="landlord-name">
+                                <i class="fas fa-user"></i> {{ property.landlord.get_full_name|default:property.landlord.username }}
+                            </div>
+                            <div class="landlord-contact">
+                                <i class="fas fa-envelope"></i> {{ property.landlord.email }}
+                            </div>
+                        </div>
+                        
+                        <!-- Property stats -->
+                        <div class="property-stats">
+                            <div class="stat-row">
+                                <span class="stat-label">Listed:</span>
+                                <span class="stat-value">{{ property.created_at|date:"M d, Y" }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Status:</span>
+                                <span class="stat-value status-{{ property.status|lower }}">{{ property.status }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Action buttons -->
+                        <div class="coordinator-actions">
+                            <a href="{% url 'approve_property' property.id %}" 
+                               class="btn-approve" 
+                               onclick="return confirm('Approve this property?')">
+                                <i class="fas fa-check"></i> Approve
+                            </a>
+                            <a href="{% url 'reject_property' property.id %}" 
+                               class="btn-reject">
+                                <i class="fas fa-times"></i> Reject
+                            </a>
+                        </div>
+                        
+                        <button class="view-details-btn" onclick="showPropertyDetails({{ property.id }})">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-properties">
+                    <p>No properties pending approval.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+        
+        <!-- Property Details Modal -->
+        <div class="modal-overlay" id="detailsModal">
+            <div class="modal" style="max-width: 800px;">
+                <div class="modal-header">
+                    <h2 class="modal-title">Property Details</h2>
+                    <button type="button" class="close-modal" onclick="closeDetailsModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="propertyDetailsContent">
+                        <!-- Content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Safe Haven - Coordinator</h3>
+                    <p>Coordinator dashboard for managing property listings on Safe Haven platform.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Actions</h3>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'coordinator_dashboard' %}">Pending Reviews</a></li>
+                        <li><a href="{% url 'view_all_properties' %}">All Properties</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <div class="contact-info">
+                        <a href="mailto:support@safehaven.com">
+                            <i class="fas fa-envelope"></i> coordinator@safehaven.com
+                        </a>
+                        <a href="tel:1-800-SAFE-HOME">
+                            <i class="fas fa-phone"></i> 1-800-COORDINATOR
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                © 2025 Safe Haven Coordinator Dashboard. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <script src="{% static 'coordinatorPage/coordinator.js' %}"></script>
+</body>
+</html>
