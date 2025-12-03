@@ -5,6 +5,7 @@ class CustomUser(AbstractUser):
     USER_ROLES = [
         ('renter', 'Renter'),
         ('landlord', 'Landlord'),
+        ('coordinator', 'Coordinator'),
     ]
     
     user_role = models.CharField(max_length=20, choices=USER_ROLES, default='renter')
@@ -33,3 +34,7 @@ class CustomUser(AbstractUser):
     @property
     def is_renter(self):
         return self.user_role == 'renter'
+    
+    @property
+    def is_coordinator(self):  
+        return self.user_role == 'coordinator'
