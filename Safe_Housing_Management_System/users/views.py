@@ -10,6 +10,8 @@ def login_view(request):
             return redirect('landlord:home')  
         elif request.user.user_role == "renter":
             return redirect('renter:home')  
+        elif request.user.user_role == "coordinator":  
+            return redirect('coordinator_dashboard')
         return redirect('dashboard')
     
     if request.method == 'POST':
@@ -30,6 +32,8 @@ def login_view(request):
                 return redirect('landlord:home')  
             elif user.user_role == "renter":
                 return redirect('renter:home')  
+            elif user.user_role == "coordinator":  
+                return redirect('coordinator_dashboard')  
             return redirect('dashboard')
         else:
             messages.error(request, "Invalid username or password.")
