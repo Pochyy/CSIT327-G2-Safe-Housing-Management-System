@@ -13,8 +13,17 @@ let currentFilters = {
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Renter page loaded successfully!');
-    initializeDashboard();
+    console.log('Page loaded successfully!');
+    
+    // Check which page we're on
+    const isDashboard = document.getElementById('property-container');
+    const isPropertyDetails = document.querySelector('.property-details-container');
+    
+    if (isDashboard) {
+        initializeDashboard();
+    } else if (isPropertyDetails) {
+        initializePropertyDetails();
+    }
 });
 
 function initializeDashboard() {
@@ -24,6 +33,21 @@ function initializeDashboard() {
     setupRealTimeFilters();
     updateFilterCount();
     console.log("✅ Dashboard initialized successfully!");
+}
+
+function initializePropertyDetails() {
+    console.log("✅ Property details page initialization");
+    setupDropdown();
+    setupContactModal();
+    setupCommentFunctionality();
+    setupTextareaAutoResize();
+    
+    // Ensure two-column layout on page load
+    const grid = document.querySelector('.property-details-grid');
+    if (grid) {
+        grid.style.display = 'grid';
+        grid.style.gridTemplateColumns = '1fr 1fr';
+    }
 }
 
 // FILTER MODAL FUNCTIONALITY
@@ -36,7 +60,7 @@ function setupFilterModal() {
     const clearFiltersBtn = document.getElementById('clearFiltersBtn');
 
     if (!filterButton || !filterModal) {
-        console.error("❌ Filter modal elements not found");
+        console.log("ℹ️ Filter modal not found (not on dashboard page)");
         return;
     }
 
@@ -139,30 +163,251 @@ function setupDropdown() {
     }
 }
 
-// REAL-TIME FILTERS
+// PROPERTY DETAILS SPECIFIC FUNCTIONS
+function setupContactModal() {
+    const contactModalOverlay = document.getElementById('contactModalOverlay');
+    
+    if (contactModalOverlay) {
+        // Close modal when clicking outside
+        contactModalOverlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeContactModal();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeContactModal();
+            }
+        });
+    }
+}
+
+function setupCommentFunctionality() {
+    console.log("🔧 Setting up comment functionality...");
+    
+    // Remove onclick attributes and add proper event listeners
+    document.querySelectorAll('.reply-btn').forEach(btn => {
+        // Remove existing onclick attribute to prevent conflicts
+        btn.removeAttribute('onclick');
+        
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // Get comment ID from the parent comment item
+            const commentItem = this.closest('.comment-item');
+            if (commentItem) {
+                const commentId = commentItem.id.replace('comment-', '');
+                console.log('Reply button clicked for comment:', commentId);
+                toggleReplyForm(commentId);
+            }
+        });
+    });
+    
+    // Form submission handling
+    const commentForm = document.getElementById('commentForm');
+    if (commentForm) {
+        commentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const commentInput = this.querySelector('.comment-input');
+            const submitBtn = this.querySelector('.comment-submit-btn');
+            
+            // Basic validation
+            if (commentInput.value.trim().length < 5) {
+                alert('Please write a comment with at least 5 characters.');
+                commentInput.focus();
+                return;
+            }
+            
+            // Disable button to prevent multiple submissions
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+            
+            // Submit form
+            this.submit();
+        });
+    }
+    
+    // Reply form submissions
+    document.querySelectorAll('.reply-form form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const replyInput = this.querySelector('.reply-input');
+            const submitBtn = this.querySelector('.reply-submit-btn');
+            
+            if (replyInput.value.trim().length < 3) {
+                alert('Please write a reply with at least 3 characters.');
+                replyInput.focus();
+                return;
+            }
+            
+            // Disable button to prevent multiple submissions
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+            
+            // Submit form
+            this.submit();
+        });
+    });
+    
+    // Smooth scrolling for new comments
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('new_comment')) {
+        const commentId = urlParams.get('new_comment');
+        const commentElement = document.getElementById(`comment-${commentId}`);
+        if (commentElement) {
+            setTimeout(() => {
+                commentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                commentElement.style.animation = 'pulse 1.5s';
+            }, 300);
+        }
+    }
+    
+    console.log("✅ Comment functionality setup complete");
+}
+
+function setupTextareaAutoResize() {
+    // Auto-resize textareas as user types
+    document.querySelectorAll('.comment-input, .reply-input').forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        
+        // Initialize height
+        textarea.style.height = 'auto';
+        textarea.style.height = (textarea.scrollHeight) + 'px';
+    });
+}
+
+// CONTACT MODAL FUNCTIONS (make them global)
+window.contactLandlord = function() {
+    const contactModal = document.getElementById('contactModalOverlay');
+    if (contactModal) {
+        contactModal.style.display = 'block';
+    }
+};
+
+window.closeContactModal = function() {
+    const contactModal = document.getElementById('contactModalOverlay');
+    if (contactModal) {
+        contactModal.style.display = 'none';
+    }
+};
+
+// FIXED REPLY FORM FUNCTIONALITY
+function toggleReplyForm(commentId) {
+    console.log('toggleReplyForm called for comment:', commentId);
+    
+    const replyForm = document.getElementById(`replyForm-${commentId}`);
+    const replyBtn = document.querySelector(`#comment-${commentId} .reply-btn`);
+    
+    if (!replyForm) {
+        console.error('❌ Reply form not found:', `replyForm-${commentId}`);
+        return;
+    }
+    
+    if (!replyBtn) {
+        console.error('❌ Reply button not found in comment:', commentId);
+        return;
+    }
+    
+    console.log('Reply form found:', replyForm);
+    console.log('Reply button found:', replyBtn);
+    
+    // Check if this form is already active
+    if (replyForm.classList.contains('active')) {
+        // Hide this form
+        replyForm.classList.remove('active');
+        replyBtn.innerHTML = '<i class="fas fa-reply"></i> Reply';
+        console.log('Hiding reply form for comment:', commentId);
+    } else {
+        // Hide any other open reply forms first
+        document.querySelectorAll('.reply-form.active').forEach(form => {
+            form.classList.remove('active');
+            const otherId = form.id.replace('replyForm-', '');
+            const otherBtn = document.querySelector(`#comment-${otherId} .reply-btn`);
+            if (otherBtn) {
+                otherBtn.innerHTML = '<i class="fas fa-reply"></i> Reply';
+            }
+        });
+        
+        // Show this form
+        replyForm.classList.add('active');
+        replyBtn.innerHTML = '<i class="fas fa-times"></i> Close';
+        
+        // Focus and auto-resize the textarea
+        const textarea = replyForm.querySelector('.reply-input');
+        if (textarea) {
+            setTimeout(() => {
+                textarea.focus();
+                textarea.style.height = 'auto';
+                textarea.style.height = (textarea.scrollHeight) + 'px';
+            }, 50);
+        }
+        
+        console.log('Showing reply form for comment:', commentId);
+    }
+    
+    // Force display style for debugging
+    console.log('Current display style:', replyForm.style.display);
+    console.log('Current class list:', replyForm.classList.toString());
+}
+
+// Add a pulse animation for highlighting new comments
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(44, 110, 111, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(44, 110, 111, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(44, 110, 111, 0); }
+    }
+    
+    /* Ensure reply form is visible when active */
+    .reply-form.active {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+`;
+document.head.appendChild(style);
+
+// REAL-TIME FILTERS (dashboard only)
 function setupRealTimeFilters() {
-    // Search input
-    document.getElementById('search').addEventListener('input', function() {
+    const searchInput = document.getElementById('search');
+    const locationSelect = document.getElementById('location');
+    const priceMinInput = document.getElementById('price-min');
+    const priceMaxInput = document.getElementById('price-max');
+    
+    if (!searchInput || !locationSelect) {
+        return; // Not on dashboard
+    }
+    
+    searchInput.addEventListener('input', function() {
         applyFilters();
         updateFilterCount();
     });
     
-    // Location select
-    document.getElementById('location').addEventListener('change', function() {
+    locationSelect.addEventListener('change', function() {
         applyFilters();
         updateFilterCount();
     });
     
-    // Price inputs
-    document.getElementById('price-min').addEventListener('input', function() {
-        applyFilters();
-        updateFilterCount();
-    });
+    if (priceMinInput) {
+        priceMinInput.addEventListener('input', function() {
+            applyFilters();
+            updateFilterCount();
+        });
+    }
     
-    document.getElementById('price-max').addEventListener('input', function() {
-        applyFilters();
-        updateFilterCount();
-    });
+    if (priceMaxInput) {
+        priceMaxInput.addEventListener('input', function() {
+            applyFilters();
+            updateFilterCount();
+        });
+    }
     
     // Amenity checkboxes
     const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]');
@@ -175,7 +420,7 @@ function setupRealTimeFilters() {
     });
 }
 
-// VIEW TOGGLE FUNCTIONALITY
+// VIEW TOGGLE FUNCTIONALITY (dashboard only)
 function setupViewToggle() {
     const gridView = document.getElementById('grid-view');
     const listView = document.getElementById('list-view');
@@ -204,7 +449,7 @@ function toggleView(viewType) {
     }
 }
 
-// FILTER FUNCTIONS
+// FILTER FUNCTIONS (dashboard only)
 function updateSelectedAmenities() {
     selectedAmenities = [];
     const checkboxes = document.querySelectorAll('input[name="amenities"]:checked');
@@ -231,6 +476,8 @@ function applyFilters() {
     const search = document.getElementById('search').value.trim().toLowerCase();
     
     const propertyContainer = document.getElementById('property-container');
+    if (!propertyContainer) return; // Not on dashboard
+    
     const propertyCards = propertyContainer.querySelectorAll('.property-card');
     let visibleCount = 0;
     
@@ -250,7 +497,9 @@ function applyFilters() {
     
     // Update property count
     const propertyCount = document.getElementById('property-count');
-    propertyCount.textContent = visibleCount;
+    if (propertyCount) {
+        propertyCount.textContent = visibleCount;
+    }
     
     // Show no properties message if none match
     const noProperties = propertyContainer.querySelector('.no-properties');
@@ -284,10 +533,15 @@ function clearAllFilters() {
     checkboxes.forEach(checkbox => checkbox.checked = false);
     
     // Reset inputs
-    document.getElementById('price-min').value = 0;
-    document.getElementById('price-max').value = 50000;
-    document.getElementById('location').value = '';
-    document.getElementById('search').value = '';
+    const priceMinInput = document.getElementById('price-min');
+    const priceMaxInput = document.getElementById('price-max');
+    const locationInput = document.getElementById('location');
+    const searchInput = document.getElementById('search');
+    
+    if (priceMinInput) priceMinInput.value = 0;
+    if (priceMaxInput) priceMaxInput.value = 50000;
+    if (locationInput) locationInput.value = '';
+    if (searchInput) searchInput.value = '';
     
     // Apply cleared filters
     applyFilters();
@@ -305,8 +559,8 @@ function updateFilterCount() {
         
         let count = amenityCount;
         if (priceMin > 0 || priceMax < 50000) count++;
-        if (location.trim() !== '') count++;
-        if (search.trim() !== '') count++;
+        if (location && location.trim() !== '') count++;
+        if (search && search.trim() !== '') count++;
         
         filterCount.textContent = count;
     }
@@ -367,16 +621,6 @@ function propertyMatchesSearch(propertyCard, searchTerm) {
            propertyDescription.includes(searchLower);
 }
 
-function checkAmenitiesText(card, searchTerm) {
-    const amenitiesSection = card.querySelector('.property-amenities');
-    const safetySection = card.querySelector('.property-safety');
-    
-    if (amenitiesSection && amenitiesSection.textContent.toLowerCase().includes(searchTerm)) return true;
-    if (safetySection && safetySection.textContent.toLowerCase().includes(searchTerm)) return true;
-    
-    return false;
-}
-
 function updatePropertyCount(count) {
     const countElement = document.getElementById('property-count');
     if (countElement) {
@@ -389,3 +633,11 @@ function updatePropertyCount(count) {
         }
     }
 }
+
+// Scroll comments to top on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const commentsList = document.getElementById('commentsList');
+    if (commentsList) {
+        commentsList.scrollTop = 0;
+    }
+});

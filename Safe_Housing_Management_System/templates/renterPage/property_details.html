@@ -9,360 +9,6 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'renterPage/renter.css' %}">
-    <style>
-        .property-details-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            animation: fadeIn 0.6s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            color: #2C6E6F;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.75rem 1.5rem;
-            border: 2px solid #2C6E6F;
-            border-radius: 0.75rem;
-            transition: all 0.3s ease;
-        }
-        
-        .back-button:hover {
-            background-color: #2C6E6F;
-            color: white;
-            transform: translateX(-5px);
-        }
-        
-        .property-details-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: start;
-        }
-        
-        .property-images {
-            position: relative;
-        }
-        
-        .property-image-large {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            border-radius: 1rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-        
-        .image-placeholder {
-            width: 100%;
-            height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-            border-radius: 1rem;
-            color: #9ca3af;
-            font-weight: 500;
-            font-size: 1.1rem;
-            border: 2px dashed #d1d5db;
-        }
-        
-        .property-info {
-            padding: 1rem 0;
-        }
-        
-        .property-title-large {
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #1F2937;
-            line-height: 1.2;
-        }
-        
-        .property-price-large {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #2C6E6F;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #2C6E6F, #4F9D9E);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .property-location-large {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            color: #6B7280;
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 0.75rem;
-            border-left: 4px solid #2C6E6F;
-        }
-        
-        .property-features-large {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-            border-radius: 1rem;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-        
-        .feature-item {
-            text-align: center;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            background: white;
-        }
-        
-        .feature-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2C6E6F;
-            margin-bottom: 0.5rem;
-        }
-        
-        .feature-label {
-            font-size: 0.875rem;
-            color: #6B7280;
-            font-weight: 500;
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #1F2937;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e5e7eb;
-        }
-        
-        .section-title i {
-            color: #2C6E6F;
-        }
-        
-        .description-text {
-            line-height: 1.7;
-            color: #4B5563;
-            margin-bottom: 2rem;
-            font-size: 1.05rem;
-            padding: 1.5rem;
-            background: #fafafa;
-            border-radius: 0.75rem;
-            border-left: 4px solid #2C6E6F;
-        }
-        
-        .amenities-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .amenity-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            background: white;
-            border-radius: 0.5rem;
-            border: 1px solid #e5e7eb;
-        }
-        
-        .amenity-icon {
-            color: #2C6E6F;
-            font-size: 1.1rem;
-            width: 20px;
-            text-align: center;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2.5rem;
-            padding-top: 2rem;
-            border-top: 2px solid #e5e7eb;
-        }
-        
-        .btn-contact {
-            background: linear-gradient(135deg, #2C6E6F, #4F9D9E);
-            color: white;
-            padding: 1rem 2.5rem;
-            border: none;
-            border-radius: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(44, 110, 111, 0.3);
-        }
-        
-        .btn-contact:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(44, 110, 111, 0.4);
-            background: linear-gradient(135deg, #245a5b, #398c8e);
-        }
-        
-        .property-status-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            background: #10B981;
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Remove gallery styles since we only have one image */
-        .image-gallery {
-            display: none;
-        }
-    
-        /* CONTACT MODAL STYLES - MOVED OUTSIDE MEDIA QUERY */
-        .contact-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 10000;
-            animation: fadeIn 0.3s ease;
-        }
-    
-        .contact-modal {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            width: 90%;
-            max-width: 400px;
-            animation: slideUp 0.3s ease;
-        }
-    
-        @keyframes slideUp {
-            from { opacity: 0; transform: translate(-50%, -40%); }
-            to { opacity: 1; transform: translate(-50%, -50%); }
-        }
-    
-        .contact-modal-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e5e7eb;
-        }
-    
-        .contact-modal-header h3 {
-            margin: 0;
-            color: #1F2937;
-            font-size: 1.25rem;
-        }
-    
-        .contact-info {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-    
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            background: #f8f9fa;
-            border-radius: 0.5rem;
-            border-left: 3px solid #2C6E6F;
-        }
-    
-        .contact-item i {
-            color: #2C6E6F;
-            width: 20px;
-            text-align: center;
-        }
-    
-        .contact-label {
-            font-weight: 600;
-            color: #374151;
-            min-width: 80px;
-        }
-    
-        .contact-value {
-            color: #6B7280;
-        }
-    
-        .close-modal {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #6B7280;
-            padding: 0.25rem;
-        }
-    
-        .close-modal:hover {
-            color: #374151;
-        }
-        
-        @media (max-width: 768px) {
-            .property-details-grid {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            
-            .property-features-large {
-                grid-template-columns: 1fr;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .amenities-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .property-title-large {
-                font-size: 1.75rem;
-            }
-        }
-    </style>
 </head>
 <body>
     <!-- Enhanced Header -->
@@ -373,30 +19,27 @@
                 <h2>Safe <span>Haven</span></h2>
             </div>
 
-
-                
-                <div class="user-info" id="userDropdownBtn">
-                    <div>{{ user.first_name }} {{ user.last_name }}</div>
-                    <div class="user-avatar">{{ user.first_name|first }}{{ user.last_name|first }}</div>
-                    <div class="user-dropdown" id="userDropdown">
-                        <div class="user-dropdown-item">
-                            <i class="fas fa-user-circle"></i> My Profile
-                        </div>
-                        <div class="user-dropdown-item">
-                            <i class="fas fa-heart"></i> Saved Properties
-                        </div>
-                        <div class="user-dropdown-item">
-                            <i class="fas fa-cog"></i> Settings
-                        </div>
-                        <div class="user-dropdown-divider"></div>
-                        <div class="user-dropdown-item" id="logoutBtn">
-                            <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
-                                {% csrf_token %}
-                                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; width: 100%; text-align: left;">
-                                    <i class="fas fa-sign-out-alt"></i> Logout
-                                </button>
-                            </form>
-                        </div>
+            <div class="user-info" id="userDropdownBtn">
+                <div>{{ user.first_name }} {{ user.last_name }}</div>
+                <div class="user-avatar">{{ user.first_name|first }}{{ user.last_name|first }}</div>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-item">
+                        <i class="fas fa-user-circle"></i> My Profile
+                    </div>
+                    <div class="user-dropdown-item">
+                        <i class="fas fa-heart"></i> Saved Properties
+                    </div>
+                    <div class="user-dropdown-item">
+                        <i class="fas fa-cog"></i> Settings
+                    </div>
+                    <div class="user-dropdown-divider"></div>
+                    <div class="user-dropdown-item" id="logoutBtn">
+                        <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; width: 100%; text-align: left;">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -411,26 +54,164 @@
         </a>
         
         <div class="property-details-grid">
-            <!-- Property Images Section -->
-            <div class="property-images">
-                {% if property.image %}
-                    <img src="{{ property.image.url }}" 
-                         alt="{{ property.property_name }}" 
-                         class="property-image-large"
-                         onerror="this.style.display='none'; document.getElementById('image-placeholder').style.display='flex';"
-                         id="main-property-image">
-                {% endif %}
+            <!-- LEFT COLUMN: Property Image + Comments -->
+            <div>
+                <!-- Property Images Section -->
+                <div class="property-images">
+                    {% if property.image %}
+                        <img src="{{ property.image.url }}" 
+                             alt="{{ property.property_name }}" 
+                             class="property-image-large"
+                             onerror="this.style.display='none'; document.getElementById('image-placeholder').style.display='flex';"
+                             id="main-property-image">
+                    {% endif %}
+                    
+                    <div class="image-placeholder" id="image-placeholder" {% if property.image %}style="display: none;"{% endif %}>
+                        <div class="text-center">
+                            <i class="fas fa-home fa-3x mb-3" style="color: #9ca3af;"></i>
+                            <div>Property Image</div>
+                            <div class="text-sm" style="color: #6b7280;">Image preview available soon</div>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="image-placeholder" id="image-placeholder" {% if property.image %}style="display: none;"{% endif %}>
-                    <div class="text-center">
-                        <i class="fas fa-home fa-3x mb-3" style="color: #9ca3af;"></i>
-                        <div>Property Image</div>
-                        <div class="text-sm" style="color: #6b7280;">Image preview available soon</div>
+                <!-- COMMENT SECTION -->
+                <div class="comments-section">
+                    <div class="comments-header">
+                        <div class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            <span>Tenant Comments</span>
+                        </div>
+                        <div class="comments-count" id="commentsCount">
+                            {{ comments|length }} comment{{ comments|length|pluralize }}
+                        </div>
+                    </div>
+
+                    <!-- Comment Form (for renters only) -->
+                    {% if user.is_authenticated and user.user_role == 'renter' %}
+                    <div class="comment-form-container fade-in">
+                        <div class="comment-form-title">
+                            <i class="fas fa-edit"></i>
+                            <span>Add Your Comment</span>
+                        </div>
+                        <form id="commentForm" method="POST" action="{% url 'renter:add_comment' property.id %}">
+                            {% csrf_token %}
+                            <textarea 
+                                class="comment-input" 
+                                name="comment_content" 
+                                placeholder="Share your experience with this property..."
+                                required></textarea>
+                            <button type="submit" class="comment-submit-btn">
+                                <i class="fas fa-paper-plane"></i>
+                                Post Comment
+                            </button>
+                            <div style="clear: both;"></div>
+                        </form>
+                    </div>
+                    {% elif user.is_authenticated and user.user_role == 'landlord' %}
+                    <!-- No comment form for landlords -->
+                    {% else %}
+                    <!-- Users must be logged in to comment -->
+                    {% endif %}
+
+                    <!-- Comments List with Scroll -->
+                    <div class="comments-list" id="commentsList">
+                        {% if comments %}
+                            {% for comment in comments %}
+                            <div class="comment-item fade-in" id="comment-{{ comment.id }}">
+                                <div class="comment-header">
+                                    <div class="comment-avatar">
+                                        {{ comment.user.first_name|first|upper }}{{ comment.user.last_name|first|upper }}
+                                    </div>
+                                    <div class="comment-user-info">
+                                        <div class="comment-user-name">
+                                            {{ comment.user.first_name }} {{ comment.user.last_name }}
+                                            <span style="color: #6B7280; font-weight: normal; font-size: 0.75rem;">
+                                                ({% if comment.user.user_role == 'renter' %}Tenant{% else %}{{ comment.user.user_role|title }}{% endif %})
+                                            </span>
+                                        </div>
+                                        <div class="comment-timestamp">
+                                            {{ comment.created_at|date:"M d, Y · h:i A" }}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="comment-content">
+                                    {{ comment.content|linebreaks }}
+                                </div>
+
+                                <!-- Reply Button (for landlords only) -->
+                                {% if user.is_authenticated and user.user_role == 'landlord' %}
+                                <button class="reply-btn" onclick="toggleReplyForm('{{ comment.id }}')">
+                                    <i class="fas fa-reply"></i>
+                                    Reply
+                                </button>
+                                {% endif %}
+
+                                <!-- Reply Form (initially hidden - only for landlords) -->
+                                {% if user.is_authenticated and user.user_role == 'landlord' %}
+                                <div class="reply-form" id="replyForm-{{ comment.id }}">
+                                    <form method="POST" action="{% url 'renter:add_reply' comment.id %}">
+                                        {% csrf_token %}
+                                        <textarea 
+                                            class="reply-input" 
+                                            name="reply_content" 
+                                            placeholder="Write your reply as the landlord..."
+                                            required></textarea>
+                                        <div class="reply-actions">
+                                            <button type="button" class="reply-cancel-btn" onclick="toggleReplyForm('{{ comment.id }}')">
+                                                Cancel
+                                            </button>
+                                            <button type="submit" class="reply-submit-btn">
+                                                <i class="fas fa-paper-plane"></i>
+                                                Post Reply
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                {% endif %}
+
+                                <!-- Replies List -->
+                                {% if comment.replies.all %}
+                                <div class="replies-list">
+                                    {% for reply in comment.replies.all %}
+                                    <div class="reply-item fade-in">
+                                        <div class="reply-header">
+                                            <div class="reply-avatar">
+                                                {{ reply.user.first_name|first|upper }}{{ reply.user.last_name|first|upper }}
+                                            </div>
+                                            <div class="reply-user-name">
+                                                {{ reply.user.first_name }} {{ reply.user.last_name }}
+                                                <span style="color: #6B7280; font-weight: normal; font-size: 0.625rem;">
+                                                    (Landlord)
+                                                </span>
+                                            </div>
+                                            <div class="reply-timestamp">
+                                                {{ reply.created_at|timesince }} ago
+                                            </div>
+                                        </div>
+                                        <div class="reply-content">
+                                            {{ reply.content|linebreaks }}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <!-- Empty State -->
+                            <div class="comments-empty">
+                                <i class="fas fa-comment-slash"></i>
+                                <h4>No comments yet</h4>
+                                <p>Be the first tenant to share your experience with this property!</p>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             
-            <!-- Property Info Section -->
+            <!-- RIGHT COLUMN: Property Info -->
             <div class="property-info">
                 <h1 class="property-title-large">{{ property.property_name }}</h1>
                 <div class="property-price-large">₱{{ property.price|intcomma }}/month</div>
@@ -502,83 +283,45 @@
         </div>
     </div>
 
-    <script>
-        // Enhanced dropdown functionality
-        const userDropdownBtn = document.getElementById('userDropdownBtn');
-        const userDropdown = document.getElementById('userDropdown');
-
-        if (userDropdownBtn && userDropdown) {
-            userDropdownBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                userDropdown.classList.toggle('active');
-            });
-
-            document.addEventListener('click', function(e) {
-                if (!userDropdownBtn.contains(e.target)) {
-                    userDropdown.classList.remove('active');
-                }
-            });
-        }
-
-        function contactLandlord() {
-            document.getElementById('contactModalOverlay').style.display = 'block';
-        }
-        
-        function closeContactModal() {
-            document.getElementById('contactModalOverlay').style.display = 'none';
-        }
-        
-        // Close modal when clicking outside
-        document.getElementById('contactModalOverlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeContactModal();
-            }
-        });
-        
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeContactModal();
-            }
-        });
-    </script>
-
     <!-- Contact Landlord Modal -->
-<div class="contact-modal-overlay" id="contactModalOverlay">
-    <div class="contact-modal">
-        <button class="close-modal" onclick="closeContactModal()">×</button>
-        
-        <div class="contact-modal-header">
-            <i class="fas fa-phone-alt" style="color: #2C6E6F;"></i>
-            <h3>Contact Information</h3>
-        </div>
-        
-        <div class="contact-info">
-            <div class="contact-item">
-                <i class="fas fa-home"></i>
-                <span class="contact-label">PROPERTY:</span>
-                <span class="contact-value">{{ property.property_name }}</span>
+    <div class="contact-modal-overlay" id="contactModalOverlay">
+        <div class="contact-modal">
+            <button class="close-modal" onclick="closeContactModal()">×</button>
+            
+            <div class="contact-modal-header">
+                <i class="fas fa-phone-alt" style="color: #2C6E6F;"></i>
+                <h3>Contact Information</h3>
             </div>
             
-            <div class="contact-item">
-                <i class="fas fa-user"></i>
-                <span class="contact-label">LANDLORD:</span>
-                <span class="contact-value">{{ landlord_name }}</span>
-            </div>
-            
-            <div class="contact-item">
-                <i class="fas fa-phone"></i>
-                <span class="contact-label">CONTACT:</span>
-                <span class="contact-value">{{ landlord_phone|default:"Not provided" }}</span>
-            </div>
-            
-            <div class="contact-item">
-                <i class="fas fa-envelope"></i>
-                <span class="contact-label">EMAIL:</span>
-                <span class="contact-value">{{ landlord_email }}</span>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-home"></i>
+                    <span class="contact-label">PROPERTY:</span>
+                    <span class="contact-value">{{ property.property_name }}</span>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-user"></i>
+                    <span class="contact-label">LANDLORD:</span>
+                    <span class="contact-value">{{ landlord_name }}</span>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span class="contact-label">CONTACT:</span>
+                    <span class="contact-value">{{ landlord_phone|default:"Not provided" }}</span>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span class="contact-label">EMAIL:</span>
+                    <span class="contact-value">{{ landlord_email }}</span>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Load JavaScript -->
+    <script src="{% static 'renterPage/renter.js' %}"></script>
 </body>
 </html>
