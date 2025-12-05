@@ -149,7 +149,7 @@
                             <!-- Cloudinary image -->
                             <img src="{{ property.image.url }}" 
                                  alt="{{ property.property_name }}"
-                                 onerror="this.onerror=null; this.src='{% static 'images/default-property.jpg' %}'">
+                                 onerror="this.onerror=null; this.src='{% static 'images/default-property.jpg' %}';">
                         {% else %}
                             <!-- Fallback to default image -->
                             <img src="{% static 'images/default-property.jpg' %}" 
