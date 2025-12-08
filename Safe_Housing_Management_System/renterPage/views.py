@@ -3,6 +3,8 @@ from django.shortcuts import render, get_object_or_404
 from django.shortcuts import render, get_object_or_404, redirect  # Add redirect here
 from django.contrib import messages  # Add this import
 from landLordPage.models import Property  # Import the Property model from landlord app
+from django.db.models import Avg
+
 
 @login_required
 def renterPage(request):
@@ -29,6 +31,8 @@ def property_details(request, property_id):
     # Get comments for this property
     from .models import PropertyComment  # Import at function level to avoid circular imports
     comments = property_obj.comments.all().prefetch_related('replies')
+    avg_rating = comments.aggregate(avg=Avg('rating'))['avg'] or 0
+    avg_rating = round(avg_rating, 1)
 
     context = {
         'property': property_obj,
@@ -38,6 +42,7 @@ def property_details(request, property_id):
         'landlord_phone': landlord.user_phone,
         'landlord_email': landlord.email,
         'comments': comments,  # Add this line
+        'avg_rating': avg_rating,
     }
     return render(request, 'renterPage/property_details.html', context)
 
@@ -51,6 +56,11 @@ def add_comment(request, property_id):
     if request.method == 'POST':
         property_obj = get_object_or_404(Property, id=property_id)
         content = request.POST.get('comment_content', '').strip()
+        rating = int(request.POST.get('rating', 0))
+
+        if rating < 1 or rating > 5:
+            messages.error(request, 'Please provide a star rating')
+            return redirect('renter:property_details', property_id=property_id)
         
         if len(content) < 5:
             messages.error(request, 'Comment must be at least 5 characters.')
@@ -61,7 +71,8 @@ def add_comment(request, property_id):
         PropertyComment.objects.create(
             property=property_obj,
             user=request.user,
-            content=content
+            content=content,
+            rating=rating
         )
         
         messages.success(request, 'Your comment has been posted!')

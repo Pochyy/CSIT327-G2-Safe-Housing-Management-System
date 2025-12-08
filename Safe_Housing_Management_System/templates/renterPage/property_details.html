@@ -96,6 +96,16 @@
                         </div>
                         <form id="commentForm" method="POST" action="{% url 'renter:add_comment' property.id %}">
                             {% csrf_token %}
+                            <div class="star-rating">
+                                <i class="fa-regular fa-star" data-value="1"></i>
+                                <i class="fa-regular fa-star" data-value="2"></i>
+                                <i class="fa-regular fa-star" data-value="3"></i>
+                                <i class="fa-regular fa-star" data-value="4"></i>
+                                <i class="fa-regular fa-star" data-value="5"></i>
+                            </div>
+
+                            <input type="hidden" name="rating" id="ratingValue">
+
                             <textarea 
                                 class="comment-input" 
                                 name="comment_content" 
@@ -134,6 +144,16 @@
                                             {{ comment.created_at|date:"M d, Y · h:i A" }}
                                         </div>
                                     </div>
+                                </div>
+
+                                 <div class="comment-rating" style="margin: 4px 0;">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= comment.rating %}
+                                            <i class="fa-solid fa-star" style="color: #fbbf24;"></i>
+                                        {% else %}
+                                            <i class="fa-regular fa-star" style="color: #d1d5db;"></i>
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
                                 
                                 <div class="comment-content">
@@ -215,6 +235,28 @@
             <div class="property-info">
                 <h1 class="property-title-large">{{ property.property_name }}</h1>
                 <div class="property-price-large">₱{{ property.price|intcomma }}/month</div>
+
+                <!-- Average Rating -->
+                <div class="property-overall-rating" style="margin: 8px 0;">
+                    <span class="rating-stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= avg_rating|floatformat:0 %}
+                                <i class="fa-solid fa-star" style="color: #fbbf24;"></i>
+                            {% elif forloop.counter <= avg_rating %}
+                                <i class="fa-solid fa-star-half-stroke" style="color: #fbbf24;"></i>
+                            {% else %}
+                                <i class="fa-regular fa-star" style="color: #d1d5db;"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                    <span class="rating-value" style="margin-left: 6px; font-weight: 500;">
+                        {{ avg_rating|floatformat:1 }}/5
+                    </span>
+                    <span class="rating-count" style="color: #6b7280; font-size: 0.875rem; margin-left: 6px;">
+                        ({{ comments|length }} review{{ comments|length|pluralize }})
+                    </span>
+                </div>
+
                 
                 <div class="property-location-large">
                     <i class="fas fa-map-marker-alt"></i>
