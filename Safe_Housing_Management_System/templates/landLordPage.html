@@ -1,411 +1,429 @@
-{% load static %}
-{% load custom_filters %}
+    {% load static %}
+    {% load custom_filters %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safe Haven - Property Management</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'landLordPage/landLord.css' %}">
-</head>
-<body>
-    <!-- Header Container -->
-    <div class="header-container">
-        <div class="header-content">
-            <div class="logo-section">
-                <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
-                <h2>Safe <span>Haven</span></h2>
-            </div>
-
-            <div class="header-right">
-                <!-- Notifications Bell - Update your existing bell -->
-                <div class="notification-icon">
-                    <i class="far fa-bell"></i>
-                    {% if unread_count > 0 %}
-                    <div class="notification-badge">{{ unread_count }}</div>
-                    {% endif %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Safe Haven - Property Management</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'landLordPage/landLord.css' %}">
+    </head>
+    <body>
+        <!-- Header Container -->
+        <div class="header-container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+                    <h2>Safe <span>Haven</span></h2>
                 </div>
 
-                <!-- Notifications Dropdown - Add this somewhere in your header -->
-                <div class="notifications-dropdown">
-                    <div class="notifications-header">
-                        <h3>Notifications</h3>
+                <div class="header-right">
+                    <!-- Notifications Bell - Update your existing bell -->
+                    <div class="notification-icon">
+                        <i class="far fa-bell"></i>
                         {% if unread_count > 0 %}
-                        <span class="unread-count">{{ unread_count }} unread</span>
+                        <div class="notification-badge">{{ unread_count }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Notifications Dropdown - Add this somewhere in your header -->
+                    <div class="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h3>Notifications</h3>
+                            {% if unread_count > 0 %}
+                            <span class="unread-count">{{ unread_count }} unread</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="notifications-list">
+                            {% for notification in notifications %}
+                            <div class="notification-item {% if not notification.is_read %}unread{% endif %}" 
+                                data-notification-id="{{ notification.id }}">
+                                <div class="notification-type-icon">
+                                    {% if notification.notification_type == 'approval' %}✅
+                                    {% elif notification.notification_type == 'rejection' %}❌
+                                    {% else %}🔔{% endif %}
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-message">{{ notification.message }}</div>
+                                    <div class="notification-time">{{ notification.created_at|timesince }} ago</div>
+                                </div>
+                                <button class="mark-read-btn" title="Mark as read">×</button>
+                            </div>
+                            {% empty %}
+                            <div class="no-notifications">
+                                <p>No new notifications</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        {% if notifications %}
+                        <div class="notifications-footer">
+                            <button class="mark-all-read">Mark all as read</button>
+                        </div>
                         {% endif %}
                     </div>
                     
-                    <div class="notifications-list">
-                        {% for notification in notifications %}
-                        <div class="notification-item {% if not notification.is_read %}unread{% endif %}" 
-                            data-notification-id="{{ notification.id }}">
-                            <div class="notification-type-icon">
-                                {% if notification.notification_type == 'approval' %}✅
-                                {% elif notification.notification_type == 'rejection' %}❌
-                                {% else %}🔔{% endif %}
-                            </div>
-                            <div class="notification-content">
-                                <div class="notification-message">{{ notification.message }}</div>
-                                <div class="notification-time">{{ notification.created_at|timesince }} ago</div>
-                            </div>
-                            <button class="mark-read-btn" title="Mark as read">×</button>
+                    <div class="user-info" id="userDropdownBtn">
+                        <div>{{ user.get_full_name|default:user.username }}</div>
+                        <div class="user-avatar">
+                            {% if user.first_name and user.last_name %}
+                                {{ user.first_name|first }}{{ user.last_name|first }}
+                            {% else %}
+                                {{ user.username|first|upper }}
+                            {% endif %}
                         </div>
-                        {% empty %}
-                        <div class="no-notifications">
-                            <p>No new notifications</p>
+                        <div class="user-dropdown" id="userDropdown">
+                            <div class="user-dropdown-item" id="logoutBtn">
+                                <form action="/logout/" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; width: 100%; text-align: left;">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                        {% endfor %}
+                        
                     </div>
-                    
-                    {% if notifications %}
-                    <div class="notifications-footer">
-                        <button class="mark-all-read">Mark all as read</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <main>
+                <div class="dashboard-header">
+                    <div class="dashboard-title-section">
+                        <h1 class="dashboard-title">My Properties</h1>
+                        <p class="dashboard-subtitle">Manage your property listings</p>
                     </div>
-                    {% endif %}
+                    <div class="add-property-container" id="openModalBtn">
+                        <span class="add-property-text">Add New Property</span>
+                        <div class="add-property-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="user-info" id="userDropdownBtn">
-                    <div>{{ user.get_full_name|default:user.username }}</div>
-                    <div class="user-avatar">
-                        {% if user.first_name and user.last_name %}
-                            {{ user.first_name|first }}{{ user.last_name|first }}
-                        {% else %}
-                            {{ user.username|first|upper }}
-                        {% endif %}
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-number">{{ total_properties }}</div>
+                        <div class="stat-label">Total Listings</div>
                     </div>
-                    <div class="user-dropdown" id="userDropdown">
-                        <div class="user-dropdown-item">
-                            <i class="fas fa-user-circle"></i> My Profile
+                    <div class="stat-card">
+                        <div class="stat-number">{{ approved_properties }}</div>
+                        <div class="stat-label">Approved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">{{ pending_properties }}</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">{{ rejected_properties }}</div>
+                        <div class="stat-label">Rejected</div>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-item active">All ({{ total_properties }})</div>
+                    <div class="filter-item">Approved ({{ approved_properties }})</div>
+                    <div class="filter-item">Pending ({{ pending_properties }})</div>
+                    <div class="filter-item">Rejected ({{ rejected_properties }})</div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="properties-container">
+                    {% for property in properties %}
+                    <div class="property-card" data-status="{{ property.status|lower }}">
+                        <div class="property-image">
+                            {% if property.image %}
+                                <!-- Cloudinary image -->
+                                <img src="{{ property.image.url }}" 
+                                    alt="{{ property.property_name }}"
+                                    onerror="this.onerror=null; this.src='{% static 'images/default-property.jpg' %}';">
+                            {% else %}
+                                <!-- Fallback to default image -->
+                                <img src="{% static 'images/default-property.jpg' %}" 
+                                    alt="{{ property.property_name }}">
+                            {% endif %}
+                            <div class="property-status-badge {{ property.status|lower }}">
+                                {{ property.status }}
+                            </div>
                         </div>
-                        <div class="user-dropdown-item">
-                            <i class="fas fa-cog"></i> Settings
-                        </div>
-                        <div class="user-dropdown-divider"></div>
-                        <div class="user-dropdown-item" id="logoutBtn">
-                            <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
-                                {% csrf_token %}
-                                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; width: 100%; text-align: left;">
-                                    <i class="fas fa-sign-out-alt"></i> Logout
+                        <div class="property-content">
+                            <h3 class="property-title">{{ property.property_name }}</h3>
+                            <div class="property-location">
+                                <i class="fas fa-map-marker-alt"></i> {{ property.location }}
+                            </div>
+                            <div class="property-details">
+                                <span>{{ property.beds }} bed</span> • 
+                                <span>{{ property.bathrooms }} bath</span> • 
+                                <span>{{ property.area }} sq ft</span>
+                            </div>
+                            <div class="property-price">₱{{ property.price|intcomma }}<span class="price-period">/month</span></div>
+                        
+
+                            <!-- Action buttons -->
+                            <div class="property-actions">
+                                {% if property.status == 'Pending' %}
+                                    <button class="btn-edit" data-property-id="{{ property.id }}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                {% else %}
+                                    <button class="btn-disabled" disabled title="Cannot edit {{ property.status|lower }} properties">
+                                        <i class="fas fa-lock"></i> Cannot Edit
+                                    </button>
+                                {% endif %}
+                                
+                                <button class="btn-delete" data-property-id="{{ property.id }}">
+                                    <i class="fas fa-trash"></i> Delete
                                 </button>
-                            </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <main>
-            <div class="dashboard-header">
-                <div class="dashboard-title-section">
-                    <h1 class="dashboard-title">My Properties</h1>
-                    <p class="dashboard-subtitle">Manage your property listings</p>
-                </div>
-                <div class="add-property-container" id="openModalBtn">
-                    <span class="add-property-text">Add New Property</span>
-                    <div class="add-property-icon">
-                        <i class="fas fa-plus"></i>
+                    {% empty %}
+                    <div class="no-properties">
+                        <p>No properties listed yet. Click "Add New Property" to get started!</p>
                     </div>
+                    {% endfor %}
                 </div>
-            </div>
+            </main>
             
-            <div class="stats-container">
-                <div class="stat-card">
-                    <div class="stat-number">{{ total_properties }}</div>
-                    <div class="stat-label">Total Listings</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{{ approved_properties }}</div>
-                    <div class="stat-label">Approved</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{{ pending_properties }}</div>
-                    <div class="stat-label">Pending</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{{ rejected_properties }}</div>
-                    <div class="stat-label">Rejected</div>
-                </div>
-            </div>
-            
-            <div class="filter-section">
-                <div class="filter-item active">All ({{ total_properties }})</div>
-                <div class="filter-item">Approved ({{ approved_properties }})</div>
-                <div class="filter-item">Pending ({{ pending_properties }})</div>
-                <div class="filter-item">Rejected ({{ rejected_properties }})</div>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <div class="properties-container">
-                {% for property in properties %}
-                <div class="property-card" data-status="{{ property.status|lower }}">
-                    <div class="property-image">
-                        {% if property.image %}
-                            <!-- Cloudinary image -->
-                            <img src="{{ property.image.url }}" 
-                                 alt="{{ property.property_name }}"
-                                 onerror="this.onerror=null; this.src='{% static 'images/default-property.jpg' %}';">
-                        {% else %}
-                            <!-- Fallback to default image -->
-                            <img src="{% static 'images/default-property.jpg' %}" 
-                                alt="{{ property.property_name }}">
-                        {% endif %}
-                        <div class="property-status-badge {{ property.status|lower }}">
-                            {{ property.status }}
-                        </div>
+            <footer>
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>Safe Haven</h3>
+                        <p>Your trusted platform for safe, verified housing. Connecting renters and landlords in a secure environment.</p>
                     </div>
-                    <div class="property-content">
-                        <h3 class="property-title">{{ property.property_name }}</h3>
-                        <div class="property-location">
-                            <i class="fas fa-map-marker-alt"></i> {{ property.location }}
-                        </div>
-                        <div class="property-details">
-                            <span>{{ property.beds }} bed</span> • 
-                            <span>{{ property.bathrooms }} bath</span> • 
-                            <span>{{ property.area }} sq ft</span>
-                        </div>
-                        <div class="property-price">₱{{ property.price|intcomma }}<span class="price-period">/month</span></div>
                     
+                    <div class="footer-section">
+                        <h3>Quick Links</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">How It Works</a></li>
+                            <li><a href="#">Safety Guidelines</a></li>
+                            <li><a href="#">FAQs</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h3>Legal</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Cookie Policy</a></li>
+                            <li><a href="#">Community Guidelines</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h3>Contact Us</h3>
+                        <div class="contact-info">
+                            <a href="mailto:support@safehaven.com">
+                                <i class="fas fa-envelope"></i> support@safehaven.com
+                            </a>
+                            <a href="tel:1-800-SAFE-HOME">
+                                <i class="fas fa-phone"></i> 1-800-SAFE-HOME
+                            </a>
+                            <div class="location">
+                                <i class="fas fa-map-marker-alt"></i> Manila, Philippines
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="copyright">
+                    © 2025 Safe Haven. All rights reserved.
+                </div>
+            </footer>
+        </div>
 
-                        <!-- Action buttons -->
-                        <div class="property-actions">
-                            <button class="btn-edit" data-property-id="{{ property.id }}">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn-delete" data-property-id="{{ property.id }}">
-                                <i class="fas fa-trash"></i> Delete
+            <!-- Modal for Add/Edit Property -->
+            <div class="modal-overlay" id="modalOverlay">
+                <div class="modal">
+                    <form method="POST" enctype="multipart/form-data" id="propertyForm">
+                        {% csrf_token %}
+                        <input type="hidden" id="propertyId" name="property_id">
+                        <input type="hidden" id="formAction" name="form_action" value="add">
+                        
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="modalTitle">Add New Property</h2>
+                            <button type="button" class="close-modal" id="closeModalBtn">
+                                <i class="fas fa-times"></i>
                             </button>
                         </div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="no-properties">
-                    <p>No properties listed yet. Click "Add New Property" to get started!</p>
-                </div>
-                {% endfor %}
-            </div>
-        </main>
-        
-        <footer>
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Safe Haven</h3>
-                    <p>Your trusted platform for safe, verified housing. Connecting renters and landlords in a secure environment.</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">How It Works</a></li>
-                        <li><a href="#">Safety Guidelines</a></li>
-                        <li><a href="#">FAQs</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Legal</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Cookie Policy</a></li>
-                        <li><a href="#">Community Guidelines</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Contact Us</h3>
-                    <div class="contact-info">
-                        <a href="mailto:support@safehaven.com">
-                            <i class="fas fa-envelope"></i> support@safehaven.com
-                        </a>
-                        <a href="tel:1-800-SAFE-HOME">
-                            <i class="fas fa-phone"></i> 1-800-SAFE-HOME
-                        </a>
-                        <div class="location">
-                            <i class="fas fa-map-marker-alt"></i> Manila, Philippines
+                        
+                        <div class="modal-body">
+                            <div class="modal-subtitle" id="modalSubtitle">Fill in the details below to list a new property</div>
+                            
+                            <!-- Image Upload Section -->
+                            <div class="image-upload" id="imageUpload">
+                                <label for="id_image" class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </label>
+                                <div class="upload-text">Click to upload property photo</div>
+                                <div class="upload-hint">PNG, JPG up to 5MB</div>
+                                {{ form.image }}
+                            </div>
+                            
+                            <!-- Display image name when selected -->
+                            <div id="imageFileName" style="display: none; margin-top: 10px; text-align: center; color: #007bff; font-size: 14px;"></div>
+                        
+                            <!-- Property Details Section -->
+                            <div class="form-section">
+                                <h3 class="section-title">Property Details</h3>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="id_property_name">Property Title</label>
+                                    {{ form.property_name }}
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group half-width">
+                                        <label class="form-label" for="id_location">Location</label>
+                                        {{ form.location }}
+                                    </div>
+                                    
+                                    <div class="form-group half-width">
+                                        <label class="form-label" for="id_price">Monthly Rent (₱)</label>
+                                        {{ form.price }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Basic Info Section -->
+                            <div class="form-section">
+                                <h3 class="section-title">Basic Info</h3>
+                                
+                                <div class="form-row">
+                                    <div class="form-group third-width">
+                                        <label class="form-label" for="id_beds">Bedrooms</label>
+                                        {{ form.beds }}
+                                    </div>
+                                    
+                                    <div class="form-group third-width">
+                                        <label class="form-label" for="id_bathrooms">Bathrooms</label>
+                                        {{ form.bathrooms }}
+                                    </div>
+                                    
+                                    <div class="form-group third-width">
+                                        <label class="form-label" for="id_area">Square Feet</label>
+                                        {{ form.area }}
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="id_property_description">Description</label>
+                                    {{ form.property_description }}
+                                </div>
+                            </div>
+                            
+                            <!-- Amenities Section -->
+                            <div class="amenities-section">
+                                <h3 class="section-title">Amenities / Features</h3>
+                                
+                                <!-- Basic Amenities -->
+                                <div class="amenity-group" id="basicAmenities">
+                                    <div class="amenity-header">
+                                        <div class="amenity-title">
+                                            <i class="fas fa-home amenity-icon"></i>
+                                            <span>Basic Amenities</span>
+                                        </div>
+                                        <i class="fas fa-chevron-down amenity-chevron"></i>
+                                    </div>
+                                    <div class="amenity-content">
+                                        <div class="amenity-grid">
+                                            {% for field in form %}
+                                                {% if field.name in 'electricity,water,internet,airconditioning,kitchen,shared_kitchen,private_bathroom,shared_bathroom'|split:',' %}
+                                                <div class="amenity-item">
+                                                    {{ field }}
+                                                    <label for="{{ field.id_for_label }}" class="amenity-label">{{ field.label }}</label>
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Safety & Security -->
+                                <div class="amenity-group" id="safetyAmenities">
+                                    <div class="amenity-header">
+                                        <div class="amenity-title">
+                                            <i class="fas fa-lock amenity-icon"></i>
+                                            <span>Safety & Security</span>
+                                        </div>
+                                        <i class="fas fa-chevron-down amenity-chevron"></i>
+                                    </div>
+                                    <div class="amenity-content">
+                                        <div class="amenity-grid">
+                                            {% for field in form %}
+                                                {% if field.name in 'secure_locks,cctv,gated_compound,security_guard'|split:',' %}
+                                                <div class="amenity-item">
+                                                    {{ field }}
+                                                    <label for="{{ field.id_for_label }}" class="amenity-label">{{ field.label }}</label>
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Property Features -->
+                                <div class="amenity-group" id="propertyFeatures">
+                                    <div class="amenity-header">
+                                        <div class="amenity-title">
+                                            <i class="fas fa-tools amenity-icon"></i> 
+                                            <span>Property Features</span>
+                                        </div>
+                                        <i class="fas fa-chevron-down amenity-chevron"></i>
+                                    </div>
+                                    <div class="amenity-content">
+                                        <div class="amenity-grid">
+                                            {% for field in form %}
+                                                {% if field.name in 'parking,furnished,pet_friendly'|split:',' %}
+                                                <div class="amenity-item">
+                                                    {{ field }}
+                                                    <label for="{{ field.id_for_label }}" class="amenity-label">{{ field.label }}</label>
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                                <button type="submit" class="btn btn-primary" id="submitBtn">Submit for Approval</button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
-            
-            <div class="copyright">
-                © 2025 Safe Haven. All rights reserved.
-            </div>
-        </footer>
-    </div>
 
-        <!-- Modal for Add/Edit Property -->
-        <div class="modal-overlay" id="modalOverlay">
-            <div class="modal">
-                <form method="POST" enctype="multipart/form-data" id="propertyForm">
-                    {% csrf_token %}
-                    <input type="hidden" id="propertyId" name="property_id">
-                    <input type="hidden" id="formAction" name="form_action" value="add">
-                    
-                    <div class="modal-header">
-                        <h2 class="modal-title" id="modalTitle">Add New Property</h2>
-                        <button type="button" class="close-modal" id="closeModalBtn">
-                            <i class="fas fa-times"></i>
-                        </button>
+            <!-- Custom Confirmation Modal -->
+            <div id="customConfirmModal" class="custom-modal">
+                <div class="custom-modal-content">
+                    <div class="custom-modal-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3 id="confirmModalTitle">Confirm Action</h3>
                     </div>
-                    
-                    <div class="modal-body">
-                        <div class="modal-subtitle" id="modalSubtitle">Fill in the details below to list a new property</div>
-                        
-                        <!-- Image Upload Section -->
-                        <div class="image-upload" id="imageUpload">
-                            <label for="id_image" class="upload-icon">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                            </label>
-                            <div class="upload-text">Click to upload property photo</div>
-                            <div class="upload-hint">PNG, JPG up to 5MB</div>
-                            {{ form.image }}
-                        </div>
-                        
-                        <!-- Display image name when selected -->
-                        <div id="imageFileName" style="display: none; margin-top: 10px; text-align: center; color: #007bff; font-size: 14px;"></div>
-                    
-                        <!-- Property Details Section -->
-                        <div class="form-section">
-                            <h3 class="section-title">Property Details</h3>
-                            
-                            <div class="form-group">
-                                <label class="form-label" for="id_property_name">Property Title</label>
-                                {{ form.property_name }}
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group half-width">
-                                    <label class="form-label" for="id_location">Location</label>
-                                    {{ form.location }}
-                                </div>
-                                
-                                <div class="form-group half-width">
-                                    <label class="form-label" for="id_price">Monthly Rent (₱)</label>
-                                    {{ form.price }}
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Basic Info Section -->
-                        <div class="form-section">
-                            <h3 class="section-title">Basic Info</h3>
-                            
-                            <div class="form-row">
-                                <div class="form-group third-width">
-                                    <label class="form-label" for="id_beds">Bedrooms</label>
-                                    {{ form.beds }}
-                                </div>
-                                
-                                <div class="form-group third-width">
-                                    <label class="form-label" for="id_bathrooms">Bathrooms</label>
-                                    {{ form.bathrooms }}
-                                </div>
-                                
-                                <div class="form-group third-width">
-                                    <label class="form-label" for="id_area">Square Feet</label>
-                                    {{ form.area }}
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label" for="id_property_description">Description</label>
-                                {{ form.property_description }}
-                            </div>
-                        </div>
-                        
-                        <!-- Amenities Section -->
-                        <div class="amenities-section">
-                            <h3 class="section-title">Amenities / Features</h3>
-                            
-                            <!-- Basic Amenities -->
-                            <div class="amenity-group" id="basicAmenities">
-                                <div class="amenity-header">
-                                    <div class="amenity-title">
-                                        <i class="fas fa-home amenity-icon"></i>
-                                        <span>Basic Amenities</span>
-                                    </div>
-                                    <i class="fas fa-chevron-down amenity-chevron"></i>
-                                </div>
-                                <div class="amenity-content">
-                                    <div class="amenity-grid">
-                                        {% for field in form %}
-                                            {% if field.name in 'electricity,water,internet,airconditioning,kitchen,shared_kitchen,private_bathroom,shared_bathroom'|split:',' %}
-                                            <div class="amenity-item">
-                                                {{ field }}
-                                                <label for="{{ field.id_for_label }}" class="amenity-label">{{ field.label }}</label>
-                                            </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Safety & Security -->
-                            <div class="amenity-group" id="safetyAmenities">
-                                <div class="amenity-header">
-                                    <div class="amenity-title">
-                                        <i class="fas fa-lock amenity-icon"></i>
-                                        <span>Safety & Security</span>
-                                    </div>
-                                    <i class="fas fa-chevron-down amenity-chevron"></i>
-                                </div>
-                                <div class="amenity-content">
-                                    <div class="amenity-grid">
-                                        {% for field in form %}
-                                            {% if field.name in 'secure_locks,cctv,gated_compound,security_guard'|split:',' %}
-                                            <div class="amenity-item">
-                                                {{ field }}
-                                                <label for="{{ field.id_for_label }}" class="amenity-label">{{ field.label }}</label>
-                                            </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Property Features -->
-                            <div class="amenity-group" id="propertyFeatures">
-                                <div class="amenity-header">
-                                    <div class="amenity-title">
-                                        <i class="fas fa-tools amenity-icon"></i> 
-                                        <span>Property Features</span>
-                                    </div>
-                                    <i class="fas fa-chevron-down amenity-chevron"></i>
-                                </div>
-                                <div class="amenity-content">
-                                    <div class="amenity-grid">
-                                        {% for field in form %}
-                                            {% if field.name in 'parking,furnished,pet_friendly'|split:',' %}
-                                            <div class="amenity-item">
-                                                {{ field }}
-                                                <label for="{{ field.id_for_label }}" class="amenity-label">{{ field.label }}</label>
-                                            </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                                        
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                            <button type="submit" class="btn btn-primary" id="submitBtn">Submit for Approval</button>
-                        </div>
+                    <div class="custom-modal-body">
+                        <p id="confirmModalMessage">Are you sure you want to proceed?</p>
                     </div>
-                </form>
+                    <div class="custom-modal-footer">
+                        <button class="btn-modal-cancel" onclick="closeCustomConfirm()">Cancel</button>
+                        <button class="btn-modal-confirm" id="confirmModalBtn">Confirm</button>
+                    </div>
+                </div>
             </div>
-        </div>
-            
-        <script src="{% static 'landLordPage/landLord.js' %}"></script>
-    </body>
-    </html>
+                            
+            <script src="{% static 'landLordPage/landLord.js' %}"></script>
+        </body>
+        </html>
 
+            
         
-    
