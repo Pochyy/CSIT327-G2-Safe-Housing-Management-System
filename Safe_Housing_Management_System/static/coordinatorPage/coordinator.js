@@ -263,3 +263,85 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+// Rejection Modal Functions
+function showRejectModal() {
+    const modal = document.getElementById('rejectModal');
+    if (modal) {
+        modal.style.cssText = 'display: flex !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; z-index: 99999 !important; background: rgba(0, 0, 0, 0.6) !important; align-items: center !important; justify-content: center !important; visibility: visible !important; opacity: 1 !important;';
+    }
+}
+
+function closeRejectModal() {
+    const modal = document.getElementById('rejectModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Make functions globally accessible
+window.showRejectModal = showRejectModal;
+window.closeRejectModal = closeRejectModal;
+
+
+// Toggle inline rejection form
+function toggleRejectForm() {
+    const form = document.getElementById('rejectFormSection');
+    if (form.style.display === 'none') {
+        form.style.display = 'block';
+        // Smooth scroll to form
+        setTimeout(() => {
+            form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    } else {
+        form.style.display = 'none';
+    }
+}
+
+window.toggleRejectForm = toggleRejectForm;
+
+// Review History Instant Filtering (No Page Reload)
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-tab-simple');
+    const tableRows = document.querySelectorAll('.history-table tbody tr');
+    
+    if (filterButtons.length > 0 && tableRows.length > 0) {
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Get filter type
+                const filterType = this.getAttribute('data-filter');
+                
+                // Filter rows
+                tableRows.forEach(row => {
+                    const statusBadge = row.querySelector('.status-badge-table');
+                    
+                    if (!statusBadge) {
+                        row.style.display = 'none';
+                        return;
+                    }
+                    
+                    const isApproved = statusBadge.classList.contains('approved');
+                    const isRejected = statusBadge.classList.contains('rejected');
+                    
+                    if (filterType === 'all') {
+                        row.style.display = '';
+                    } else if (filterType === 'approved' && isApproved) {
+                        row.style.display = '';
+                    } else if (filterType === 'rejected' && isRejected) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    }
+});
+
+

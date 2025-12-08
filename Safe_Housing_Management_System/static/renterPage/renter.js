@@ -642,21 +642,40 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-document.querySelectorAll('.star-rating i').forEach(star => {
-    star.addEventListener('click', function () {
-        const value = this.getAttribute('data-value');
-        document.getElementById('ratingValue').value = value;
+// Rejection Modal Functions
+function showRejectModal() {
+    console.log('Opening reject modal...');
+    const modal = document.getElementById('rejectModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    } else {
+        console.error('Reject modal not found!');
+    }
+}
 
-        // highlight selected stars
-        document.querySelectorAll('.star-rating i').forEach(s => {
-            s.classList.remove('fa-solid');
-            s.classList.add('fa-regular');
+function closeRejectModal() {
+    console.log('Closing reject modal...');
+    const modal = document.getElementById('rejectModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Close modal on escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeRejectModal();
+    }
+});
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const rejectModal = document.getElementById('rejectModal');
+    if (rejectModal) {
+        rejectModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeRejectModal();
+            }
         });
-
-        for (let i = 1; i <= value; i++) {
-            const star = document.querySelector(`.star-rating i[data-value="${i}"]`);
-            star.classList.remove('fa-regular');
-            star.classList.add('fa-solid');
-        }
-    });
+    }
 });
