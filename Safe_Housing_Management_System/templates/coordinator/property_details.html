@@ -1,0 +1,257 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ property.property_name }} - Coordinator Review</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'landLordPage/landLord.css' %}">
+    <link rel="stylesheet" href="{% static 'renterPage/renter.css' %}">
+    <link rel="stylesheet" href="{% static 'coordinatorPage/coordinator.css' %}">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header-container">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+                <h2>Safe <span>Haven</span> - Coordinator</h2>
+            </div>
+
+            <div class="user-info" id="userDropdownBtn">
+                <div>{{ user.get_full_name|default:user.username }}</div>
+                <div class="user-avatar">
+                    {% if user.first_name and user.last_name %}
+                        {{ user.first_name|first }}{{ user.last_name|first }}
+                    {% else %}
+                        {{ user.username|first|upper }}
+                    {% endif %}
+                </div>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-item" id="logoutBtn">
+                        <form action="/logout/" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; width: 100%; text-align: left;">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <a href="{% url 'coordinator_dashboard' %}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Properties
+        </a>
+        
+        <div class="property-details-wrapper">
+            <!-- Property Image -->
+            <div class="property-image-section">
+                {% if property.image %}
+                    <img src="{{ property.image.url }}" alt="{{ property.property_name }}" class="property-main-image">
+                {% else %}
+                    <div class="image-placeholder-large">
+                        <i class="fas fa-home fa-3x"></i>
+                        <div>No Image Available</div>
+                    </div>
+                {% endif %}
+                <div class="property-status-badge-large {{ property.status|lower }}">
+                    {{ property.status }}
+                </div>
+            </div>
+
+            <!-- Property Info -->
+            <div class="property-info-section">
+                <h1 class="property-name">{{ property.property_name }}</h1>
+                <div class="property-price-large">₱{{ property.price|intcomma }}/month</div>
+                <div class="property-location-large">
+                    <i class="fas fa-map-marker-alt"></i>
+                    {{ property.location }}
+                </div>
+
+                <!-- Property Features -->
+                <div class="property-stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="fas fa-bed"></i></div>
+                        <div class="stat-value">{{ property.beds }}</div>
+                        <div class="stat-label">Bedrooms</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="fas fa-bath"></i></div>
+                        <div class="stat-value">{{ property.bathrooms }}</div>
+                        <div class="stat-label">Bathrooms</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="fas fa-vector-square"></i></div>
+                        <div class="stat-value">{{ property.area }}</div>
+                        <div class="stat-label">Sq Ft</div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="detail-section">
+                    <h3 class="section-heading">
+                        <i class="fas fa-align-left"></i>
+                        Description
+                    </h3>
+                    <p class="description-text">{{ property.property_description }}</p>
+                </div>
+
+                <!-- Amenities & Features -->
+                <div class="detail-section">
+                    <h3 class="section-heading">
+                        <i class="fas fa-star"></i>
+                        Amenities & Features
+                    </h3>
+                    <div class="amenities-grid-detail">
+                        {% if property.electricity %}<div class="amenity-item-detail"><i class="fas fa-bolt"></i> Electricity</div>{% endif %}
+                        {% if property.water %}<div class="amenity-item-detail"><i class="fas fa-tint"></i> Water Supply</div>{% endif %}
+                        {% if property.internet %}<div class="amenity-item-detail"><i class="fas fa-wifi"></i> Internet</div>{% endif %}
+                        {% if property.airconditioning %}<div class="amenity-item-detail"><i class="fas fa-wind"></i> Air Conditioning</div>{% endif %}
+                        {% if property.kitchen %}<div class="amenity-item-detail"><i class="fas fa-utensils"></i> Kitchen</div>{% endif %}
+                        {% if property.shared_kitchen %}<div class="amenity-item-detail"><i class="fas fa-utensil-spoon"></i> Shared Kitchen</div>{% endif %}
+                        {% if property.private_bathroom %}<div class="amenity-item-detail"><i class="fas fa-bath"></i> Private Bathroom</div>{% endif %}
+                        {% if property.shared_bathroom %}<div class="amenity-item-detail"><i class="fas fa-restroom"></i> Shared Bathroom</div>{% endif %}
+                        {% if property.parking %}<div class="amenity-item-detail"><i class="fas fa-parking"></i> Parking</div>{% endif %}
+                        {% if property.furnished %}<div class="amenity-item-detail"><i class="fas fa-couch"></i> Furnished</div>{% endif %}
+                        {% if property.pet_friendly %}<div class="amenity-item-detail"><i class="fas fa-paw"></i> Pet Friendly</div>{% endif %}
+                    </div>
+                </div>
+
+                <!-- Safety & Security -->
+                <div class="detail-section">
+                    <h3 class="section-heading">
+                        <i class="fas fa-shield-alt"></i>
+                        Safety & Security
+                    </h3>
+                    <div class="amenities-grid-detail">
+                        {% if property.secure_locks %}<div class="safety-item-detail"><i class="fas fa-lock"></i> Secure Locks</div>{% endif %}
+                        {% if property.cctv %}<div class="safety-item-detail"><i class="fas fa-video"></i> CCTV Surveillance</div>{% endif %}
+                        {% if property.gated_compound %}<div class="safety-item-detail"><i class="fas fa-door-closed"></i> Gated Compound</div>{% endif %}
+                        {% if property.security_guard %}<div class="safety-item-detail"><i class="fas fa-user-shield"></i> Security Guard</div>{% endif %}
+                    </div>
+                </div>
+
+                <!-- Landlord Information -->
+                <div class="detail-section">
+                    <h3 class="section-heading">
+                        <i class="fas fa-user-tie"></i>
+                        Landlord Information
+                    </h3>
+                    <div class="landlord-details-card">
+                        <div class="landlord-detail-row">
+                            <div class="detail-icon"><i class="fas fa-user"></i></div>
+                            <div class="detail-content">
+                                <span class="detail-label">Name</span>
+                                <span class="detail-value">{{ landlord_name }}</span>
+                            </div>
+                        </div>
+                        <div class="landlord-detail-row">
+                            <div class="detail-icon"><i class="fas fa-envelope"></i></div>
+                            <div class="detail-content">
+                                <span class="detail-label">Email</span>
+                                <span class="detail-value">{{ landlord_email }}</span>
+                            </div>
+                        </div>
+                        <div class="landlord-detail-row">
+                            <div class="detail-icon"><i class="fas fa-phone"></i></div>
+                            <div class="detail-content">
+                                <span class="detail-label">Phone</span>
+                                <span class="detail-value">{{ landlord_phone }}</span>
+                            </div>
+                        </div>
+                        <div class="landlord-detail-row">
+                            <div class="detail-icon"><i class="fas fa-calendar"></i></div>
+                            <div class="detail-content">
+                                <span class="detail-label">Listed</span>
+                                <span class="detail-value">{{ property.created_at|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                {% if property.status == 'Pending' %}
+                <div class="coordinator-action-section">
+                    <form method="POST" action="{% url 'approve_property' property.id %}" onsubmit="return confirm('Are you sure you want to approve this property?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-approve-modern">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Approve Property</span>
+                        </button>
+                    </form>
+                    <button type="button" class="btn-reject-modern" onclick="toggleRejectForm()">
+                        <i class="fas fa-times-circle"></i>
+                        <span>Reject Property</span>
+                    </button>
+                </div>
+
+                <!-- Inline Rejection Form (Hidden by default) -->
+                <div id="rejectFormSection" style="display: none;">
+                    <div class="rejection-form-container">
+                        <div class="rejection-form-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Rejection Details</h3>                
+                        </div>
+                        <form method="POST" action="{% url 'reject_property' property.id %}">
+                            {% csrf_token %}
+                            <div class="rejection-form-body">
+                                <div class="property-summary-inline">
+                                    <strong>{{ property.property_name }}</strong>
+                                    <span>{{ property.location }}</span>
+                                </div>
+                                <label for="rejection_reason" class="form-label">
+                                    Rejection Reason <span class="required">*</span>
+                                </label>
+                                <textarea 
+                                    id="rejection_reason"
+                                    name="rejection_reason" 
+                                    rows="5" 
+                                    placeholder="Please provide a clear reason for rejecting this property listing..."
+                                    required
+                                    class="form-textarea"></textarea>
+                                <p class="help-text"><i class="fas fa-info-circle"></i> The landlord will receive this message via notification.</p>
+                            </div>
+                            <div class="rejection-form-footer">
+                                <button type="button" onclick="toggleRejectForm()" class="btn-cancel-inline">Cancel</button>
+                                <button type="submit" class="btn-confirm-reject-inline">
+                                    <i class="fas fa-times-circle"></i> Confirm Rejection
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {% elif property.status == 'Approved' %}
+                <div class="status-alert success">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>This property has been approved</strong>
+                        <p>The property is now visible to renters on the platform.</p>
+                    </div>
+                </div>
+
+                {% elif property.status == 'Rejected' %}
+                <div class="status-alert rejected">
+                    <i class="fas fa-times-circle"></i>
+                    <div>
+                        <strong>This property has been rejected</strong>
+                        {% if property.rejection_reason %}
+                        <p><strong>Reason:</strong> {{ property.rejection_reason }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'coordinatorPage/coordinator.js' %}"></script>
+</body>
+</html>
+
