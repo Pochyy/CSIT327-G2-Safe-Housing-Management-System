@@ -641,3 +641,41 @@ document.addEventListener('DOMContentLoaded', function() {
         commentsList.scrollTop = 0;
     }
 });
+
+// Rejection Modal Functions
+function showRejectModal() {
+    console.log('Opening reject modal...');
+    const modal = document.getElementById('rejectModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    } else {
+        console.error('Reject modal not found!');
+    }
+}
+
+function closeRejectModal() {
+    console.log('Closing reject modal...');
+    const modal = document.getElementById('rejectModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Close modal on escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeRejectModal();
+    }
+});
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const rejectModal = document.getElementById('rejectModal');
+    if (rejectModal) {
+        rejectModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeRejectModal();
+            }
+        });
+    }
+});
