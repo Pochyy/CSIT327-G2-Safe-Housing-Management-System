@@ -19,6 +19,15 @@
                     <h2>Safe <span>Haven</span></h2>
                 </div>
 
+                    <div class="header-right">
+        <!-- ADD "MANAGE PROPERTIES" BUTTON HERE (for landlords only) -->
+        {% if user.user_role == 'landlord' %}
+        <a href="{% url 'landlord:home' %}" class="nav-btn manage-properties-btn">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Manage Properties</span>
+        </a>
+        {% endif %}
+
                     
                     <div class="user-info" id="userDropdownBtn">
                         <div>{{ user.first_name }} {{ user.last_name }}</div>

@@ -1106,3 +1106,42 @@ textarea.form-input {
     color: #742a2a;
     line-height: 1.4;
 }
+
+/* ===== NAVIGATION BUTTONS ===== */
+
+/* Home Button (for landlords on dashboard) */
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    margin-right: 15px;
+    border: none;
+    cursor: pointer;
+    height: fit-content;
+    white-space: nowrap;
+}
+
+.home-btn {
+    background: linear-gradient(135deg, #2C6E6F, #4F9D9E);
+    color: white;
+}
+
+.home-btn:hover {
+    background: linear-gradient(135deg, #245a5b, #398c8e);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 110, 111, 0.3);
+}
+
+/* ===== HEADER LAYOUT ===== */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}

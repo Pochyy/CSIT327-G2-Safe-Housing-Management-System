@@ -80,7 +80,7 @@
                     <div class="comments-header">
                         <div class="comments-title">
                             <i class="fas fa-comments"></i>
-                            <span>Tenant Comments</span>
+                            <span>Tenant Reviews</span>
                         </div>
                         <div class="comments-count" id="commentsCount">
                             {{ comments|length }} comment{{ comments|length|pluralize }}
@@ -92,7 +92,7 @@
                     <div class="comment-form-container fade-in">
                         <div class="comment-form-title">
                             <i class="fas fa-edit"></i>
-                            <span>Add Your Comment</span>
+                            <span>Add Your Review</span>
                         </div>
                         <form id="commentForm" method="POST" action="{% url 'renter:add_comment' property.id %}">
                             {% csrf_token %}

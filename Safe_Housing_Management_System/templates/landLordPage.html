@@ -16,10 +16,13 @@
     <div class="header-container">
         <div class="header-content">
             <div class="logo-section">
-                <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
-                <h2>Safe <span>Haven</span></h2>
-            </div>
-
+    <!-- Clickable logo image -->
+    <a href="{% url 'renter:home' %}" class="logo-image-link">
+        <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+    </a>
+    <!-- Static text (not clickable) -->
+    <h2>Safe <span>Haven</span></h2>
+</div>
             <div class="header-right">
                 <!-- Notifications Bell - Update your existing bell -->
                 <div class="notification-icon">
