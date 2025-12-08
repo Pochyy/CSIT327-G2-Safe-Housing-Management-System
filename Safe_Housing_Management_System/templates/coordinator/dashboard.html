@@ -1,5 +1,5 @@
 {% load static %}
-{% load humanize %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'landLordPage/landLord.css' %}">
+    <link rel="stylesheet" href="{% static 'renterPage/renter.css' %}">
     <link rel="stylesheet" href="{% static 'coordinatorPage/coordinator.css' %}">
 </head>
 <body>
@@ -16,7 +17,7 @@
     <div class="header-container">
         <div class="header-content">
             <div class="logo-section">
-                <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+                <img src="{% static 'images/SH.png' %}'" alt="Safe Haven Logo">
                 <h2>Safe <span>Haven</span> - Coordinator</h2>
             </div>
 
@@ -47,31 +48,33 @@
 
     <div class="container">
         <main>
+            <!-- Dashboard Header -->
             <div class="dashboard-header">
                 <div class="dashboard-title-section">
-                    <h1 class="dashboard-title">Properties Pending Approval</h1>
-                    <p class="dashboard-subtitle">Review and approve/reject property listings</p>
-                </div>
-                <a href="{% url 'view_all_properties' %}" class="add-property-container" style="text-decoration: none;">
-                    <span class="add-property-text">View All Properties</span>
+                    <h1 class="dashboard-title">Property Management</h1>
+                    <p class="dashboard-subtitle"><span id="property-count">{{ properties.count }}</span> properties found</p>
+                </div>            
+                <a href="{% url 'review_history' %}" class="add-property-container" style="text-decoration: none;">
+                    <span class="add-property-text">View Review History</span>
                     <div class="add-property-icon">
-                        <i class="fas fa-eye"></i>
+                        <i class="fas fa-archive"></i>
                     </div>
                 </a>
             </div>
             
+            <!-- Stats KPIs -->
             <div class="stats-container">
                 <div class="stat-card">
-                    <div class="stat-number">{{ pending_properties.count }}</div>
-                    <div class="stat-label">Pending Review</div>
-                </div>
-                <div class="stat-card">
                     <div class="stat-number">{{ total_properties }}</div>
-                    <div class="stat-label">Total Properties</div>
+                    <div class="stat-label">Total Listings</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">{{ approved_properties }}</div>
                     <div class="stat-label">Approved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ pending_properties }}</div>
+                    <div class="stat-label">Pending</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">{{ rejected_properties }}</div>
@@ -79,135 +82,288 @@
                 </div>
             </div>
             
+            <!-- Search Bar FIRST (NO amenities filter) -->
+            <div class="search-bar-container">
+                <form method="GET" action="{% url 'coordinator_dashboard' %}" class="search-form">
+                    <div class="search-inputs">
+                        <div class="search-input-group">
+                            <i class="fas fa-search"></i>
+                            <input type="text" name="search" placeholder="Search properties or landlords..." value="{{ search_query }}">
+                        </div>
+                        <div class="search-input-group">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <input type="text" name="location" placeholder="Search location..." value="{{ location_filter }}">
+                        </div>
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                    <input type="hidden" name="status" value="{{ status_filter }}">
+                </form>
+            </div>
+
+            <!-- Filter Tabs BELOW search bar -->
+            <div class="property-tabs">
+                <a href="#" class="tab-item active" data-status="all" onclick="filterProperties('all'); return false;">
+                    All ({{ total_properties }})
+                </a>
+                <a href="#" class="tab-item" data-status="approved" onclick="filterProperties('approved'); return false;">
+                    Approved ({{ approved_properties }})
+                </a>
+                <a href="#" class="tab-item" data-status="pending" onclick="filterProperties('pending'); return false;">
+                    Pending ({{ pending_properties }})
+                </a>
+                <a href="#" class="tab-item" data-status="rejected" onclick="filterProperties('rejected'); return false;">
+                    Rejected ({{ rejected_properties }})
+                </a>
+            </div>
+
+
+            
             <div class="divider"></div>
             
-            <div class="properties-container">
-                {% for property in pending_properties %}
+            <!-- Property Grid (renter-style cards) -->
+            <!-- Property Grid (coordinator style - NO amenities) -->
+            <div class="property-grid">
+                {% for property in properties %}
                 <div class="property-card" data-status="{{ property.status|lower }}">
+                    {% if property.image %}
                     <div class="property-image">
-                        {% if property.image %}
-                            <img src="{{ property.image.url }}" 
-                                 alt="{{ property.property_name }}"
-                                 onerror="this.onerror=null; this.src='{% static 'images/default-property.jpg' %}'">
-                        {% else %}
-                            <img src="{% static 'images/default-property.jpg' %}" 
-                                alt="{{ property.property_name }}">
+                        <img src="{{ property.image.url }}" alt="{{ property.property_name }}">
+                        <!-- Archive button (checkmark icon) -->
+                        {% if property.status == 'Approved' or property.status == 'Rejected' %}
+                        <button class="archive-btn" onclick="archiveProperty({{ property.id }})" title="Mark as reviewed">
+                            <i class="fas fa-check-circle"></i>
+                        </button>
                         {% endif %}
                         <div class="property-status-badge {{ property.status|lower }}">
                             {{ property.status }}
                         </div>
                     </div>
-                    <div class="property-content">
-                        <h3 class="property-title">{{ property.property_name }}</h3>
-                        <div class="property-location">
-                            <i class="fas fa-map-marker-alt"></i> {{ property.location }}
-                        </div>
-                        <div class="property-details">
-                            <span>{{ property.beds }} bed</span> • 
-                            <span>{{ property.bathrooms }} bath</span> • 
-                            <span>{{ property.area }} sq ft</span>
-                        </div>
-                        <div class="property-price">₱{{ property.price|intcomma }}<span class="price-period">/month</span></div>
-                        
-                        <!-- Landlord info -->
-                        <div class="landlord-info">
-                            <div class="landlord-name">
-                                <i class="fas fa-user"></i> {{ property.landlord.get_full_name|default:property.landlord.username }}
-                            </div>
-                            <div class="landlord-contact">
-                                <i class="fas fa-envelope"></i> {{ property.landlord.email }}
-                            </div>
-                        </div>
-                        
-                        <!-- Property stats -->
-                        <div class="property-stats">
-                            <div class="stat-row">
-                                <span class="stat-label">Listed:</span>
-                                <span class="stat-value">{{ property.created_at|date:"M d, Y" }}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">Status:</span>
-                                <span class="stat-value status-{{ property.status|lower }}">{{ property.status }}</span>
-                            </div>
-                        </div>
-
-                        <!-- Action buttons -->
-                        <div class="coordinator-actions">
-                            <a href="{% url 'approve_property' property.id %}" 
-                               class="btn-approve" 
-                               onclick="return confirm('Approve this property?')">
-                                <i class="fas fa-check"></i> Approve
-                            </a>
-                            <a href="{% url 'reject_property' property.id %}" 
-                               class="btn-reject">
-                                <i class="fas fa-times"></i> Reject
-                            </a>
-                        </div>
-                        
-                        <button class="view-details-btn" onclick="showPropertyDetails({{ property.id }})">
-                            <i class="fas fa-eye"></i> View Details
+                    {% else %}
+                    <div class="property-image placeholder">
+                        <i class="fas fa-home"></i>
+                        <span>No Image Available</span>
+                        <!-- Archive button (checkmark icon) -->
+                        {% if property.status == 'Approved' or property.status == 'Rejected' %}
+                        <button class="archive-btn" onclick="archiveProperty({{ property.id }})" title="Mark as reviewed">
+                            <i class="fas fa-check-circle"></i>
                         </button>
+                        {% endif %}
+                        <div class="property-status-badge {{ property.status|lower }}">
+                            {{ property.status }}
+                        </div>
                     </div>
+                    {% endif %}
+                    
+                    <div class="property-content">
+                        <div class="property-header">
+                            <div class="property-info">
+                                <h3 class="property-title">{{ property.property_name }}</h3>
+                    <p class="property-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{ property.location }}
+                    </p>
                 </div>
-                {% empty %}
-                <div class="no-properties">
-                    <p>No properties pending approval.</p>
-                </div>
-                {% endfor %}
+                <span class="property-price">₱{{ property.price|intcomma }}/month</span>
             </div>
-        </main>
-        
-        <!-- Property Details Modal -->
-        <div class="modal-overlay" id="detailsModal">
-            <div class="modal" style="max-width: 800px;">
-                <div class="modal-header">
-                    <h2 class="modal-title">Property Details</h2>
-                    <button type="button" class="close-modal" onclick="closeDetailsModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="propertyDetailsContent">
-                        <!-- Content will be loaded here -->
-                    </div>
-                </div>
+            
+            <div class="property-features">
+                <span class="feature">
+                    <i class="fas fa-bed"></i>
+                    {{ property.beds }} bed{{ property.beds|pluralize }}
+                </span>
+                <span class="feature">
+                    <i class="fas fa-bath"></i>
+                    {{ property.bathrooms }} bath{{ property.bathrooms|pluralize }}
+                </span>
+                <span class="feature">
+                    <i class="fas fa-vector-square"></i>
+                    {{ property.area }} sq ft
+                </span>
             </div>
-        </div>
-        
-        <footer>
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Safe Haven - Coordinator</h3>
-                    <p>Coordinator dashboard for managing property listings on Safe Haven platform.</p>
+            
+            <p class="property-description">{{ property.property_description|truncatewords:15 }}</p>
+            
+            <!-- Landlord Info Box (Coordinator Specific) -->
+            <div class="landlord-info-compact">
+                <div class="landlord-info-item">
+                    <i class="fas fa-user"></i>
+                    <strong>Landlord:</strong> 
+                    <span>{{ property.landlord.get_full_name|default:property.landlord.username }}</span>
                 </div>
-                
-                <div class="footer-section">
-                    <h3>Quick Actions</h3>
-                    <ul class="footer-links">
-                        <li><a href="{% url 'coordinator_dashboard' %}">Pending Reviews</a></li>
-                        <li><a href="{% url 'view_all_properties' %}">All Properties</a></li>
-                    </ul>
+                <div class="landlord-info-item">
+                    <i class="fas fa-envelope"></i>
+                    <strong>Email:</strong> 
+                    <span>{{ property.landlord.email }}</span>
                 </div>
-                
-                <div class="footer-section">
-                    <h3>Contact</h3>
-                    <div class="contact-info">
-                        <a href="mailto:support@safehaven.com">
-                            <i class="fas fa-envelope"></i> coordinator@safehaven.com
-                        </a>
-                        <a href="tel:1-800-SAFE-HOME">
-                            <i class="fas fa-phone"></i> 1-800-COORDINATOR
-                        </a>
-                    </div>
+                <div class="landlord-info-item">
+                    <i class="fas fa-calendar"></i>
+                    <strong>Listed:</strong> 
+                    <span>{{ property.created_at|date:"M d, Y" }}</span>
                 </div>
             </div>
             
-            <div class="copyright">
-                © 2025 Safe Haven Coordinator Dashboard. All rights reserved.
-            </div>
-        </footer>
+            <a href="{% url 'property_details_coordinator' property.id %}" class="view-details-btn">
+                <i class="fas fa-eye"></i> View Details
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="no-properties">
+        <i class="fas fa-home fa-3x"></i>
+        <h3>No Properties Found</h3>
+        <p>There are currently no properties matching your filters.</p>
+    </div>
+    {% endfor %}
+</div>
+
+        </main>
     </div>
 
-    <script src="{% static 'coordinatorPage/coordinator.js' %}"></script>
+    <script>
+        // Property filtering by status (instant, no reload)
+        function filterProperties(status) {
+            // Get all property cards
+            const propertyCards = document.querySelectorAll('.property-card');
+            const tabs = document.querySelectorAll('.tab-item');
+            
+            // Update active tab
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.status === status) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Filter cards
+            let visibleCount = 0;
+            propertyCards.forEach(card => {
+                const cardStatus = card.dataset.status;
+                
+                if (status === 'all' || cardStatus === status) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Update property count
+            const propertyCountElement = document.getElementById('property-count');
+            if (propertyCountElement) {
+                propertyCountElement.textContent = visibleCount;
+            }
+            
+            // Show/hide "no properties" message
+            updateNoPropertiesMessage(visibleCount);
+        }
+        
+        function updateNoPropertiesMessage(visibleCount) {
+            const propertyGrid = document.querySelector('.property-grid');
+            let noPropertiesDiv = propertyGrid.querySelector('.no-properties');
+            
+            if (visibleCount === 0) {
+                if (!noPropertiesDiv) {
+                    noPropertiesDiv = document.createElement('div');
+                    noPropertiesDiv.className = 'no-properties';
+                    noPropertiesDiv.innerHTML = `
+                        <i class="fas fa-home fa-3x"></i>
+                        <h3>No Properties Found</h3>
+                        <p>There are currently no properties matching your filters.</p>
+                    `;
+                    propertyGrid.appendChild(noPropertiesDiv);
+                }
+                noPropertiesDiv.style.display = 'block';
+            } else {
+                if (noPropertiesDiv) {
+                    noPropertiesDiv.style.display = 'none';
+                }
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial active tab based on URL parameter or default to 'all'
+            const urlParams = new URLSearchParams(window.location.search);
+            const statusFilter = urlParams.get('status') || 'all';
+            
+            if (statusFilter !== 'all') {
+                filterProperties(statusFilter);
+            }
+        });
+
+        // Real-time search filtering
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('input[name="search"]');
+            const locationInput = document.querySelector('input[name="location"]');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', debounce(performSearch, 300));
+            }
+            
+            if (locationInput) {
+                locationInput.addEventListener('input', debounce(performSearch, 300));
+            }
+        });
+
+        function performSearch() {
+            const searchQuery = document.querySelector('input[name="search"]').value.toLowerCase();
+            const locationQuery = document.querySelector('input[name="location"]').value.toLowerCase();
+            const propertyCards = document.querySelectorAll('.property-card');
+            const activeTab = document.querySelector('.tab-item.active');
+            const statusFilter = activeTab ? activeTab.dataset.status : 'all';
+            
+            let visibleCount = 0;
+            
+            propertyCards.forEach(card => {
+                const cardStatus = card.dataset.status;
+                const propertyName = card.querySelector('.property-title').textContent.toLowerCase();
+                const propertyLocation = card.querySelector('.property-location').textContent.toLowerCase();
+                const landlordInfo = card.querySelector('.landlord-info-card') ? 
+                    card.querySelector('.landlord-info-card').textContent.toLowerCase() : '';
+                
+                // Check status filter
+                const statusMatch = statusFilter === 'all' || cardStatus === statusFilter;
+                
+                // Check search query
+                const searchMatch = !searchQuery || 
+                    propertyName.includes(searchQuery) || 
+                    landlordInfo.includes(searchQuery);
+                
+                // Check location query
+                const locationMatch = !locationQuery || propertyLocation.includes(locationQuery);
+                
+                if (statusMatch && searchMatch && locationMatch) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            document.getElementById('property-count').textContent = visibleCount;
+            updateNoPropertiesMessage(visibleCount);
+        }
+
+        // Debounce function to prevent too many calls
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        </script>
+        
+        <script src="{% static 'coordinatorPage/coordinator.js' %}"></script>
+        <script src="{% static 'renterPage/renter.js' %}"></script>
+        
+
 </body>
 </html>
