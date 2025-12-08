@@ -294,8 +294,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // REAL DELETE FUNCTION
-    function deleteProperty(propertyId, cardElement) {
-        if (confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
+    // REAL DELETE FUNCTION (WITH CUSTOM MODAL)
+function deleteProperty(propertyId, cardElement) {
+    showCustomConfirm(
+        'Delete Property',
+        'Are you sure you want to delete this property? This action cannot be undone.',
+        function() {
             // Show loading state
             cardElement.style.opacity = '0.5';
             const deleteBtn = cardElement.querySelector('.btn-delete');
@@ -349,7 +353,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification('Error deleting property', 'error');
             });
         }
-    }
+    );
+}
 
     // EDIT PROPERTY FUNCTIONALITY
     function editProperty(propertyId) {
@@ -583,6 +588,62 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+        // ============================================
+    // CUSTOM CONFIRMATION MODAL (NO BROWSER ALERTS)
+    // ============================================
+    let confirmCallback = null;
+
+    window.showCustomConfirm = function(title, message, onConfirm) {
+        const modal = document.getElementById('customConfirmModal');
+        const titleEl = document.getElementById('confirmModalTitle');
+        const messageEl = document.getElementById('confirmModalMessage');
+        const confirmBtn = document.getElementById('confirmModalBtn');
+        
+        if (!modal) {
+            console.error('Custom confirm modal not found!');
+            return;
+        }
+        
+        titleEl.textContent = title;
+        messageEl.textContent = message;
+        modal.classList.add('active');
+        
+        confirmCallback = onConfirm;
+        
+        // Handle confirm button click
+        confirmBtn.onclick = function() {
+            if (confirmCallback) {
+                confirmCallback();
+            }
+            closeCustomConfirm();
+        };
+    }
+
+    window.closeCustomConfirm = function() {
+        const modal = document.getElementById('customConfirmModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+        confirmCallback = null;
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('customConfirmModal');
+        const modalContent = document.querySelector('.custom-modal-content');
+        if (modal && e.target === modal) {
+            closeCustomConfirm();
+        }
+    });
+
+    // Close modal on ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeCustomConfirm();
+        }
+    });
+
 
     // INITIALIZE EVERYTHING
     setupFormSubmission();

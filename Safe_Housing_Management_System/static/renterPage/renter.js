@@ -12,13 +12,13 @@ let currentFilters = {
 };
 
 // Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('Page loaded successfully!');
-    
+
     // Check which page we're on
     const isDashboard = document.getElementById('property-container');
     const isPropertyDetails = document.querySelector('.property-details-container');
-    
+
     if (isDashboard) {
         initializeDashboard();
     } else if (isPropertyDetails) {
@@ -41,7 +41,7 @@ function initializePropertyDetails() {
     setupContactModal();
     setupCommentFunctionality();
     setupTextareaAutoResize();
-    
+
     // Ensure two-column layout on page load
     const grid = document.querySelector('.property-details-grid');
     if (grid) {
@@ -66,26 +66,26 @@ function setupFilterModal() {
 
     // Open modal
     filterButton.addEventListener('click', openModal);
-    
+
     // Close modal
     closeFilterBtn.addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', closeModal);
-    
+
     // Apply filters
-    applyFiltersBtn.addEventListener('click', function() {
+    applyFiltersBtn.addEventListener('click', function () {
         applyFilters();
         updateFilterCount();
         closeModal();
     });
-    
+
     // Clear filters
-    clearFiltersBtn.addEventListener('click', function() {
+    clearFiltersBtn.addEventListener('click', function () {
         clearAllFilters();
         closeModal();
     });
-    
+
     // Close on Escape key
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeModal();
     });
 
@@ -95,7 +95,7 @@ function setupFilterModal() {
 function openModal() {
     const filterModal = document.getElementById('filterModal');
     const modalOverlay = document.getElementById('modalOverlay');
-    
+
     filterModal.style.cssText = 'right: 0 !important; display: block !important; visibility: visible !important; z-index: 10000 !important;';
     modalOverlay.style.cssText = 'display: block !important; z-index: 9999 !important;';
 }
@@ -103,7 +103,7 @@ function openModal() {
 function closeModal() {
     const filterModal = document.getElementById('filterModal');
     const modalOverlay = document.getElementById('modalOverlay');
-    
+
     filterModal.style.cssText = 'right: -400px !important;';
     modalOverlay.style.cssText = 'display: none !important;';
 }
@@ -112,23 +112,23 @@ function closeModal() {
 function setupViewDetailsButtons() {
     const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
     console.log(`🔍 Found ${viewDetailsButtons.length} view details buttons`);
-    
+
     viewDetailsButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
+        button.addEventListener('click', function (e) {
             console.log("✅ View Details button CLICKED!");
             e.preventDefault();
             e.stopPropagation();
-            
+
             const propertyId = this.getAttribute('data-property-id');
             console.log('Property ID:', propertyId);
-            
+
             if (propertyId) {
                 const url = `/renter/property/${propertyId}/`;
                 console.log('Navigating to:', url);
                 window.location.href = url;
             }
         });
-        
+
         button.style.cursor = 'pointer';
     });
 }
@@ -139,12 +139,12 @@ function setupDropdown() {
     const userDropdown = document.getElementById('userDropdown');
 
     if (userDropdownBtn && userDropdown) {
-        userDropdownBtn.addEventListener('click', function(e) {
+        userDropdownBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             userDropdown.classList.toggle('active');
         });
 
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (!userDropdownBtn.contains(e.target)) {
                 userDropdown.classList.remove('active');
             }
@@ -152,12 +152,12 @@ function setupDropdown() {
 
         const dropdownItems = document.querySelectorAll('.user-dropdown-item');
         dropdownItems.forEach(item => {
-            item.addEventListener('click', function() {
+            item.addEventListener('click', function () {
                 userDropdown.classList.remove('active');
             });
         });
 
-        userDropdown.addEventListener('click', function(e) {
+        userDropdown.addEventListener('click', function (e) {
             e.stopPropagation();
         });
     }
@@ -166,17 +166,17 @@ function setupDropdown() {
 // PROPERTY DETAILS SPECIFIC FUNCTIONS
 function setupContactModal() {
     const contactModalOverlay = document.getElementById('contactModalOverlay');
-    
+
     if (contactModalOverlay) {
         // Close modal when clicking outside
-        contactModalOverlay.addEventListener('click', function(e) {
+        contactModalOverlay.addEventListener('click', function (e) {
             if (e.target === this) {
                 closeContactModal();
             }
         });
-        
+
         // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeContactModal();
             }
@@ -186,13 +186,13 @@ function setupContactModal() {
 
 function setupCommentFunctionality() {
     console.log("🔧 Setting up comment functionality...");
-    
+
     // Remove onclick attributes and add proper event listeners
     document.querySelectorAll('.reply-btn').forEach(btn => {
         // Remove existing onclick attribute to prevent conflicts
         btn.removeAttribute('onclick');
-        
-        btn.addEventListener('click', function(e) {
+
+        btn.addEventListener('click', function (e) {
             e.stopPropagation();
             // Get comment ID from the parent comment item
             const commentItem = this.closest('.comment-item');
@@ -203,55 +203,56 @@ function setupCommentFunctionality() {
             }
         });
     });
-    
+
     // Form submission handling
     const commentForm = document.getElementById('commentForm');
     if (commentForm) {
-        commentForm.addEventListener('submit', function(e) {
+        commentForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            
+
             const commentInput = this.querySelector('.comment-input');
             const submitBtn = this.querySelector('.comment-submit-btn');
-            
+
             // Basic validation
             if (commentInput.value.trim().length < 5) {
-                alert('Please write a comment with at least 5 characters.');
+                showToast('Please write a comment with at least 5 characters.', 'error');
+
                 commentInput.focus();
-                return;
+                return; 
             }
-            
+
             // Disable button to prevent multiple submissions
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
-            
+
             // Submit form
             this.submit();
         });
     }
-    
+
     // Reply form submissions
     document.querySelectorAll('.reply-form form').forEach(form => {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             e.preventDefault();
-            
+
             const replyInput = this.querySelector('.reply-input');
             const submitBtn = this.querySelector('.reply-submit-btn');
-            
+
             if (replyInput.value.trim().length < 3) {
-                alert('Please write a reply with at least 3 characters.');
+                showToast('Please write a reply with at least 3 characters.', 'error');
                 replyInput.focus();
-                return;
+                return;  
             }
-            
-            // Disable button to prevent multiple submissions
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
-            
-            // Submit form
-            this.submit();
-        });
+
+                // Disable button to prevent multiple submissions
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+
+                // Submit form
+                this.submit();
+            });
     });
-    
+
     // Smooth scrolling for new comments
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('new_comment')) {
@@ -264,18 +265,18 @@ function setupCommentFunctionality() {
             }, 300);
         }
     }
-    
+
     console.log("✅ Comment functionality setup complete");
 }
 
 function setupTextareaAutoResize() {
     // Auto-resize textareas as user types
     document.querySelectorAll('.comment-input, .reply-input').forEach(textarea => {
-        textarea.addEventListener('input', function() {
+        textarea.addEventListener('input', function () {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
         });
-        
+
         // Initialize height
         textarea.style.height = 'auto';
         textarea.style.height = (textarea.scrollHeight) + 'px';
@@ -283,14 +284,14 @@ function setupTextareaAutoResize() {
 }
 
 // CONTACT MODAL FUNCTIONS (make them global)
-window.contactLandlord = function() {
+window.contactLandlord = function () {
     const contactModal = document.getElementById('contactModalOverlay');
     if (contactModal) {
         contactModal.style.display = 'block';
     }
 };
 
-window.closeContactModal = function() {
+window.closeContactModal = function () {
     const contactModal = document.getElementById('contactModalOverlay');
     if (contactModal) {
         contactModal.style.display = 'none';
@@ -300,23 +301,23 @@ window.closeContactModal = function() {
 // FIXED REPLY FORM FUNCTIONALITY
 function toggleReplyForm(commentId) {
     console.log('toggleReplyForm called for comment:', commentId);
-    
+
     const replyForm = document.getElementById(`replyForm-${commentId}`);
     const replyBtn = document.querySelector(`#comment-${commentId} .reply-btn`);
-    
+
     if (!replyForm) {
         console.error('❌ Reply form not found:', `replyForm-${commentId}`);
         return;
     }
-    
+
     if (!replyBtn) {
         console.error('❌ Reply button not found in comment:', commentId);
         return;
     }
-    
+
     console.log('Reply form found:', replyForm);
     console.log('Reply button found:', replyBtn);
-    
+
     // Check if this form is already active
     if (replyForm.classList.contains('active')) {
         // Hide this form
@@ -333,11 +334,11 @@ function toggleReplyForm(commentId) {
                 otherBtn.innerHTML = '<i class="fas fa-reply"></i> Reply';
             }
         });
-        
+
         // Show this form
         replyForm.classList.add('active');
         replyBtn.innerHTML = '<i class="fas fa-times"></i> Close';
-        
+
         // Focus and auto-resize the textarea
         const textarea = replyForm.querySelector('.reply-input');
         if (textarea) {
@@ -347,10 +348,10 @@ function toggleReplyForm(commentId) {
                 textarea.style.height = (textarea.scrollHeight) + 'px';
             }, 50);
         }
-        
+
         console.log('Showing reply form for comment:', commentId);
     }
-    
+
     // Force display style for debugging
     console.log('Current display style:', replyForm.style.display);
     console.log('Current class list:', replyForm.classList.toString());
@@ -380,39 +381,39 @@ function setupRealTimeFilters() {
     const locationSelect = document.getElementById('location');
     const priceMinInput = document.getElementById('price-min');
     const priceMaxInput = document.getElementById('price-max');
-    
+
     if (!searchInput || !locationSelect) {
         return; // Not on dashboard
     }
-    
-    searchInput.addEventListener('input', function() {
+
+    searchInput.addEventListener('input', function () {
         applyFilters();
         updateFilterCount();
     });
-    
-    locationSelect.addEventListener('change', function() {
+
+    locationSelect.addEventListener('change', function () {
         applyFilters();
         updateFilterCount();
     });
-    
+
     if (priceMinInput) {
-        priceMinInput.addEventListener('input', function() {
+        priceMinInput.addEventListener('input', function () {
             applyFilters();
             updateFilterCount();
         });
     }
-    
+
     if (priceMaxInput) {
-        priceMaxInput.addEventListener('input', function() {
+        priceMaxInput.addEventListener('input', function () {
             applyFilters();
             updateFilterCount();
         });
     }
-    
+
     // Amenity checkboxes
     const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]');
     amenityCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
+        checkbox.addEventListener('change', function () {
             updateSelectedAmenities();
             updateFilterCount();
             applyFilters();
@@ -424,7 +425,7 @@ function setupRealTimeFilters() {
 function setupViewToggle() {
     const gridView = document.getElementById('grid-view');
     const listView = document.getElementById('list-view');
-    
+
     if (gridView && listView) {
         gridView.addEventListener('click', () => toggleView('grid'));
         listView.addEventListener('click', () => toggleView('list'));
@@ -435,9 +436,9 @@ function toggleView(viewType) {
     const container = document.getElementById('property-container');
     const gridBtn = document.getElementById('grid-view');
     const listBtn = document.getElementById('list-view');
-    
+
     if (!container || !gridBtn || !listBtn) return;
-    
+
     if (viewType === 'grid') {
         container.className = 'property-grid';
         gridBtn.classList.add('active');
@@ -474,19 +475,19 @@ function applyFilters() {
     const priceMax = parseInt(document.getElementById('price-max').value) || 50000;
     const location = document.getElementById('location').value.trim().toLowerCase();
     const search = document.getElementById('search').value.trim().toLowerCase();
-    
+
     const propertyContainer = document.getElementById('property-container');
     if (!propertyContainer) return; // Not on dashboard
-    
+
     const propertyCards = propertyContainer.querySelectorAll('.property-card');
     let visibleCount = 0;
-    
+
     propertyCards.forEach(card => {
         const matchesAmenities = propertyMatchesAmenities(card, selectedAmenities);
         const matchesPrice = propertyMatchesPrice(card, priceMin, priceMax);
         const matchesLocation = propertyMatchesLocation(card, location);
         const matchesSearch = propertyMatchesSearch(card, search);
-        
+
         if (matchesAmenities && matchesPrice && matchesLocation && matchesSearch) {
             card.style.display = 'block';
             visibleCount++;
@@ -494,13 +495,13 @@ function applyFilters() {
             card.style.display = 'none';
         }
     });
-    
+
     // Update property count
     const propertyCount = document.getElementById('property-count');
     if (propertyCount) {
         propertyCount.textContent = visibleCount;
     }
-    
+
     // Show no properties message if none match
     const noProperties = propertyContainer.querySelector('.no-properties');
     if (visibleCount === 0 && !noProperties) {
@@ -515,7 +516,7 @@ function applyFilters() {
     } else if (visibleCount > 0 && noProperties) {
         noProperties.remove();
     }
-    
+
     currentFilters = {
         amenities: selectedAmenities,
         priceMin,
@@ -523,7 +524,7 @@ function applyFilters() {
         location,
         search
     };
-    
+
     console.log(`Filtered properties: ${visibleCount} visible`);
 }
 
@@ -531,18 +532,18 @@ function clearAllFilters() {
     // Clear checkboxes
     const checkboxes = document.querySelectorAll('input[name="amenities"]');
     checkboxes.forEach(checkbox => checkbox.checked = false);
-    
+
     // Reset inputs
     const priceMinInput = document.getElementById('price-min');
     const priceMaxInput = document.getElementById('price-max');
     const locationInput = document.getElementById('location');
     const searchInput = document.getElementById('search');
-    
+
     if (priceMinInput) priceMinInput.value = 0;
     if (priceMaxInput) priceMaxInput.value = 50000;
     if (locationInput) locationInput.value = '';
     if (searchInput) searchInput.value = '';
-    
+
     // Apply cleared filters
     applyFilters();
     updateFilterCount();
@@ -556,12 +557,12 @@ function updateFilterCount() {
         const priceMax = document.getElementById('price-max').value;
         const location = document.getElementById('location').value;
         const search = document.getElementById('search').value;
-        
+
         let count = amenityCount;
         if (priceMin > 0 || priceMax < 50000) count++;
         if (location && location.trim() !== '') count++;
         if (search && search.trim() !== '') count++;
-        
+
         filterCount.textContent = count;
     }
 }
@@ -569,13 +570,13 @@ function updateFilterCount() {
 // HELPER FUNCTIONS
 function propertyMatchesAmenities(propertyCard, selectedAmenities) {
     if (selectedAmenities.length === 0) return true;
-    
+
     for (const amenity of selectedAmenities) {
         let hasAmenity = false;
         const amenitiesSection = propertyCard.querySelector('.property-amenities');
         const safetySection = propertyCard.querySelector('.property-safety');
-        
-        switch(amenity) {
+
+        switch (amenity) {
             case 'electricity': hasAmenity = amenitiesSection?.textContent.includes('Electricity'); break;
             case 'water': hasAmenity = amenitiesSection?.textContent.includes('Water'); break;
             case 'internet': hasAmenity = amenitiesSection?.textContent.includes('Internet'); break;
@@ -592,7 +593,7 @@ function propertyMatchesAmenities(propertyCard, selectedAmenities) {
             case 'furnished': hasAmenity = amenitiesSection?.textContent.includes('Furnished'); break;
             case 'pet_friendly': hasAmenity = amenitiesSection?.textContent.includes('Pet Friendly'); break;
         }
-        
+
         if (!hasAmenity) return false;
     }
     return true;
@@ -615,10 +616,10 @@ function propertyMatchesSearch(propertyCard, searchTerm) {
     const propertyTitle = propertyCard.querySelector('.property-title')?.textContent.toLowerCase() || '';
     const propertyLocation = propertyCard.querySelector('.property-location')?.textContent.toLowerCase() || '';
     const propertyDescription = propertyCard.querySelector('.property-description')?.textContent.toLowerCase() || '';
-    
-    return propertyTitle.includes(searchLower) || 
-           propertyLocation.includes(searchLower) || 
-           propertyDescription.includes(searchLower);
+
+    return propertyTitle.includes(searchLower) ||
+        propertyLocation.includes(searchLower) ||
+        propertyDescription.includes(searchLower);
 }
 
 function updatePropertyCount(count) {
@@ -627,15 +628,15 @@ function updatePropertyCount(count) {
         if (count !== undefined) {
             countElement.textContent = count;
         } else {
-            const visibleCards = document.querySelectorAll('.property-card[style=""]').length + 
-                            document.querySelectorAll('.property-card:not([style])').length;
+            const visibleCards = document.querySelectorAll('.property-card[style=""]').length +
+                document.querySelectorAll('.property-card:not([style])').length;
             countElement.textContent = visibleCards;
         }
     }
 }
 
 // Scroll comments to top on page load
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const commentsList = document.getElementById('commentsList');
     if (commentsList) {
         commentsList.scrollTop = 0;
@@ -662,20 +663,38 @@ function closeRejectModal() {
 }
 
 // Close modal on escape key
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         closeRejectModal();
     }
 });
 
 // Close modal when clicking outside
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const rejectModal = document.getElementById('rejectModal');
     if (rejectModal) {
-        rejectModal.addEventListener('click', function(e) {
+        rejectModal.addEventListener('click', function (e) {
             if (e.target === this) {
                 closeRejectModal();
             }
         });
     }
 });
+
+function showToast(message, type = 'error') {
+    const toast = document.createElement('div');
+    toast.className = `custom-toast ${type}`;
+    toast.innerHTML = `
+        <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+

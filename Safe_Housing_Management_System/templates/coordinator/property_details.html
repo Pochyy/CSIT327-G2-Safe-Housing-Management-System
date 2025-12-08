@@ -179,7 +179,7 @@
                 <!-- Action Buttons -->
                 {% if property.status == 'Pending' %}
                 <div class="coordinator-action-section">
-                    <form method="POST" action="{% url 'approve_property' property.id %}" onsubmit="return confirm('Are you sure you want to approve this property?');">
+                    <form method="POST" action="{% url 'approve_property' property.id %}">
                         {% csrf_token %}
                         <button type="submit" class="btn-approve-modern">
                             <i class="fas fa-check-circle"></i>
