@@ -1,7 +1,7 @@
 from django.views.decorators.cache import never_cache   
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.http import JsonResponse, HttpResponse  # Added HttpResponse
+from django.http import JsonResponse, HttpResponse  
 from django.views.decorators.http import require_http_methods
 from .forms import PropertyForm
 from .models import Property, Notification
@@ -59,6 +59,12 @@ def edit_property(request, property_id):
     try:
         property = Property.objects.get(id=property_id, landlord=request.user)
         
+        if property.status != 'Pending':
+            return JsonResponse({
+                'success': False,
+                'message': f'Cannot edit {property.status.lower()} properties. Only pending properties can be edited.'
+            }, status=403)
+    
         if request.method == 'POST':
             form = PropertyForm(request.POST, request.FILES, instance=property)
             if form.is_valid():
