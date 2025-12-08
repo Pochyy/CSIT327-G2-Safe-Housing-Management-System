@@ -26,9 +26,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     approveButtons.forEach(btn => {
         btn.addEventListener('click', function(e) {
-            if (!confirm('Are you sure you want to approve this property?')) {
-                e.preventDefault();
-            }
+            e.preventDefault();
+            const form = this.closest('form');
+            showCustomConfirm(
+                'Approve Property',
+                'Are you sure you want to approve this property? It will become visible to renters.',
+                function() {
+                    if (form) form.submit();
+                }
+            );
         });
     });
     
@@ -344,4 +350,57 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// ============================================
+// CUSTOM CONFIRMATION MODAL (NO BROWSER ALERTS)
+// ============================================
+let confirmCallback = null;
+
+window.showCustomConfirm = function(title, message, onConfirm) {
+    const modal = document.getElementById('customConfirmModal');
+    const titleEl = document.getElementById('confirmModalTitle');
+    const messageEl = document.getElementById('confirmModalMessage');
+    const confirmBtn = document.getElementById('confirmModalBtn');
+    
+    if (!modal) {
+        console.error('Custom confirm modal not found!');
+        return;
+    }
+    
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    modal.classList.add('active');
+    
+    confirmCallback = onConfirm;
+    
+    // Handle confirm button click
+    confirmBtn.onclick = function() {
+        if (confirmCallback) {
+            confirmCallback();
+        }
+        closeCustomConfirm();
+    };
+}
+
+window.closeCustomConfirm = function() {
+    const modal = document.getElementById('customConfirmModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+    confirmCallback = null;
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('customConfirmModal');
+    if (modal && e.target === modal) {
+        closeCustomConfirm();
+    }
+});
+
+// Close modal on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeCustomConfirm();
+    }
+});
 

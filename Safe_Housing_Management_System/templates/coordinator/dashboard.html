@@ -364,6 +364,24 @@
         <script src="{% static 'coordinatorPage/coordinator.js' %}"></script>
         <script src="{% static 'renterPage/renter.js' %}"></script>
         
+        <!-- Custom Confirmation Modal -->
+        <div id="customConfirmModal" class="custom-modal">
+            <div class="custom-modal-content">
+                <div class="custom-modal-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3 id="confirmModalTitle">Confirm Action</h3>
+                </div>
+                <div class="custom-modal-body">
+                    <p id="confirmModalMessage">Are you sure you want to proceed?</p>
+                </div>
+                <div class="custom-modal-footer">
+                    <button class="btn-modal-cancel" onclick="closeCustomConfirm()">Cancel</button>
+                    <button class="btn-modal-confirm" id="confirmModalBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+
+
 
 </body>
 </html>
