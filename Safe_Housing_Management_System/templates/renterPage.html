@@ -26,20 +26,13 @@
                         <div>{{ user.first_name }} {{ user.last_name }}</div>
                         <div class="user-avatar">{{ user.first_name|first }}{{ user.last_name|first }}</div>
                         <div class="user-dropdown" id="userDropdown">
-                            <div class="user-dropdown-item">
-                                <i class="fas fa-user-circle"></i> My Profile
-                            </div>
-                            <div class="user-dropdown-item">
-                                <i class="fas fa-cog"></i> Settings
-                            </div>
-                            <div class="user-dropdown-divider"></div>
                             <div class="user-dropdown-item" id="logoutBtn">
-                                <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
-                                {% csrf_token %}
-                                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; width: 100%; text-align: left;">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                            </button>
-                            </form>
+                                <form action="/logout/" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; width: 100%; text-align: left;">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
