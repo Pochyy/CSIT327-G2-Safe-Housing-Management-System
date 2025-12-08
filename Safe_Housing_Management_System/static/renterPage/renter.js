@@ -641,3 +641,22 @@ document.addEventListener('DOMContentLoaded', function() {
         commentsList.scrollTop = 0;
     }
 });
+
+document.querySelectorAll('.star-rating i').forEach(star => {
+    star.addEventListener('click', function () {
+        const value = this.getAttribute('data-value');
+        document.getElementById('ratingValue').value = value;
+
+        // highlight selected stars
+        document.querySelectorAll('.star-rating i').forEach(s => {
+            s.classList.remove('fa-solid');
+            s.classList.add('fa-regular');
+        });
+
+        for (let i = 1; i <= value; i++) {
+            const star = document.querySelector(`.star-rating i[data-value="${i}"]`);
+            star.classList.remove('fa-regular');
+            star.classList.add('fa-solid');
+        }
+    });
+});
