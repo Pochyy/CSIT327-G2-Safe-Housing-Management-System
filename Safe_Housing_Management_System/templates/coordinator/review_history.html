@@ -1,0 +1,214 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review History - Coordinator Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'landLordPage/landLord.css' %}">
+    <link rel="stylesheet" href="{% static 'coordinatorPage/coordinator.css' %}">
+</head>
+<body>
+    <!-- Header (Same as your dashboard) -->
+    <div class="header-container">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="{% static 'images/SH.png' %}" alt="Safe Haven Logo">
+                <h2>Safe <span>Haven</span> - Coordinator</h2>
+            </div>
+
+            <div class="user-info" id="userDropdownBtn">
+                <div>{{ user.get_full_name|default:user.username }}</div>
+                <div class="user-avatar">
+                    {% if user.first_name and user.last_name %}
+                        {{ user.first_name|first }}{{ user.last_name|first }}
+                    {% else %}
+                        {{ user.username|first|upper }}
+                    {% endif %}
+                </div>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-item" id="logoutBtn">
+                        <form action="/logout/" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; width: 100%; text-align: left;">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <a href="{% url 'coordinator_dashboard' %}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+        <div class="page-header-history">
+            <h1 class="page-title">
+                <i class="fas fa-history"></i> Review History
+            </h1>
+            <p class="page-subtitle">View all reviewed properties (approved and rejected)</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid-history">
+            <div class="stat-card-history total">
+                <div class="stat-icon-history">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+                <div class="stat-content-history">
+                    <div class="stat-value-history">{{ total_reviewed }}</div>
+                    <div class="stat-label-history">Total Reviewed</div>
+                </div>
+            </div>
+
+            <div class="stat-card-history approved">
+                <div class="stat-icon-history">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content-history">
+                    <div class="stat-value-history">{{ approved_count }}</div>
+                    <div class="stat-label-history">Approved</div>
+                </div>
+            </div>
+
+            <div class="stat-card-history rejected">
+                <div class="stat-icon-history">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-content-history">
+                    <div class="stat-value-history">{{ rejected_count }}</div>
+                    <div class="stat-label-history">Rejected</div>
+                </div>
+            </div>
+
+            <div class="stat-card-history rate">
+                <div class="stat-icon-history">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content-history">
+                    <div class="stat-value-history">{{ approval_rate }}%</div>
+                    <div class="stat-label-history">Approval Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs-simple">
+            <button class="filter-tab-simple active" data-filter="all">
+                All ({{ total_reviewed }})
+            </button>
+            <button class="filter-tab-simple" data-filter="approved">
+                Approved ({{ approved_count }})
+            </button>
+            <button class="filter-tab-simple" data-filter="rejected">
+                Rejected ({{ rejected_count }})
+            </button>
+        </div>
+
+
+        <!-- Properties Table -->
+        {% if properties %}
+        <div class="history-table-container">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Location</th>
+                        <th>Landlord</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Review Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for property in properties %}
+                    <tr data-status="{{ property.status|lower }}">
+                        <td>
+                            <div class="property-cell">
+                                <div class="property-thumbnail">
+                                    {% if property.image %}
+                                        <img src="{{ property.image.url }}" alt="{{ property.property_name }}">
+                                    {% else %}
+                                        <i class="fas fa-home"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="property-name-cell">{{ property.property_name }}</div>
+                            </div>               
+                        </td>                       
+                        <td>
+                            <div class="location-cell">
+                                <i class="fas fa-map-marker-alt"></i>
+                                {{ property.location }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="landlord-cell">
+                                <i class="fas fa-user"></i>
+                                {% if property.landlord.first_name %}
+                                    {{ property.landlord.first_name }} {{ property.landlord.last_name }}
+                                {% else %}
+                                    {{ property.landlord.username }}
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="price-cell">₱{{ property.price|intcomma }}</div>
+                        </td>
+                        <td>
+                            {% if property.status == 'Approved' %}
+                                <span class="status-badge-table approved">
+                                    <i class="fas fa-check-circle"></i> Approved
+                                </span>
+                            {% elif property.status == 'Rejected' %}
+                                <span class="status-badge-table rejected">
+                                    <i class="fas fa-times-circle"></i> Rejected
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="date-cell">
+                                <i class="fas fa-calendar"></i>
+                                {{ property.created_at|date:"M d, Y" }}
+                            </div>
+                        </td>
+                        <td>
+                            <a href="{% url 'property_details_coordinator' property.id %}" class="btn-view-details">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3>No Reviews Found</h3>
+            <p>
+                {% if filter_status == 'approved' %}
+                    No approved properties yet.
+                {% elif filter_status == 'rejected' %}
+                    No rejected properties yet.
+                {% else %}
+                    No reviewed properties found.
+                {% endif %}
+            </p>
+            <a href="{% url 'coordinator_dashboard' %}" class="btn-back-dashboard">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="{% static 'coordinatorPage/coordinator.js' %}"></script>
+</body>
+</html>
