@@ -5,6 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_http_methods
 from .forms import PropertyForm
 from .models import Property, Notification
+from django.db.models import Avg
 
 @never_cache
 @login_required
@@ -163,3 +164,31 @@ def check_property_images(request):
         html += "</div>"
     
     return HttpResponse(html)
+
+@login_required
+def view_property_details(request, property_id):
+    """View property details as landlord (same as tenant view)"""
+    try:
+        # Get property and verify landlord owns it
+        property_obj = Property.objects.get(id=property_id, landlord=request.user)
+        
+        # Get comments for this property
+        from renterPage.models import PropertyComment
+        comments = property_obj.comments.all().prefetch_related('replies')
+        avg_rating = comments.aggregate(avg=Avg('rating'))['avg'] or 0
+        avg_rating = round(avg_rating, 1)
+
+        context = {
+            'property': property_obj,
+            'user': request.user,
+            'landlord': request.user,  # Since landlord is viewing their own property
+            'landlord_name': f"{request.user.first_name} {request.user.last_name}",
+            'landlord_phone': request.user.user_phone,
+            'landlord_email': request.user.email,
+            'comments': comments,
+            'avg_rating': avg_rating,
+            'is_landlord_view': True,  # This tells the template it's a landlord view
+        }
+        return render(request, 'renterPage/property_details.html', context)
+    except Property.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Property not found or you do not have permission to view it'}, status=404)

@@ -1224,3 +1224,31 @@ textarea.form-input {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
+
+
+/* View button styling - matches other buttons */
+.btn-view {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 65px;
+    background-color: #2C6E6F;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    gap: 6px;
+}
+
+.btn-view:hover {
+    background-color: #245859;
+    transform: translateY(-1px);
+}
+
+.btn-view:active {
+    transform: translateY(0);
+}
