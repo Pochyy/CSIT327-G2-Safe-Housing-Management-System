@@ -571,6 +571,8 @@ function setupRealTimeFilters() {
     const locationSelect = document.getElementById('location');
     const priceMinInput = document.getElementById('price-min');
     const priceMaxInput = document.getElementById('price-max');
+    const bedroomsInput = document.getElementById('bedrooms'); 
+    const bathroomsInput = document.getElementById('bathrooms'); 
 
     if (!searchInput || !locationSelect) {
         return; // Not on dashboard
@@ -595,6 +597,20 @@ function setupRealTimeFilters() {
 
     if (priceMaxInput) {
         priceMaxInput.addEventListener('input', function () {
+            applyFilters();
+            updateFilterCount();
+        });
+    }
+
+    if (bedroomsInput) {
+        bedroomsInput.addEventListener('input', function() {
+            applyFilters();
+            updateFilterCount();
+        });
+    }
+
+    if (bathroomsInput) {
+        bathroomsInput.addEventListener('input', function() {
             applyFilters();
             updateFilterCount();
         });
@@ -666,6 +682,9 @@ function applyFilters() {
     const location = document.getElementById('location').value.trim().toLowerCase();
     const search = document.getElementById('search').value.trim().toLowerCase();
 
+    const bedrooms = document.getElementById('bedrooms').value;
+    const bathrooms = document.getElementById('bathrooms').value;
+
     const propertyContainer = document.getElementById('property-container');
     if (!propertyContainer) return; // Not on dashboard
 
@@ -677,8 +696,10 @@ function applyFilters() {
         const matchesPrice = propertyMatchesPrice(card, priceMin, priceMax);
         const matchesLocation = propertyMatchesLocation(card, location);
         const matchesSearch = propertyMatchesSearch(card, search);
+        const matchesBedrooms = propertyMatchesBedrooms(card, bedrooms); 
+        const matchesBathrooms = propertyMatchesBathrooms(card, bathrooms); 
 
-        if (matchesAmenities && matchesPrice && matchesLocation && matchesSearch) {
+        if (matchesAmenities && matchesPrice && matchesLocation && matchesSearch && matchesBedrooms && matchesBathrooms) {
             card.style.display = 'block';
             visibleCount++;
         } else {
@@ -707,16 +728,34 @@ function applyFilters() {
         noProperties.remove();
     }
 
-    currentFilters = {
-        amenities: selectedAmenities,
-        priceMin,
-        priceMax,
-        location,
-        search
-    };
-
+    currentFilters = { amenities: selectedAmenities, priceMin, priceMax, location, search, bedrooms, bathrooms };
     console.log(`Filtered properties: ${visibleCount} visible`);
 }
+
+// 🆕 UPDATED: Helper function to match bedrooms
+function propertyMatchesBedrooms(propertyCard, bedrooms) {
+    // If 0 or empty, show all
+    if (!bedrooms || bedrooms === '' || bedrooms === '0' || parseInt(bedrooms) === 0) return true;
+    
+    const propertyBeds = parseInt(propertyCard.getAttribute('data-beds')) || 0;
+    const selectedBeds = parseInt(bedrooms);
+    
+    return propertyBeds === selectedBeds;
+}
+
+// 🆕 UPDATED: Helper function to match bathrooms
+function propertyMatchesBathrooms(propertyCard, bathrooms) {
+    // If 0 or empty, show all
+    if (!bathrooms || bathrooms === '' || bathrooms === '0' || parseFloat(bathrooms) === 0) return true;
+    
+    const propertyBaths = parseFloat(propertyCard.getAttribute('data-bathrooms')) || 0;
+    const selectedBaths = parseFloat(bathrooms);
+    
+    return propertyBaths === selectedBaths;
+}
+
+
+
 
 function clearAllFilters() {
     // Clear checkboxes
@@ -728,11 +767,15 @@ function clearAllFilters() {
     const priceMaxInput = document.getElementById('price-max');
     const locationInput = document.getElementById('location');
     const searchInput = document.getElementById('search');
+    const bedroomsInput = document.getElementById('bedrooms');
+    const bathroomsInput = document.getElementById('bathrooms');
 
     if (priceMinInput) priceMinInput.value = 0;
     if (priceMaxInput) priceMaxInput.value = 50000;
     if (locationInput) locationInput.value = '';
     if (searchInput) searchInput.value = '';
+    if (bedroomsInput) bedroomsInput.value = ''; // Clear to show "Any"
+    if (bathroomsInput) bathroomsInput.value = '';
 
     // Apply cleared filters
     applyFilters();
@@ -747,11 +790,15 @@ function updateFilterCount() {
         const priceMax = document.getElementById('price-max').value;
         const location = document.getElementById('location').value;
         const search = document.getElementById('search').value;
+        const bedrooms = document.getElementById('bedrooms').value; 
+        const bathrooms = document.getElementById('bathrooms').value;
 
         let count = amenityCount;
         if (priceMin > 0 || priceMax < 50000) count++;
         if (location && location.trim() !== '') count++;
         if (search && search.trim() !== '') count++;
+        if (bedrooms && parseInt(bedrooms) > 0) count++; // Only count if > 0
+        if (bathrooms && parseFloat(bathrooms) > 0) count++;
 
         filterCount.textContent = count;
     }

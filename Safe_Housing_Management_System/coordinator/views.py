@@ -80,9 +80,11 @@ def property_details(request, property_id):
     
     context = {
         'property': property,
+        'landlord': landlord,  # Add this
         'landlord_name': landlord_name,
         'landlord_email': landlord.email,
         'landlord_phone': landlord.user_phone if hasattr(landlord, 'user_phone') else 'Not provided',
+        'is_coordinator_view': True,  # 
     }
     return render(request, 'coordinator/property_details.html', context)
 

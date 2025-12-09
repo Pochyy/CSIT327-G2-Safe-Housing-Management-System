@@ -47,30 +47,45 @@
                     <label for="search">Search</label>
                     <input type="text" id="search" placeholder="Search properties...">
                 </div>
+
                 <div class="input-group">
                     <label for="location">Location</label>
                     <input type="text" id="location" placeholder="Enter city or area...">
                 </div>
+
+                <!-- 🆕 UPDATED: Bedrooms as number input -->
+                <div class="input-group">
+                    <label for="bedrooms">Beds</label>
+                    <input type="number" id="bedrooms" placeholder="0" min="0" max="10" step="1">
+                </div>
+
+                <!-- 🆕 UPDATED: Bathrooms as number input -->
+                <div class="input-group">
+                    <label for="bathrooms">Baths</label>
+                    <input type="number" id="bathrooms" placeholder="0" min="1" max="5" step="0.5">
+                </div>
+
                 <div class="input-group">
                     <label for="price-min">Min Price</label>
-                    <input type="number" id="price-min" placeholder="₱0" value="0">
+                    <input type="number" id="price-min" placeholder="0" value="0">
                 </div>
+
                 <div class="input-group">
                     <label for="price-max">Max Price</label>
-                    <input type="number" id="price-max" placeholder="₱50,000" value="50000">
+                    <input type="number" id="price-max" placeholder="50,000" value="50000">
                 </div>
-                
+
                 <!-- Filter Button -->
                 <div class="input-group">
                     <label>&nbsp;</label>
                     <button class="filter-toggle-btn" id="filterToggleBtn">
-                        <i class="fas fa-filter"></i>
-                        Filters
+                        <i class="fas fa-filter"></i> Filters
                         <span class="filter-count" id="filterCount">0</span>
                     </button>
                 </div>
             </div>
         </div>
+
 
         <!-- Filter Modal/Sidebar -->
         <div class="filter-modal" id="filterModal">
@@ -218,7 +233,12 @@
             <!-- Property Grid -->
         <div class="property-grid" id="property-container">
             {% for property in properties %}
-            <div class="property-card" data-price="{{ property.price }}" data-location="{{ property.location|lower }}">
+            <div class="property-card" 
+                data-price="{{ property.price }}" 
+                data-location="{{ property.location|lower }}"
+                data-beds="{{ property.beds }}"
+                data-bathrooms="{{ property.bathrooms }}">
+                
                 {% if property.image %}
                 <div class="property-image">
                     <img src="{{ property.image.url }}" alt="{{ property.property_name }}">

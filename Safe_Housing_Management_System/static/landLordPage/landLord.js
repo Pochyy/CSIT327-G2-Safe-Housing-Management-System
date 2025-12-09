@@ -1,3 +1,4 @@
+
 // All functionality in one DOMContentLoaded event
 document.addEventListener('DOMContentLoaded', function () {
     console.log('Safe Haven Landlord Dashboard loaded successfully!');
@@ -73,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 const notificationId = this.getAttribute('data-notification-id');
-                markNotificationRead(notificationId);  
+                markNotificationRead(notificationId);
             });
         });
 
@@ -81,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const markAllReadBtn = document.querySelector('.mark-all-read');
         if (markAllReadBtn) {
             markAllReadBtn.addEventListener('click', function () {
-                markAllNotificationsRead();  
+                markAllNotificationsRead();
             });
         }
 
@@ -328,7 +329,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // REAL DELETE FUNCTION
     // REAL DELETE FUNCTION (WITH CUSTOM MODAL)
-    function deleteProperty(propertyId, cardElement) {
+    window.deleteProperty = function(propertyId, cardElement) {
+        console.log('🔥 deleteProperty called with ID:', propertyId);
+        
+
         showCustomConfirm(
             'Delete Property',
             'Are you sure you want to delete this property? This action cannot be undone.',
@@ -343,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Send DELETE request to server
                 fetch(`/landlord/delete-property/${propertyId}/`, {
-                    method: 'DELETE',
+                    method: 'POST',
                     headers: {
                         'X-CSRFToken': getCookie('csrftoken'),
                         'Content-Type': 'application/json',
@@ -622,63 +626,101 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ============================================
-    // CUSTOM CONFIRMATION MODAL (NO BROWSER ALERTS)
-    // ============================================
-    let confirmCallback = null;
-
-    window.showCustomConfirm = function (title, message, onConfirm) {
-        const modal = document.getElementById('customConfirmModal');
-        const titleEl = document.getElementById('confirmModalTitle');
-        const messageEl = document.getElementById('confirmModalMessage');
-        const confirmBtn = document.getElementById('confirmModalBtn');
-
-        if (!modal) {
-            console.error('Custom confirm modal not found!');
-            return;
-        }
-
-        titleEl.textContent = title;
-        messageEl.textContent = message;
-        modal.classList.add('active');
-
-        confirmCallback = onConfirm;
-
-        // Handle confirm button click
-        confirmBtn.onclick = function () {
-            if (confirmCallback) {
-                confirmCallback();
-            }
-            closeCustomConfirm();
-        };
-    }
-
-    window.closeCustomConfirm = function () {
-        const modal = document.getElementById('customConfirmModal');
-        if (modal) {
-            modal.classList.remove('active');
-        }
-        confirmCallback = null;
-    }
-
-    // Close modal when clicking outside
-    document.addEventListener('click', function (e) {
-        const modal = document.getElementById('customConfirmModal');
-        const modalContent = document.querySelector('.custom-modal-content');
-        if (modal && e.target === modal) {
-            closeCustomConfirm();
-        }
-    });
-
-    // Close modal on ESC key
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            closeCustomConfirm();
-        }
-    });
-
-
     // INITIALIZE EVERYTHING
     setupFormSubmission();
     setupEditButtons();
+});
+
+
+// ============================================
+// CUSTOM CONFIRMATION MODAL (NO BROWSER ALERTS)
+// ============================================
+let confirmCallback = null;
+
+window.showCustomConfirm = function (title, message, onConfirm) {
+    console.log('🚨 showCustomConfirm CALLED!', title, message);
+
+    const modal = document.getElementById('customConfirmModal');
+    const content = document.querySelector('.custom-modal-content');
+
+        // ✅ FORCE MOVE TO BODY IF IT'S SOMEWHERE ELSE
+    if (modal && modal.parentElement.tagName !== 'BODY') {
+        console.log('⚠️ Moving modal from', modal.parentElement.tagName, 'to BODY');
+        document.body.appendChild(modal);
+    
+        
+    const titleEl = document.getElementById('confirmModalTitle');
+    const messageEl = document.getElementById('confirmModalMessage');
+    const confirmBtn = document.getElementById('confirmModalBtn');
+
+    
+    if (!modal) {
+        console.error('Custom confirm modal not found!');
+        return;
+    }
+
+    // Set content
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+
+    // Store callback
+    confirmCallback = onConfirm;
+
+    confirmBtn.onclick = function() {
+        console.log('✅ Confirm clicked!');
+        if (confirmCallback) {
+            confirmCallback();
+        }
+        closeCustomConfirm();
+    };
+
+    // SHOW the modal
+    modal.style.display = 'flex';
+    modal.style.visibility = 'visible';
+    modal.style.opacity = '1';
+
+    if (content) {
+        content.style.width = '90%';
+        content.style.maxWidth = '450px';
+    }
+
+    // Force reflow
+    modal.offsetHeight;
+
+    // Add active class to MODAL (not inner div)
+    modal.classList.add('active');
+}
+
+    // Debug: Check what's visible
+    console.log('Modal rect:', modal.getBoundingClientRect());
+    console.log('Modal z-index:', getComputedStyle(modal).zIndex);
+    console.log('Modal parent:', modal.parentElement);
+    console.log('Modal parent HTML:', modal.parentElement.outerHTML);
+    
+}
+
+window.closeCustomConfirm = function () {
+    const modal = document.getElementById('customConfirmModal');
+    if (modal) {
+        modal.style.display = 'none';  // ✅ Immediate
+        modal.style.visibility = 'hidden';
+        modal.classList.remove('active');
+    }
+    confirmCallback = null;
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function (e) {
+    const modal = document.getElementById('customConfirmModal');
+    const modalContent = document.querySelector('.custom-modal-content');
+    if (modal && e.target === modal) {
+        closeCustomConfirm();
+    }
+});
+
+// Close modal on ESC key
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+        closeCustomConfirm();
+    }
 });
