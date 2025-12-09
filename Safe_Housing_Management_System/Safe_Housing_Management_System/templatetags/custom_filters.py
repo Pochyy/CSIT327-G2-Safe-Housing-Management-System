@@ -1,11 +1,17 @@
 from django import template
+import math
+
 
 register = template.Library()
 
 @register.filter
-def split(value, arg):
-    return value.split(arg)
-
+def floor_rating(value):
+    try:
+        return int(math.floor(float(value)))
+    except (ValueError, TypeError):
+        return 0
+    
+    
 @register.filter
 def intcomma(value):
     try:

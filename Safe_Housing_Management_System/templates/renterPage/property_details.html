@@ -74,16 +74,36 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- COMMENT SECTION -->
+
+                {% if is_landlord_view and property.status == 'Rejected' %}
+                <!-- REJECTION ALERT FOR LANDLORD -->
+                <div class="status-alert rejected" style="margin-bottom: 24px;">
+                    <i class="fas fa-times-circle"></i>
+                    <div>
+                        <strong>This property has been rejected</strong>
+                        <p style="margin-top: 8px; color: #991b1b;">Your property listing did not meet our platform guidelines and is not visible to renters.</p>
+                        {% if property.rejection_reason %}
+                        <div class="rejection-reason-box">
+                            <strong style="display: block; margin-bottom: 4px;">Reason for Rejection:</strong>
+                            <p style="margin: 0; color: #7f1d1d;">{{ property.rejection_reason }}</p>
+                        </div>
+                        {% endif %}
+                        <p style="margin-top: 12px; font-size: 14px; color: #dc2626;">
+                            <i class="fas fa-info-circle"></i> Please review the feedback and update your listing accordingly.
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+            
+                {% if not is_landlord_view or property.status != 'Rejected' %}
                 <div class="comments-section">
                     <div class="comments-header">
                         <div class="comments-title">
                             <i class="fas fa-comments"></i>
-                            <span>Tenant Comments</span>
+                            <span>Reviews</span>
                         </div>
                         <div class="comments-count" id="commentsCount">
-                            {{ comments|length }} comment{{ comments|length|pluralize }}
+                            {{ comments|length }} review{{ comments|length|pluralize }}
                         </div>
                     </div>
 
@@ -92,7 +112,7 @@
                     <div class="comment-form-container fade-in">
                         <div class="comment-form-title">
                             <i class="fas fa-edit"></i>
-                            <span>Add Your Comment</span>
+                            <span>Add Your Review</span>
                         </div>
                         <form id="commentForm" method="POST" action="{% url 'renter:add_comment' property.id %}">
                             {% csrf_token %}
@@ -113,7 +133,7 @@
                                 required></textarea>
                             <button type="submit" class="comment-submit-btn">
                                 <i class="fas fa-paper-plane"></i>
-                                Post Comment
+                                Post Review
                             </button>
                             <div style="clear: both;"></div>
                         </form>
@@ -223,40 +243,56 @@
                             <!-- Empty State -->
                             <div class="comments-empty">
                                 <i class="fas fa-comment-slash"></i>
-                                <h4>No comments yet</h4>
-                                <p>Be the first tenant to share your experience with this property!</p>
+                                <h4>No reviews yet</h4>
+                                <p>Be the first to review this property!</p>
                             </div>
                         {% endif %}
                     </div>
                 </div>
+                {% endif %}
             </div>
+
             
             <!-- RIGHT COLUMN: Property Info -->
             <div class="property-info">
+
+               
+
                 <h1 class="property-title-large">{{ property.property_name }}</h1>
                 <div class="property-price-large">₱{{ property.price|intcomma }}/month</div>
 
                                 
-                <!-- Average Rating with floor rounding -->
-                <div class="property-overall-rating" style="margin: 8px 0;">
-                    <span class="rating-stars">
-                        {% with floor_rating=avg_rating|floatformat:"0" %}
-                        {% for i in "12345" %}
-                            {% if forloop.counter <= floor_rating|add:"0" %}
-                                <i class="fa-solid fa-star" style="color: #fbbf24;"></i>
-                            {% else %}
-                                <i class="fa-regular fa-star" style="color: #d1d5db;"></i>
-                            {% endif %}
-                        {% endfor %}
-                        {% endwith %}
+                <!-- Average Rating -->
+                {% if not is_landlord_view or property.status != 'Rejected' %}
+                <div class="property-overall-rating">
+                    <div class="rating-stars-large">
+                        {% if comments %}
+                            {% with floor_rating=avg_rating|floor_rating %}
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= floor_rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                            {% endwith %}
+                        {% else %}
+                            {% for i in "12345" %}
+                                <i class="far fa-star"></i>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <span class="rating-value-large">
+                        {{ avg_rating|floatformat:1 }}
                     </span>
-                    <span class="rating-value" style="margin-left: 6px; font-weight: 500;">
-                        {{ avg_rating|floatformat:1 }}/5
-                    </span>
-                    <span class="rating-count" style="color: #6b7280; font-size: 0.875rem; margin-left: 6px;">
-                        ({{ comments|length }} review{{ comments|length|pluralize }})
+                    <span class="rating-count-large">
+                        ({{ comments|length }})
                     </span>
                 </div>
+                {% endif %}
+
+
+
 
                 
                 <div class="property-location-large">
@@ -317,11 +353,13 @@
                     {% if property.security_guard %}<div class="amenity-item"><i class="fas fa-user-shield amenity-icon"></i> <span>Security Guard</span></div>{% endif %}
                 </div>
                 
+                {% if not is_landlord_view or property.status != 'Rejected' %}
                 <div class="action-buttons">
                     <button class="btn-contact" onclick="contactLandlord()">
                         <i class="fas fa-envelope"></i> Contact Information
                     </button>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
