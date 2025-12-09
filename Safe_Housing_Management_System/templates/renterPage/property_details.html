@@ -48,9 +48,9 @@
 
     <!-- Property Details Content -->
     <div class="property-details-container">
-        <a href="{% url 'renter:home' %}" class="back-button">
+        <a href="{% if is_landlord_view %}{% url 'landlord:home' %}{% else %}{% url 'renter:home' %}{% endif %}" class="back-button">
             <i class="fas fa-arrow-left"></i>
-            Back to Properties
+            {% if is_landlord_view %}Back to Dashboard{% else %}Back to Properties{% endif %}
         </a>
         
         <div class="property-details-grid">
