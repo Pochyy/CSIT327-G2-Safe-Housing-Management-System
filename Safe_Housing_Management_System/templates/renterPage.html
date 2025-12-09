@@ -239,8 +239,46 @@
                                 {{ property.location }}
                             </p>
                         </div>
-                        <span class="property-price">₱{{ property.price|intcomma }}/month</span>
+                        <div class="property-price-section">
+                            <span class="property-price">₱{{ property.price|intcomma }}/month</span>
+                            
+                            <!-- Star Rating Display -->
+                            <div class="property-card-rating">
+                                <div class="rating-stars-small">
+                                    {% if property.review_count > 0 %}
+                                        {% with rating=property.avg_rating %}
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= rating %}
+                                                {# Full star #}
+                                                <i class="fas fa-star"></i>
+                                            {% elif forloop.counter|add:"-0.5" <= rating %}
+                                                {# Half star #}
+                                                <i class="fas fa-star-half-alt"></i>
+                                            {% else %}
+                                                {# Empty star #}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% endwith %}
+                                    {% else %}
+                                        {% for i in "12345" %}
+                                            <i class="far fa-star"></i>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <span class="rating-text">
+                                    {% if property.review_count > 0 %}
+                                        {{ property.avg_rating|floatformat:1 }}
+                                    {% else %}
+                                        0.0
+                                    {% endif %}
+                                    <span class="review-count">({{ property.review_count }})</span>
+                                </span>
+                            </div>
+                        </div>
                     </div>
+                    
+                    
                     
                     <div class="property-features">
                         <span class="feature">

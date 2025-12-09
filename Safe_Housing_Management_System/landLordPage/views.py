@@ -12,7 +12,9 @@ from django.db.models import Avg
 def landLordPage(request):
     user = request.user 
     form = PropertyForm()
-    notifications = Notification.objects.filter(user=user, is_read=False).order_by('-created_at')
+    notifications = Notification.objects.filter(user=user).order_by('-created_at')
+    unread_count = Notification.objects.filter(user=user, is_read=False).count()
+
     
     properties = Property.objects.filter(landlord=user)
     total_properties = properties.count()
@@ -33,7 +35,7 @@ def landLordPage(request):
         'rejected_properties': rejected_properties,
         'properties': properties,
         'notifications': notifications,
-        'unread_count': notifications.count(),
+        'unread_count': unread_count,
     }
     return render(request, 'landLordPage.html', context)
 

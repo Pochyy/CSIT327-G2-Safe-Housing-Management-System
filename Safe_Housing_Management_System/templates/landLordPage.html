@@ -21,16 +21,16 @@
                 </div>
 
                 <div class="header-right">
-                    <!-- Notifications Bell - Update your existing bell -->
-                    <div class="notification-icon">
+                    <!-- Notifications Bell -->
+                    <div class="notification-icon" id="notificationBellBtn">
                         <i class="far fa-bell"></i>
                         {% if unread_count > 0 %}
                         <div class="notification-badge">{{ unread_count }}</div>
                         {% endif %}
                     </div>
-
-                    <!-- Notifications Dropdown - Add this somewhere in your header -->
-                    <div class="notifications-dropdown">
+                
+                    <!-- Notifications Dropdown -->
+                    <div class="notifications-dropdown" id="notificationsDropdown">
                         <div class="notifications-header">
                             <h3>Notifications</h3>
                             {% if unread_count > 0 %}
@@ -43,29 +43,46 @@
                             <div class="notification-item {% if not notification.is_read %}unread{% endif %}" 
                                 data-notification-id="{{ notification.id }}">
                                 <div class="notification-type-icon">
-                                    {% if notification.notification_type == 'approval' %}✅
-                                    {% elif notification.notification_type == 'rejection' %}❌
-                                    {% else %}🔔{% endif %}
+                                    {% if notification.notification_type == 'approval' %}
+                                        <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                                    {% elif notification.notification_type == 'rejection' %}
+                                        <i class="fas fa-times-circle" style="color: #ef4444;"></i>
+                                    {% elif notification.notification_type == 'review' %}
+                                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                    {% else %}
+                                        <i class="fas fa-bell" style="color: #3b82f6;"></i>
+                                    {% endif %}
                                 </div>
                                 <div class="notification-content">
                                     <div class="notification-message">{{ notification.message }}</div>
                                     <div class="notification-time">{{ notification.created_at|timesince }} ago</div>
                                 </div>
-                                <button class="mark-read-btn" title="Mark as read">×</button>
+                                <button class="mark-read-btn" 
+                                        data-notification-id="{{ notification.id }}" 
+                                        title="Mark as read"
+                                        {% if notification.is_read %}style="display: none;"{% endif %}>
+                                    <i class="fas fa-times"></i>
+                                </button>
+
+
                             </div>
                             {% empty %}
                             <div class="no-notifications">
-                                <p>No new notifications</p>
+                                <i class="fas fa-inbox" style="font-size: 48px; color: #d1d5db; margin-bottom: 10px;"></i>
+                                <p>No notifications yet</p>
                             </div>
                             {% endfor %}
                         </div>
                         
-                        {% if notifications %}
+                        {% if unread_count > 0 %}
                         <div class="notifications-footer">
-                            <button class="mark-all-read">Mark all as read</button>
+                            <button class="mark-all-read">
+                                <i class="fas fa-check-double"></i> Mark all as read
+                            </button>
+                            
                         </div>
                         {% endif %}
-                    </div>
+                    </div>             
                     
                     <div class="user-info" id="userDropdownBtn">
                         <div>{{ user.get_full_name|default:user.username }}</div>
