@@ -337,89 +337,124 @@
                                     {{ form.property_description }}
                                 </div>
                             </div>
+                       <!-- Amenities Section -->
+                        <div class="amenities-section">
+                            <h3 class="section-title">Amenities / Features</h3>
                             
-                            <!-- Amenities Section -->
-                            <div class="amenities-section">
-                                <h3 class="section-title">Amenities / Features</h3>
-                                
-                                <!-- Basic Amenities -->
-                                <div class="amenity-group" id="basicAmenities">
-                                    <div class="amenity-header">
-                                        <div class="amenity-title">
-                                            <i class="fas fa-home amenity-icon"></i>
-                                            <span>Basic Amenities</span>
-                                        </div>
-                                        <i class="fas fa-chevron-down amenity-chevron"></i>
+                            <!-- Basic Amenities -->
+                            <div class="amenity-group" id="basicAmenities">
+                                <div class="amenity-header">
+                                    <div class="amenity-title">
+                                        <i class="fas fa-home amenity-icon"></i>
+                                        <span>Basic Amenities</span>
                                     </div>
-                                    <div class="amenity-content">
-                                        <div class="amenity-grid">
-                                            {% for field in form %}
-                                                {% if field.name in 'electricity,water,internet,airconditioning,kitchen,shared_kitchen,private_bathroom,shared_bathroom'|split:',' %}
-                                                <div class="amenity-item">
-                                                    {{ field }}
-                                                    <label for="{{ field.id_for_label }}" class="amenity-label">{{ field.label }}</label>
-                                                </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    </div>
+                                    <i class="fas fa-chevron-down amenity-chevron"></i>
                                 </div>
-                                
-                                <!-- Safety & Security -->
-                                <div class="amenity-group" id="safetyAmenities">
-                                    <div class="amenity-header">
-                                        <div class="amenity-title">
-                                            <i class="fas fa-lock amenity-icon"></i>
-                                            <span>Safety & Security</span>
+                                <div class="amenity-content">
+                                    <div class="amenity-grid">
+                                        <div class="amenity-item">
+                                            {{ form.electricity }}
+                                            <label for="{{ form.electricity.id_for_label }}" class="amenity-label">{{ form.electricity.label }}</label>
                                         </div>
-                                        <i class="fas fa-chevron-down amenity-chevron"></i>
-                                    </div>
-                                    <div class="amenity-content">
-                                        <div class="amenity-grid">
-                                            {% for field in form %}
-                                                {% if field.name in 'secure_locks,cctv,gated_compound,security_guard'|split:',' %}
-                                                <div class="amenity-item">
-                                                    {{ field }}
-                                                    <label for="{{ field.id_for_label }}" class="amenity-label">{{ field.label }}</label>
-                                                </div>
-                                                {% endif %}
-                                            {% endfor %}
+                                        <div class="amenity-item">
+                                            {{ form.water }}
+                                            <label for="{{ form.water.id_for_label }}" class="amenity-label">{{ form.water.label }}</label>
                                         </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Property Features -->
-                                <div class="amenity-group" id="propertyFeatures">
-                                    <div class="amenity-header">
-                                        <div class="amenity-title">
-                                            <i class="fas fa-tools amenity-icon"></i> 
-                                            <span>Property Features</span>
+                                        <div class="amenity-item">
+                                            {{ form.internet }}
+                                            <label for="{{ form.internet.id_for_label }}" class="amenity-label">{{ form.internet.label }}</label>
                                         </div>
-                                        <i class="fas fa-chevron-down amenity-chevron"></i>
-                                    </div>
-                                    <div class="amenity-content">
-                                        <div class="amenity-grid">
-                                            {% for field in form %}
-                                                {% if field.name in 'parking,furnished,pet_friendly'|split:',' %}
-                                                <div class="amenity-item">
-                                                    {{ field }}
-                                                    <label for="{{ field.id_for_label }}" class="amenity-label">{{ field.label }}</label>
-                                                </div>
-                                                {% endif %}
-                                            {% endfor %}
+                                        <div class="amenity-item">
+                                            {{ form.airconditioning }}
+                                            <label for="{{ form.airconditioning.id_for_label }}" class="amenity-label">{{ form.airconditioning.label }}</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.kitchen }}
+                                            <label for="{{ form.kitchen.id_for_label }}" class="amenity-label">{{ form.kitchen.label }}</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.shared_kitchen }}
+                                            <label for="{{ form.shared_kitchen.id_for_label }}" class="amenity-label">{{ form.shared_kitchen.label }}</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.private_bathroom }}
+                                            <label for="{{ form.private_bathroom.id_for_label }}" class="amenity-label">{{ form.private_bathroom.label }}</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.shared_bathroom }}
+                                            <label for="{{ form.shared_bathroom.id_for_label }}" class="amenity-label">{{ form.shared_bathroom.label }}</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                                            
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                                <button type="submit" class="btn btn-primary" id="submitBtn">Submit for Approval</button>
+                            
+                            <!-- Safety & Security -->
+                            <div class="amenity-group" id="safetyAmenities">
+                                <div class="amenity-header">
+                                    <div class="amenity-title">
+                                        <i class="fas fa-lock amenity-icon"></i>
+                                        <span>Safety & Security</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down amenity-chevron"></i>
+                                </div>
+                                <div class="amenity-content">
+                                    <div class="amenity-grid">
+                                        <div class="amenity-item">
+                                            {{ form.secure_locks }}
+                                            <label for="{{ form.secure_locks.id_for_label }}" class="amenity-label">{{ form.secure_locks.label }}</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.cctv }}
+                                            <label for="{{ form.cctv.id_for_label }}" class="amenity-label">{{ form.cctv.label }}</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.gated_compound }}
+                                            <label for="{{ form.gated_compound.id_for_label }}" class="amenity-label">{{ form.gated_compound.label }}</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.security_guard }}
+                                            <label for="{{ form.security_guard.id_for_label }}" class="amenity-label">{{ form.security_guard.label }}</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            
+                            <!-- Property Features -->
+                            <div class="amenity-group" id="propertyFeatures">
+                                <div class="amenity-header">
+                                    <div class="amenity-title">
+                                        <i class="fas fa-tools amenity-icon"></i> 
+                                        <span>Property Features</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down amenity-chevron"></i>
+                                </div>
+                                <div class="amenity-content">
+                                    <div class="amenity-grid">
+                                        <div class="amenity-item">
+                                            {{ form.parking }}
+                                            <label for="{{ form.parking.id_for_label }}" class="amenity-label">{{ form.parking.label }}</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.furnished }}
+                                            <label for="{{ form.furnished.id_for_label }}" class="amenity-label">{{ form.furnished.label }}</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            {{ form.pet_friendly }}
+                                            <label for="{{ form.pet_friendly.id_for_label }}" class="amenity-label">{{ form.pet_friendly.label }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                                                    
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="submitBtn">Submit for Approval</button>
                         </div>
                     </form>
                 </div>
             </div>
+
 
             <!-- Custom Confirmation Modal -->
             <div id="customConfirmModal" class="custom-modal">
@@ -438,7 +473,8 @@
                 </div>
             </div>
                             
-            <script src="{% static 'landLordPage/landLord.js' %}"></script>
+            
+            <script src="{% static 'landLordPage/landLord.js' %}?v=2"></script>
         </body>
         </html>
 

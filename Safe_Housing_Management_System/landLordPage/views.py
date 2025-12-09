@@ -112,7 +112,7 @@ def edit_property(request, property_id):
         return JsonResponse({'success': False, 'message': 'Property not found'}, status=404)
 
 @login_required
-@require_http_methods(["DELETE", "POST"])  
+@require_http_methods(["POST"])  
 def delete_property(request, property_id):
     try:
         property = Property.objects.get(id=property_id, landlord=request.user)
