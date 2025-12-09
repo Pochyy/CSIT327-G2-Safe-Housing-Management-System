@@ -41,6 +41,7 @@ function initializePropertyDetails() {
     setupContactModal();
     setupCommentFunctionality();
     setupTextareaAutoResize();
+    setupStarRating();
 
     // Ensure two-column layout on page load
     const grid = document.querySelector('.property-details-grid');
@@ -49,6 +50,195 @@ function initializePropertyDetails() {
         grid.style.gridTemplateColumns = '1fr 1fr';
     }
 }
+function setupStarRating() {
+    console.log("⭐ Setting up star rating...");
+    
+    const starRating = document.querySelector('.star-rating');
+    const ratingInput = document.getElementById('ratingValue');
+    const commentForm = document.getElementById('commentForm');
+    
+    if (!starRating || !ratingInput || !commentForm) {
+        console.log("⚠️ Star rating elements not found");
+        return;
+    }
+    
+    const stars = starRating.querySelectorAll('.fa-star');
+    let currentRating = 0;
+    
+    // Initialize stars (check if there's already a rating)
+    if (ratingInput.value) {
+        currentRating = parseInt(ratingInput.value);
+        highlightStars(currentRating);
+    }
+    
+    // Add click event to each star
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const value = parseInt(this.getAttribute('data-value'));
+            currentRating = value;
+            ratingInput.value = currentRating;
+            highlightStars(currentRating);
+            
+            console.log(`Star rating selected: ${currentRating}`);
+            
+            // Clear error when star is selected
+            clearErrorMessages();
+        });
+        
+        // Add hover effects
+        star.addEventListener('mouseover', function() {
+            const hoverValue = parseInt(this.getAttribute('data-value'));
+            highlightStars(hoverValue, true);
+        });
+        
+        star.addEventListener('mouseout', function() {
+            highlightStars(currentRating);
+        });
+    });
+    
+    function highlightStars(count, isHover = false) {
+        stars.forEach((star, index) => {
+            const starValue = index + 1;
+            
+            if (starValue <= count) {
+                star.classList.remove('fa-regular');
+                star.classList.add('fa-solid');
+                star.style.color = '#fbbf24'; // Yellow color
+            } else {
+                star.classList.remove('fa-solid');
+                star.classList.add('fa-regular');
+                star.style.color = '#d1d5db'; // Gray color
+            }
+        });
+    }
+    
+    // CRITICAL: Complete form validation
+    commentForm.addEventListener('submit', function(e) {
+        const commentInput = this.querySelector('.comment-input');
+        const rating = parseInt(ratingInput.value) || 0;
+        const comment = commentInput.value.trim();
+        
+        // Clear previous error messages
+        clearErrorMessages();
+        
+        let errors = [];
+        
+        // Check rating
+        if (rating < 1 || rating > 5) {
+            errors.push('Please select a star rating (1-5 stars)');
+            starRating.style.animation = 'pulse 2s';
+            setTimeout(() => {
+                starRating.style.animation = '';
+            }, 2000);
+        }
+        
+        // Check comment length
+        if (comment.length < 5) {
+            errors.push('Comment must be at least 5 characters');
+            
+            // Highlight comment input
+            commentInput.style.borderColor = '#f87171';
+            commentInput.style.boxShadow = '0 0 0 3px rgba(248, 113, 113, 0.1)';
+            
+            // Clear highlight when user starts typing
+            commentInput.addEventListener('input', function clearHighlight() {
+                this.style.borderColor = '';
+                this.style.boxShadow = '';
+                this.removeEventListener('input', clearHighlight);
+            });
+        }
+        
+        // If there are errors, show them and prevent submission
+        if (errors.length > 0) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Show all error messages
+            showAllErrorMessages(errors);
+            
+            return false;
+        }
+    });
+    
+    console.log("✅ Star rating setup complete");
+}
+
+// NEW: Function to show all error messages
+function showAllErrorMessages(errors) {
+    // Remove any existing error container
+    const existingContainer = document.querySelector('.error-messages-container');
+    if (existingContainer) {
+        existingContainer.remove();
+    }
+    
+    // Create new error container
+    const container = document.createElement('div');
+    container.className = 'error-messages-container';
+    container.style.cssText = `
+        margin: 15px 0;
+        padding: 0;
+        list-style: none;
+    `;
+    
+    // Add each error message
+    errors.forEach(error => {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message-item';
+        errorDiv.style.cssText = `
+            color: #dc2626;
+            background-color: #fee;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #f87171;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        `;
+        
+        errorDiv.innerHTML = `
+            <i class="fas fa-exclamation-circle"></i>
+            <span>${error}</span>
+        `;
+        
+        container.appendChild(errorDiv);
+    });
+    
+    // Find where to insert the error container
+    // Try to insert after the star rating, or after the form title
+    const starRating = document.querySelector('.star-rating');
+    const formTitle = document.querySelector('.comment-form-title');
+    
+    if (starRating && starRating.parentNode) {
+        // Insert after star rating
+        starRating.parentNode.insertBefore(container, starRating.nextSibling);
+    } else if (formTitle && formTitle.parentNode) {
+        // Insert after form title
+        formTitle.parentNode.insertBefore(container, formTitle.nextSibling);
+    } else {
+        // Insert at the beginning of the form
+        const commentForm = document.getElementById('commentForm');
+        if (commentForm) {
+            commentForm.insertBefore(container, commentForm.firstChild);
+        }
+    }
+}
+
+// NEW: Function to clear error messages
+function clearErrorMessages() {
+    const errorContainer = document.querySelector('.error-messages-container');
+    if (errorContainer) {
+        errorContainer.remove();
+    }
+    
+    // Also clear any Django messages that might be showing
+    const djangoMessages = document.querySelector('.messages-container');
+    if (djangoMessages) {
+        djangoMessages.style.display = 'none';
+    }
+}
+
 
 // FILTER MODAL FUNCTIONALITY
 function setupFilterModal() {
@@ -215,7 +405,7 @@ function setupCommentFunctionality() {
 
             // Basic validation
             if (commentInput.value.trim().length < 5) {
-                showToast('Please write a comment with at least 5 characters.', 'error');
+               // showToast('Please write a comment with at least 5 characters.', 'error');
 
                 commentInput.focus();
                 return; 
