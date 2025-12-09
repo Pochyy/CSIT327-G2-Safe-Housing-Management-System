@@ -1,9 +1,8 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
-from django.shortcuts import render, get_object_or_404, redirect  # Add redirect here
-from django.contrib import messages  # Add this import
-from landLordPage.models import Property  # Import the Property model from landlord app
-from django.db.models import Avg
+from django.shortcuts import render, get_object_or_404, redirect  
+from django.contrib import messages  
+from landLordPage.models import Property, Notification
+from django.db.models import Avg, Count
 
 
 @login_required
@@ -11,7 +10,10 @@ def renterPage(request):
     user = request.user
     
     # Get only approved properties for renters to see
-    approved_properties = Property.objects.filter(status='Approved')
+    approved_properties = Property.objects.filter(status='Approved').annotate(
+        avg_rating=Avg('comments__rating'),
+        review_count=Count('comments')
+    ).order_by('-created_at')
     
     context = {
         'username': user.username,
@@ -73,6 +75,17 @@ def add_comment(request, property_id):
             user=request.user,
             content=content,
             rating=rating
+        )
+
+        landlord = property_obj.landlord
+        Notification.objects.create(
+            user=landlord,
+            notification_type='review',
+            message=(
+                f'{request.user.get_full_name() or request.user.username} '
+                f'rated your property "{property_obj.property_name}" '
+                f'{rating} star{"s" if rating != 1 else ""} and left a new comment.'
+            )
         )
         
         messages.success(request, 'Your comment has been posted!')
